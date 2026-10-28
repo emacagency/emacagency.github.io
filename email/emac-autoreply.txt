@@ -1,0 +1,36 @@
+// EMAC auto-reply for website form messages.
+// Runs inside agencyemac@gmail.com and sends the designed thank-you email
+// to whoever filled the form on emacagency.github.io.
+
+var LABEL = 'emac-replied';
+var PAGE = 'https://emacagency.github.io/email/autoreply.html';
+var SUBJECT = 'شكرًا لتواصلك مع إي ماك';
+var TEXT = 'شكرًا جزيلًا لتواصلك مع إي ماك! وصلتنا رسالتك بنجاح، وسيرد عليك فريقنا خلال 48 ساعة.\nhttps://emacagency.github.io';
+
+function emacAutoReply() {
+  var threads = GmailApp.search('(from:formsubmit.co OR subject:"طلب حملة جديد من موقع إي ماك") -label:' + LABEL + ' newer_than:2d');
+  if (!threads.length) return;
+  var label = GmailApp.getUserLabelByName(LABEL) || GmailApp.createLabel(LABEL);
+  var html = UrlFetchApp.fetch(PAGE).getContentText();
+  threads.forEach(function (t) {
+    var to = visitorEmail(t.getMessages()[0]);
+    if (to) GmailApp.sendEmail(to, SUBJECT, TEXT, { htmlBody: html, name: 'EMAC | إي ماك' });
+    t.addLabel(label);
+  });
+}
+
+function visitorEmail(m) {
+  var ok = function (a) { return a && !/formsubmit|agencyemac@gmail\.com|noreply|no-reply/i.test(a); };
+  var r = (m.getReplyTo() || '').match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/);
+  if (r && ok(r[0])) return r[0];
+  var all = m.getPlainBody().match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g) || [];
+  for (var i = 0; i < all.length; i++) if (ok(all[i])) return all[i];
+  return null;
+}
+
+// Run this once: it switches on the automatic check every minute.
+function setup() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('emacAutoReply').timeBased().everyMinutes(1).create();
+  emacAutoReply();
+}
