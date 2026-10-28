@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@emacagency">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"EMAC","alternateName":"إي ماك","url":"https://emacagency.github.io/","logo":"https://emacagency.github.io/avatar-1080.png","email":"emacagency@gmail.com","description":"وكالة ترويج وإدارة حملات رقمية للأبحاث العلمية والطبية والتقنية","sameAs":["https://instagram.com/emacagency","https://www.linkedin.com/company/emacagency","https://x.com/emacagency","https://www.youtube.com/@emacagency","https://www.tiktok.com/@emacagency"]}
+{"@context":"https://schema.org","@type":"Organization","name":"EMAC","alternateName":"إي ماك","url":"https://emacagency.github.io/","logo":"https://emacagency.github.io/avatar-1080.png","email":"agencyemac@gmail.com","description":"وكالة ترويج وإدارة حملات رقمية للأبحاث العلمية والطبية والتقنية","sameAs":["https://instagram.com/emacagency","https://www.linkedin.com/company/emacagency","https://x.com/emacagency","https://www.youtube.com/@emacagency","https://www.tiktok.com/@emacagency"]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -328,7 +328,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
         <p class="eyebrow">Contact</p>
         <h2 style="font-size:clamp(27px,3.4vw,40px)">لديك بحث يستحق أن يُرى؟</h2>
         <p class="muted">أرسل لنا نبذة عن البحث وهدفك منه، ونرد عليك خلال يومي عمل باقتراح أولي للحملة.</p>
-        <div class="addr"><span class="mono" id="mail">emacagency@gmail.com</span><button class="copy" type="button" data-copy="mail">نسخ</button></div>
+        <div class="addr"><span class="mono" id="mail">agencyemac@gmail.com</span><button class="copy" type="button" data-copy="mail">نسخ</button></div>
         <div class="socials" aria-label="حساباتنا">
           <a href="https://instagram.com/emacagency" target="_blank" rel="noopener">Instagram @emacagency</a>
           <a href="https://www.linkedin.com/company/emacagency" target="_blank" rel="noopener">LinkedIn</a>
@@ -364,7 +364,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
   <div class="in">
     <a class="brand" href="#top"><svg class="mark" viewBox="-12 -105 525 355" aria-hidden="true" style="width:26px"><use href="#mk"/></svg><span class="wordmark" style="font-size:12px">EMAC</span></a>
     <span>© 2026 إي ماك · EMAC</span>
-    <span class="mono">emacagency@gmail.com</span>
+    <span class="mono">agencyemac@gmail.com</span>
   </div>
 </footer>
 
@@ -412,7 +412,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     err.hidden = true;
     const btn = document.getElementById('f-send');
     btn.disabled = true; btn.textContent = 'جارٍ الإرسال…';
-    fetch('https://formsubmit.co/ajax/emacagency@gmail.com', {
+    fetch('https://formsubmit.co/ajax/agencyemac@gmail.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
@@ -427,7 +427,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
       btn.textContent = 'تم الإرسال';
     }).catch(() => {
       err.hidden = false; err.style.color = '#E58A8A';
-      err.textContent = 'لم تصل الرسالة بسبب مشكلة في الاتصال. حاول مرة أخرى، أو راسلنا مباشرة على emacagency@gmail.com.';
+      err.textContent = 'لم تصل الرسالة بسبب مشكلة في الاتصال. حاول مرة أخرى، أو راسلنا مباشرة على agencyemac@gmail.com.';
       btn.disabled = false; btn.textContent = 'أرسل رسالتك';
     });
   });
