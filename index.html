@@ -337,18 +337,22 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
           <a href="https://www.tiktok.com/@emacagency" target="_blank" rel="noopener">TikTok</a>
         </div>
       </div>
-      <form id="brief" novalidate>
+      <form id="brief" action="https://formsubmit.co/agencyemac@gmail.com" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="طلب حملة جديد من موقع إي ماك">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://emacagency.github.io/?sent=1#contact">
         <div class="row2">
-          <label for="f-name">الاسم<input id="f-name" required autocomplete="name"></label>
-          <label for="f-org">الجهة<input id="f-org" placeholder="جامعة، مركز أبحاث، شركة"></label>
+          <label for="f-name">الاسم<input id="f-name" name="Name" required autocomplete="name"></label>
+          <label for="f-org">الجهة<input id="f-org" name="Organization" placeholder="جامعة، مركز أبحاث، شركة"></label>
         </div>
         <div class="row2">
-          <label for="f-mail">البريد الإلكتروني<input id="f-mail" type="email" required autocomplete="email"></label>
+          <label for="f-mail">البريد الإلكتروني<input id="f-mail" name="email" type="email" required autocomplete="email"></label>
           <label for="f-type">نوع البحث
-            <select id="f-type"><option>علمي</option><option>طبي</option><option>تقني</option><option>استعراض مستقبلي</option></select>
+            <select id="f-type" name="Research type"><option>علمي</option><option>طبي</option><option>تقني</option><option>استعراض مستقبلي</option></select>
           </label>
         </div>
-        <label for="f-msg">عن ماذا يتحدث البحث وما هدفك من الحملة؟<textarea id="f-msg" required></textarea></label>
+        <label for="f-msg">عن ماذا يتحدث البحث وما هدفك من الحملة؟<textarea id="f-msg" name="Message" required></textarea></label>
         <input type="text" id="f-hp" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
         <button class="btn p" type="submit" id="f-send">أرسل رسالتك</button>
         <p class="ok" id="err" hidden></p>
@@ -400,6 +404,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
   });
 
   // brief form
+  if (new URLSearchParams(location.search).get('sent')) document.getElementById('out').hidden = false;
   const f = document.getElementById('brief');
   f.addEventListener('submit', e => {
     e.preventDefault();
@@ -412,24 +417,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     err.hidden = true;
     const btn = document.getElementById('f-send');
     btn.disabled = true; btn.textContent = 'جارٍ الإرسال…';
-    fetch('https://formsubmit.co/ajax/agencyemac@gmail.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        _subject: `طلب حملة جديد من موقع إي ماك: بحث ${v('f-type')}`,
-        _template: 'table', _captcha: 'false', _replyto: v('f-mail'), _honey: v('f-hp'),
-        'الاسم': v('f-name'), 'الجهة': v('f-org') || '—', 'البريد': v('f-mail'), 'نوع البحث': v('f-type'), 'الرسالة': v('f-msg')
-      })
-    }).then(r => r.json()).then(d => {
-      if (String(d.success) !== 'true') throw new Error(d.message || 'failed');
-      f.querySelectorAll('input, select, textarea').forEach(el => { if (el.id !== 'f-type') el.value = ''; });
-      document.getElementById('out').hidden = false;
-      btn.textContent = 'تم الإرسال';
-    }).catch(() => {
-      err.hidden = false; err.style.color = '#E58A8A';
-      err.textContent = 'لم تصل الرسالة بسبب مشكلة في الاتصال. حاول مرة أخرى، أو راسلنا مباشرة على agencyemac@gmail.com.';
-      btn.disabled = false; btn.textContent = 'أرسل رسالتك';
-    });
+    f.submit();
   });
 })();
 </script>
