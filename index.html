@@ -424,7 +424,9 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     const btn = document.getElementById('f-send');
     btn.disabled = true; btn.textContent = 'جارٍ الإرسال…';
     f.submit();
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'أرسل رسالتك'; }, 12000);
   });
+  addEventListener('pageshow', () => { const btn = document.getElementById('f-send'); btn.disabled = false; btn.textContent = 'أرسل رسالتك'; });
 })();
 </script>
 
