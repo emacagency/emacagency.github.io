@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://emacagency.github.io/sitemap.xml
