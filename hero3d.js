@@ -226,7 +226,7 @@ new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(host)
 const clock = new THREE.Clock();
 function frame() {
   const t = clock.getElapsedTime(); U.uT.value = t;
-  fig.rotation.y = (still ? -.35 : Math.sin(t * .18) * .6) + mx * .35;
+  fig.rotation.y = (still ? -.35 : t * .45) + mx * .3;
   fig.position.y = still ? 0 : Math.sin(t * .8) * .008;
   fig.traverse(o => {
     if (o.userData.orbits) o.userData.orbits.forEach((ob, i) => { ob.rotation.z += .0016 * (i ? -1 : 1); const a = t * (.35 + i * .12) + ob.userData.ph; ob.userData.bead.position.set(Math.cos(a) * ob.userData.r, Math.sin(a) * ob.userData.r, 0); });

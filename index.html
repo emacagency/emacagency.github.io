@@ -349,12 +349,11 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
           </label>
         </div>
         <label for="f-msg">عن ماذا يتحدث البحث وما هدفك من الحملة؟<textarea id="f-msg" required></textarea></label>
-        <button class="btn p" type="submit">جهّز رسالتي</button>
+        <input type="text" id="f-hp" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+        <button class="btn p" type="submit" id="f-send">أرسل رسالتك</button>
         <p class="ok" id="err" hidden></p>
         <div class="out" id="out" hidden>
-          <p class="ok">رسالتك جاهزة. انسخها وأرسلها إلى emacagency@gmail.com.</p>
-          <pre id="msg"></pre>
-          <button class="copy" type="button" data-copy="msg">نسخ الرسالة</button>
+          <p class="ok" id="sent">وصلتنا رسالتك، وسنرد عليك على بريدك خلال يومي عمل.</p>
         </div>
       </form>
     </div>
@@ -408,12 +407,29 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     const err = document.getElementById('err');
     if (!v('f-name') || !v('f-msg') || !/^\S+@\S+\.\S+$/.test(v('f-mail'))) {
       err.hidden = false; err.style.color = '#E58A8A';
-      err.textContent = 'أكمل الاسم والبريد الإلكتروني ونبذة البحث حتى نجهز رسالتك.'; return;
+      err.textContent = 'أكمل الاسم والبريد الإلكتروني ونبذة البحث حتى نرسل رسالتك.'; return;
     }
     err.hidden = true;
-    document.getElementById('msg').textContent =
-      `الموضوع: طلب حملة لبحث ${v('f-type')}\n\nالاسم: ${v('f-name')}\nالجهة: ${v('f-org') || '—'}\nالبريد: ${v('f-mail')}\n\n${v('f-msg')}`;
-    document.getElementById('out').hidden = false;
+    const btn = document.getElementById('f-send');
+    btn.disabled = true; btn.textContent = 'جارٍ الإرسال…';
+    fetch('https://formsubmit.co/ajax/emacagency@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: `طلب حملة جديد من موقع إي ماك: بحث ${v('f-type')}`,
+        _template: 'table', _captcha: 'false', _replyto: v('f-mail'), _honey: v('f-hp'),
+        'الاسم': v('f-name'), 'الجهة': v('f-org') || '—', 'البريد': v('f-mail'), 'نوع البحث': v('f-type'), 'الرسالة': v('f-msg')
+      })
+    }).then(r => r.json()).then(d => {
+      if (String(d.success) !== 'true') throw new Error(d.message || 'failed');
+      f.querySelectorAll('input, select, textarea').forEach(el => { if (el.id !== 'f-type') el.value = ''; });
+      document.getElementById('out').hidden = false;
+      btn.textContent = 'تم الإرسال';
+    }).catch(() => {
+      err.hidden = false; err.style.color = '#E58A8A';
+      err.textContent = 'لم تصل الرسالة بسبب مشكلة في الاتصال. حاول مرة أخرى، أو راسلنا مباشرة على emacagency@gmail.com.';
+      btn.disabled = false; btn.textContent = 'أرسل رسالتك';
+    });
   });
 })();
 </script>
