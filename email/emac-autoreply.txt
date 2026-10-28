@@ -3,17 +3,30 @@
 // to whoever filled the form on emacagency.github.io.
 // Each form message is answered once, even when Gmail groups them in one conversation.
 
+// Press Run once on any function: old messages are skipped,
+// and a check runs every minute from then on.
+function setup() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('emacAutoReply').timeBased().everyMinutes(1).create();
+  run(true);
+}
+
 var LABEL = 'emac-replied';
 var PAGE = 'https://emacagency.github.io/email/autoreply.html';
 var FORM_SUBJECT = 'طلب حملة جديد من موقع إي ماك';
 var SUBJECT = 'شكرًا لتواصلك مع إي ماك';
 var TEXT = 'شكرًا جزيلًا لتواصلك مع إي ماك! وصلتنا رسالتك بنجاح، وسيرد عليك فريقنا خلال 48 ساعة.\nhttps://emacagency.github.io';
 
-function emacAutoReply() { run(false); }
+function emacAutoReply() {
+  if (!ScriptApp.getProjectTriggers().length) return setup();
+  run(false);
+}
 
 function run(markOnly) {
   var props = PropertiesService.getScriptProperties();
-  var done = JSON.parse(props.getProperty('done') || '{}');
+  var saved = props.getProperty('done');
+  if (saved === null) markOnly = true;
+  var done = JSON.parse(saved || '{}');
   var now = Date.now(), html = null;
   var label = GmailApp.getUserLabelByName(LABEL) || GmailApp.createLabel(LABEL);
   var threads = GmailApp.search('from:formsubmit.co subject:"' + FORM_SUBJECT + '" newer_than:2d');
@@ -42,11 +55,4 @@ function visitorEmail(m) {
   var all = m.getPlainBody().match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g) || [];
   for (var i = 0; i < all.length; i++) if (ok(all[i])) return all[i];
   return null;
-}
-
-// Run this once: old messages are skipped, and a check runs every minute from now on.
-function setup() {
-  ScriptApp.getProjectTriggers().forEach(function (t) { ScriptApp.deleteTrigger(t); });
-  run(true);
-  ScriptApp.newTrigger('emacAutoReply').timeBased().everyMinutes(1).create();
 }
