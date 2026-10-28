@@ -34,7 +34,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.setClearColor(0x000000, 0);
 const scene = new THREE.Scene();
-const ACC = new THREE.Color('#B9A7F0'), STEEL = new THREE.Color('#C9CED4');
+const ACC = new THREE.Color('#DCE2E8'), STEEL = new THREE.Color('#C9CED4');
 
 // dark studio environment so brushed steel reads as steel
 const pm = new THREE.PMREMGenerator(renderer);
@@ -43,12 +43,12 @@ scene.environment = pm.fromScene((() => {
   e.add(new THREE.Mesh(new THREE.BoxGeometry(20, 12, 20), new THREE.MeshBasicMaterial({ color: '#1d1f26', side: THREE.BackSide })));
   const panel = (w, h, c, i, p) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(i), side: THREE.DoubleSide })); m.position.set(...p); m.lookAt(0, 1, 0); e.add(m); };
   panel(6, 3, '#ffffff', 2.0, [0, 5.5, 2]); panel(1.2, 7, '#fff1e2', 2.4, [6, 1.5, 5]);
-  panel(1, 7, '#c9bcff', 2.2, [-7, 1.5, -4]); panel(1, 6, '#a8c0ff', .8, [-7, 1, 4]); panel(8, 5, '#e9e6f5', .5, [0, 2, 9]);
+  panel(1, 7, '#d0d8e2', 2.2, [-7, 1.5, -4]); panel(1, 6, '#a8c0ff', .8, [-7, 1, 4]); panel(8, 5, '#e9e6f5', .5, [0, 2, 9]);
   return e;
 })(), .02).texture;
 scene.add(new THREE.HemisphereLight('#c9cfe0', '#0b0b0f', .25));
 const key = new THREE.DirectionalLight('#fff4ea', 1.5); key.position.set(2.2, 4, 3); scene.add(key);
-const rim = new THREE.DirectionalLight('#B9A7F0', 1.4); rim.position.set(-2.5, 2.2, -3); scene.add(rim);
+const rim = new THREE.DirectionalLight('#c9d2dc', 1.4); rim.position.set(-2.5, 2.2, -3); scene.add(rim);
 
 const HI = decode(MESH.hi), LO = decode(MESH.lo);
 const ray = new THREE.Raycaster(), probe = new THREE.Mesh(HI);
@@ -81,17 +81,17 @@ const glow = (size, op = 1) => { const s = new THREE.Sprite(new THREE.SpriteMate
 
 function identity(opts = {}) {
   const g = new THREE.Group();
-  const eyeM = new THREE.MeshBasicMaterial({ color: new THREE.Color('#e7defc') });
+  const eyeM = new THREE.MeshBasicMaterial({ color: new THREE.Color('#eef2f6') });
   EYE.forEach(p => { const e = new THREE.Mesh(new THREE.SphereGeometry(.0105, 24, 12), eyeM); e.scale.set(1.25, .38, .35); e.position.copy(p); g.add(e); const gl = glow(.05, .55); gl.position.copy(p).add(new THREE.Vector3(0, 0, .004)); g.add(gl); });
   if (opts.heart !== false) {
-    const h = new THREE.Mesh(new THREE.IcosahedronGeometry(.024, 3), new THREE.MeshBasicMaterial({ color: '#efe9ff' }));
+    const h = new THREE.Mesh(new THREE.IcosahedronGeometry(.024, 3), new THREE.MeshBasicMaterial({ color: '#f2f5f8' }));
     h.position.copy(HEART); g.add(h); const hg = glow(.26, .9); hg.position.copy(HEART); g.add(hg); g.userData.heart = [h, hg];
   }
   const orbits = [];
   [[.165, .42, .2], [.2, -.3, 1.7]].forEach(([r, tilt, spin]) => {
     const o = new THREE.Group(); o.position.set(0, 1.695, -.005); o.rotation.set(Math.PI / 2 + tilt, 0, spin);
     o.add(new THREE.Mesh(new THREE.TorusGeometry(r, .0011, 6, 200), new THREE.MeshBasicMaterial({ color: ACC, transparent: true, opacity: .8, blending: THREE.AdditiveBlending, depthWrite: false })));
-    const bead = new THREE.Mesh(new THREE.SphereGeometry(.0065, 16, 8), new THREE.MeshBasicMaterial({ color: '#f2edff' })); bead.add(glow(.06, .8)); o.add(bead);
+    const bead = new THREE.Mesh(new THREE.SphereGeometry(.0065, 16, 8), new THREE.MeshBasicMaterial({ color: '#f4f6f8' })); bead.add(glow(.06, .8)); o.add(bead);
     o.userData = { r, bead, ph: Math.random() * 6.28 }; orbits.push(o); g.add(o);
   });
   g.userData.orbits = orbits;
@@ -150,7 +150,7 @@ const BUILD = {
     const flat = LO.toNonIndexed(); flat.computeVertexNormals();
     g.add(new THREE.Mesh(flat, steelMat({ flatShading: true, color: '#aeb4bd', polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })));
     g.add(new THREE.LineSegments(new THREE.EdgesGeometry(LO, 1), new THREE.LineBasicMaterial({ color: ACC, transparent: true, opacity: .75, blending: THREE.AdditiveBlending, depthWrite: false })));
-    g.add(new THREE.Points(LO, new THREE.PointsMaterial({ color: '#efe9ff', size: .0075, transparent: true, opacity: .9, blending: THREE.AdditiveBlending, depthWrite: false })));
+    g.add(new THREE.Points(LO, new THREE.PointsMaterial({ color: '#f2f5f8', size: .0075, transparent: true, opacity: .9, blending: THREE.AdditiveBlending, depthWrite: false })));
     g.add(identity()); return g;
   },
   cloud() {

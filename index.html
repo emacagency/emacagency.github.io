@@ -25,10 +25,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Montserrat:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a deep-space hero with a live star field and the 45° mark, then quiet paper-like sections; the mark is matte brushed steel; lavender is reserved for key numbers and the primary button. */
+/* Layout: a deep-space hero with a live star field and the 45° mark, then quiet paper-like sections; the mark is matte brushed steel; steel accents mark key numbers and the primary button. */
 :root {
   --bg: #0C0C14; --surface: #14141F; --line: #26263A; --fg: #F5F4F8; --muted: #A9A7B8;
-  --accent: #C9B8F2; --on-accent: #0C0C14; --moss: #7FAE8E; --star: #F5F4F8;
+  --accent: #C3C9CF; --on-accent: #0C0C14; --moss: #7FAE8E; --star: #F5F4F8;
   --st1: #D3D7DB; --st2: #B4BAC0; --st3: #9CA3AA; --st4: #C4C9CE;
   --f-ar: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
   --f-lat: "Montserrat", "Helvetica Neue", Arial, sans-serif;
@@ -38,10 +38,10 @@
 }
 @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
   --bg: #F5F4F8; --surface: #FFFFFF; --line: #DEDBE8; --fg: #0C0C14; --muted: #5A5866;
-  --accent: #5B45A8; --on-accent: #FFFFFF; --moss: #4A7559; --star: #5B45A8; --st1: #AEB4BA; --st2: #8F969D; --st3: #7B838B; --st4: #A2A9B0; color-scheme: light; } }
+  --accent: #5E6670; --on-accent: #0C0C14; --moss: #4A7559; --star: #6E7781; --st1: #AEB4BA; --st2: #8F969D; --st3: #7B838B; --st4: #A2A9B0; color-scheme: light; } }
 :root[data-theme="light"] {
   --bg: #F5F4F8; --surface: #FFFFFF; --line: #DEDBE8; --fg: #0C0C14; --muted: #5A5866;
-  --accent: #5B45A8; --on-accent: #FFFFFF; --moss: #4A7559; --star: #5B45A8; --st1: #AEB4BA; --st2: #8F969D; --st3: #7B838B; --st4: #A2A9B0; color-scheme: light; }
+  --accent: #5E6670; --on-accent: #0C0C14; --moss: #4A7559; --star: #6E7781; --st1: #AEB4BA; --st2: #8F969D; --st3: #7B838B; --st4: #A2A9B0; color-scheme: light; }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -59,7 +59,7 @@ a { color: inherit; }
 .wordmark { font-family: var(--f-lat); font-weight: 500; letter-spacing: .5em; margin-inline-end: -.5em; direction: ltr; }
 .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; font: inherit; font-size: 16px; font-weight: 500; border-radius: var(--r); text-decoration: none; cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--fg); transition: border-color .2s, transform .2s; }
 .btn:hover { border-color: var(--accent); transform: translateY(-1px); }
-.btn.p { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn.p { background: linear-gradient(180deg, var(--st1), var(--st2) 48%, var(--st3) 52%, var(--st4)); color: var(--on-accent); border-color: var(--st3); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* nav */
@@ -87,6 +87,16 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero .lead { font-size: 19px; color: var(--muted); max-width: 52ch; margin-top: 22px; }
 .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 34px; }
 .hero.has3d .hero-mark { visibility: hidden; }
+#intro { position: fixed; inset: 0; z-index: 30; background: var(--bg); display: grid; place-items: center; animation: introOut .45s ease 3.1s forwards; }
+#intro svg { width: min(220px, 46vw); height: auto; }
+#intro rect { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); }
+#intro .b1 { animation: barUp .5s ease-out 0s forwards, barDown .5s ease-in 1.5s forwards; }
+#intro .b2 { animation: barUp .5s ease-out .5s forwards, barDown .5s ease-in 2s forwards; }
+#intro .b3 { animation: barUp .5s ease-out 1s forwards, barDown .5s ease-in 2.5s forwards; }
+@keyframes barUp { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes barDown { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@keyframes introOut { to { opacity: 0; visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { #intro { display: none; } }
 #hero3d { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
 #hero3d.on { opacity: 1; }
 #hero3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -115,7 +125,7 @@ section.block { padding-block: 96px; border-bottom: 1px solid var(--line); }
 /* process */
 .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; counter-reset: s; }
 .step { display: grid; gap: 14px; align-content: start; }
-.step .bar { height: 10px; border-radius: 6px; background: var(--accent); transform: skewX(-45deg); transform-origin: left; }
+.step .bar { height: 10px; border-radius: 6px; background: linear-gradient(180deg, var(--st1), var(--st2) 46%, var(--st3) 54%, var(--st4)); transform: skewX(-45deg); transform-origin: left; }
 .step:nth-child(1) .bar { width: 36%; } .step:nth-child(2) .bar { width: 66%; } .step:nth-child(3) .bar { width: 100%; }
 .step .n { font-family: var(--f-mono); font-size: 13px; color: var(--muted); direction: ltr; text-align: right; }
 .step h3 { font-size: 24px; }
@@ -189,6 +199,14 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     </g>
   </symbol>
 </svg>
+
+<div id="intro" aria-hidden="true">
+  <svg class="mark" viewBox="-12 -105 525 355"><g transform="rotate(-45)">
+    <rect class="b1" x="0" y="0" width="132" height="96" rx="20"/>
+    <rect class="b2" x="0" y="120" width="252" height="96" rx="20"/>
+    <rect class="b3" x="0" y="240" width="372" height="96" rx="20"/>
+  </g></svg>
+</div>
 
 <header class="nav">
   <div class="in">
@@ -288,15 +306,15 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
       </div>
       <div class="cases">
         <article class="case">
-          <div class="vis"><svg viewBox="0 0 320 200" aria-hidden="true"><rect width="320" height="200" fill="#0C0C14"/><g fill="none" stroke="#7FAE8E" stroke-width="2"><circle cx="160" cy="100" r="70" opacity=".6"/><circle cx="150" cy="96" r="24" fill="#7FAE8E" fill-opacity=".25"/><path d="M110 70c20 10 30-8 50 4M180 140c10-14 30-6 34-24" opacity=".8"/></g><circle cx="196" cy="70" r="5" fill="#C9B8F2"/><circle cx="120" cy="130" r="4" fill="#C9B8F2"/></svg></div>
+          <div class="vis"><svg viewBox="0 0 320 200" aria-hidden="true"><rect width="320" height="200" fill="#0C0C14"/><g fill="none" stroke="#7FAE8E" stroke-width="2"><circle cx="160" cy="100" r="70" opacity=".6"/><circle cx="150" cy="96" r="24" fill="#7FAE8E" fill-opacity=".25"/><path d="M110 70c20 10 30-8 50 4M180 140c10-14 30-6 34-24" opacity=".8"/></g><circle cx="196" cy="70" r="5" fill="#C3C9CF"/><circle cx="120" cy="130" r="4" fill="#C3C9CF"/></svg></div>
           <div class="body"><h3>داخل الخلية الحية</h3><p>جولة ثلاثية الأبعاد لشرح آلية علاج جديد لجمهور غير متخصص.</p><span class="data mono">≈ 10 µm · 37 °C</span></div>
         </article>
         <article class="case">
-          <div class="vis"><svg viewBox="0 0 320 200" aria-hidden="true"><rect width="320" height="200" fill="#0C0C14"/><g fill="none" stroke="#C9B8F2"><ellipse cx="160" cy="100" rx="120" ry="26" opacity=".35"/><ellipse cx="160" cy="100" rx="90" ry="19" opacity=".55"/><ellipse cx="160" cy="100" rx="62" ry="13" opacity=".8"/></g><circle cx="160" cy="100" r="30" fill="#000" stroke="#F5F4F8" stroke-opacity=".5"/></svg></div>
+          <div class="vis"><svg viewBox="0 0 320 200" aria-hidden="true"><rect width="320" height="200" fill="#0C0C14"/><g fill="none" stroke="#C3C9CF"><ellipse cx="160" cy="100" rx="120" ry="26" opacity=".35"/><ellipse cx="160" cy="100" rx="90" ry="19" opacity=".55"/><ellipse cx="160" cy="100" rx="62" ry="13" opacity=".8"/></g><circle cx="160" cy="100" r="30" fill="#000" stroke="#F5F4F8" stroke-opacity=".5"/></svg></div>
           <div class="body"><h3>الثقب الأسود في 60 ثانية</h3><p>تجسيد نظرية النسبية العامة وأفق الحدث في مقطع قصير للمنصات.</p><span class="data mono">r = 2GM / c²</span></div>
         </article>
         <article class="case">
-          <div class="vis"><svg viewBox="0 0 320 200" aria-hidden="true"><rect width="320" height="200" fill="#0C0C14"/><circle cx="210" cy="118" r="62" fill="#B5583A"/><circle cx="210" cy="118" r="62" fill="url(#shade)"/><defs><radialGradient id="shade" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient></defs><circle cx="70" cy="60" r="10" fill="#C9B8F2"/><path d="M80 64 Q150 40 160 100" stroke="#C9B8F2" stroke-dasharray="3 5" fill="none"/></svg></div>
+          <div class="vis"><svg viewBox="0 0 320 200" aria-hidden="true"><rect width="320" height="200" fill="#0C0C14"/><circle cx="210" cy="118" r="62" fill="#B5583A"/><circle cx="210" cy="118" r="62" fill="url(#shade)"/><defs><radialGradient id="shade" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient></defs><circle cx="70" cy="60" r="10" fill="#C3C9CF"/><path d="M80 64 Q150 40 160 100" stroke="#C3C9CF" stroke-dasharray="3 5" fill="none"/></svg></div>
           <div class="body"><h3>كيف نعيش على المريخ؟</h3><p>سلسلة مرئية تشرح تحديات الاستيطان على الكوكب الأحمر بالأرقام.</p><span class="data mono">−63 °C · 0.38 g · 225M km</span></div>
         </article>
       </div>
