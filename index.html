@@ -410,9 +410,15 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     e.preventDefault();
     const v = id => document.getElementById(id).value.trim();
     const err = document.getElementById('err');
-    if (!v('f-name') || !v('f-msg') || !/^\S+@\S+\.\S+$/.test(v('f-mail'))) {
+    const mail = document.getElementById('f-mail');
+    mail.value = mail.value.replace(/[\s\u200e\u200f\u202a-\u202e]/g, '');
+    const miss = [];
+    if (!v('f-name')) miss.push('الاسم');
+    if (!/^[^@]+@[^@]+\.[^@]+$/.test(v('f-mail'))) miss.push('بريد إلكتروني صحيح');
+    if (!v('f-msg')) miss.push('نبذة عن البحث');
+    if (miss.length) {
       err.hidden = false; err.style.color = '#E58A8A';
-      err.textContent = 'أكمل الاسم والبريد الإلكتروني ونبذة البحث حتى نرسل رسالتك.'; return;
+      err.textContent = 'ينقص: ' + miss.join('، ') + '.'; return;
     }
     err.hidden = true;
     const btn = document.getElementById('f-send');
