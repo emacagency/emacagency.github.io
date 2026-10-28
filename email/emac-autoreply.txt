@@ -27,7 +27,8 @@ function run(markOnly) {
   var saved = props.getProperty('done');
   if (saved === null) markOnly = true;
   var done = JSON.parse(saved || '{}');
-  var now = Date.now(), html = null;
+  var now = Date.now();
+  var instant = JSON.parse(props.getProperty('instant') || '{}');
   var label = GmailApp.getUserLabelByName(LABEL) || GmailApp.createLabel(LABEL);
   var threads = GmailApp.search('from:formsubmit.co subject:"' + FORM_SUBJECT + '" newer_than:2d');
   threads.forEach(function (t) {
@@ -39,13 +40,38 @@ function run(markOnly) {
       if (!/formsubmit/i.test(m.getFrom()) || m.getSubject().indexOf(FORM_SUBJECT) < 0) return;
       var to = visitorEmail(m);
       if (!to) return;
-      html = html || UrlFetchApp.fetch(PAGE).getContentText();
-      GmailApp.sendEmail(to, SUBJECT, TEXT, { htmlBody: html, name: 'EMAC | إي ماك' });
+      if (now - (instant[to.toLowerCase()] || 0) > 30 * 60e3) sendReply(to);
       t.addLabel(label);
     });
   });
   for (var k in done) if (now - done[k] > 4 * 864e5) delete done[k];
   props.setProperty('done', JSON.stringify(done));
+}
+
+function sendReply(to) {
+  var html = UrlFetchApp.fetch(PAGE).getContentText();
+  GmailApp.sendEmail(to, SUBJECT, TEXT, { htmlBody: html, name: 'EMAC | إي ماك' });
+}
+
+// Instant reply: the website calls this the moment the form is sent
+// (Deploy > New deployment > Web app, access: Anyone).
+function doPost(e) {
+  var p = (e && e.parameter) || {};
+  var to = String(p.email || '').trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) return ContentService.createTextOutput('skip');
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var props = PropertiesService.getScriptProperties();
+    var sent = JSON.parse(props.getProperty('instant') || '{}'), now = Date.now(), today = 0;
+    for (var k in sent) { if (now - sent[k] > 864e5) delete sent[k]; else today++; }
+    var key = to.toLowerCase();
+    if ((sent[key] && now - sent[key] < 10 * 60e3) || today >= 80) return ContentService.createTextOutput('skip');
+    sendReply(to);
+    sent[key] = now;
+    props.setProperty('instant', JSON.stringify(sent));
+  } finally { lock.releaseLock(); }
+  return ContentService.createTextOutput('ok');
 }
 
 function visitorEmail(m) {

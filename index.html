@@ -178,6 +178,28 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--a
 
 footer .in { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-block: 36px; font-size: 14px; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .hero-mark rect { animation: none; } html { scroll-behavior: auto; } }
+
+/* sent overlay */
+#done { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: 16px; background: rgba(12,12,20,.38); -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3); opacity: 0; transition: opacity .35s ease; }
+#done.on { opacity: 1; }
+#done .card { display: grid; justify-items: center; gap: 12px; text-align: center; max-width: 420px; padding: 32px 24px; border-radius: 24px; background: rgba(20,20,31,.55); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 30px 80px rgba(0,0,0,.35); color: #F5F4F8; }
+#done svg { width: 140px; height: 140px; overflow: visible; }
+#done .track { fill: none; stroke: rgba(47,191,113,.18); stroke-width: 6; }
+#done .ring { fill: none; stroke: #2FBF71; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 415; stroke-dashoffset: 415; transform-origin: 70px 70px; transform: rotate(-90deg); }
+#done .disc { fill: #2FBF71; transform-origin: 70px 70px; transform: scale(0); }
+#done .tick { fill: none; stroke: #0C0C14; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 90; stroke-dashoffset: 90; }
+#done.on .ring { animation: d-ring .9s cubic-bezier(.65,0,.35,1) forwards; }
+#done.on .disc { animation: d-disc .32s .86s cubic-bezier(.3,1.6,.5,1) forwards; }
+#done.on .tick { animation: d-tick .3s 1.05s ease-out forwards; }
+#done.on .card > :not(svg) { animation: d-up .5s 1.15s both; }
+@keyframes d-ring { to { stroke-dashoffset: 0; transform: rotate(270deg); } }
+@keyframes d-disc { to { transform: scale(.86); } }
+@keyframes d-tick { to { stroke-dashoffset: 0; } }
+@keyframes d-up { from { opacity: 0; transform: translateY(8px); } }
+#done h3 { margin: 4px 0 0; font-size: 28px; }
+#done p { margin: 0; color: #C9C7D4; line-height: 1.8; }
+#done button { margin-top: 8px; font: inherit; font-weight: 600; color: #0C0C14; background: #F5F4F8; border: 0; border-radius: 999px; padding: 10px 30px; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { #done .ring { stroke-dashoffset: 0; } #done .disc { transform: scale(.86); } #done .tick { stroke-dashoffset: 0; } #done.on * { animation: none !important; } }
 </style>
 </head>
 <body style="margin:0">
@@ -353,7 +375,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
           </label>
         </div>
         <label for="f-msg">عن ماذا يتحدث البحث وما هدفك من الحملة؟<textarea id="f-msg" name="Message" required></textarea></label>
-        <input type="text" id="f-hp" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+        <input type="text" id="f-hp" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;inset-inline-start:0;width:1px;height:1px;opacity:0;pointer-events:none;clip-path:inset(50%)" aria-hidden="true">
         <button class="btn p" type="submit" id="f-send">أرسل رسالتك</button>
         <p class="ok" id="err" hidden></p>
         <div class="out" id="out" hidden>
@@ -372,6 +394,14 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
   </div>
 </footer>
 
+<div id="done" hidden role="dialog" aria-modal="true" aria-labelledby="done-t">
+  <div class="card">
+    <svg viewBox="0 0 140 140" aria-hidden="true"><circle class="track" cx="70" cy="70" r="66"/><circle class="disc" cx="70" cy="70" r="66"/><circle class="ring" cx="70" cy="70" r="66"/><path class="tick" d="M44 72 L62 90 L97 53"/></svg>
+    <h3 id="done-t">تم الإرسال</h3>
+    <p>وصلت رسالتك إلى إي ماك.<br>شكرًا لك، سنرد عليك خلال 48 ساعة.</p>
+    <button type="button" id="done-ok">حسنًا</button>
+  </div>
+</div>
 <script>
 (() => {
   // star field
@@ -404,7 +434,36 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
   });
 
   // brief form
-  if (new URLSearchParams(location.search).get('sent')) document.getElementById('out').hidden = false;
+  // instant thank-you email (Apps Script web app); empty = only the minute check
+  const HOOK = '';
+  let ac;
+  const chime = () => {
+    if (!ac) return;
+    const t0 = ac.currentTime + .02, out = ac.createGain();
+    out.gain.value = .5; out.connect(ac.destination);
+    const tone = (f, at, dur, peak, type = 'sine', glide) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, at);
+      if (glide) o.frequency.exponentialRampToValueAtTime(glide, at + dur);
+      g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(peak, at + .015);
+      g.gain.exponentialRampToValueAtTime(.0001, at + dur);
+      o.connect(g); g.connect(out); o.start(at); o.stop(at + dur + .05);
+    };
+    tone(330, t0, .9, .05, 'triangle', 990);            // rises with the ring
+    [[1046.5, .88], [1568, 1.04]].forEach(([f, d]) => {  // ding-ding with the tick
+      tone(f, t0 + d, .9, .32); tone(f * 2, t0 + d, .5, .06);
+    });
+  };
+  const done = document.getElementById('done');
+  const showDone = () => {
+    done.hidden = false; done.classList.remove('on'); void done.offsetWidth;
+    done.classList.add('on'); chime(); document.getElementById('done-ok').focus();
+  };
+  const hideDone = () => { done.classList.remove('on'); setTimeout(() => done.hidden = true, 350); };
+  document.getElementById('done-ok').addEventListener('click', hideDone);
+  done.addEventListener('click', e => { if (e.target === done) hideDone(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !done.hidden) hideDone(); });
+  if (new URLSearchParams(location.search).get('sent')) { history.replaceState(null, '', location.pathname + '#contact'); showDone(); }
   const f = document.getElementById('brief');
   f.addEventListener('submit', e => {
     e.preventDefault();
@@ -423,8 +482,17 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     err.hidden = true;
     const btn = document.getElementById('f-send');
     btn.disabled = true; btn.textContent = 'جارٍ الإرسال…';
-    f.submit();
-    setTimeout(() => { btn.disabled = false; btn.textContent = 'أرسل رسالتك'; }, 12000);
+    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch {}
+    const data = new FormData(f);
+    if (HOOK && !data.get('_honey')) fetch(HOOK, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ email: v('f-mail'), name: v('f-name') }) }).catch(() => {});
+    const reset = () => { btn.disabled = false; btn.textContent = 'أرسل رسالتك'; };
+    fetch('https://formsubmit.co/ajax/agencyemac@gmail.com', { method: 'POST', headers: { Accept: 'application/json' }, body: data })
+      .then(r => r.json())
+      .then(j => {
+        if (String(j.success) !== 'true') throw 0;
+        reset(); f.reset(); showDone();
+      })
+      .catch(() => { f.submit(); setTimeout(reset, 12000); });
   });
   addEventListener('pageshow', () => { const btn = document.getElementById('f-send'); btn.disabled = false; btn.textContent = 'أرسل رسالتك'; });
 })();
