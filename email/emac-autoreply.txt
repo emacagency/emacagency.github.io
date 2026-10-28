@@ -1,22 +1,38 @@
 // EMAC auto-reply for website form messages.
 // Runs inside agencyemac@gmail.com and sends the designed thank-you email
 // to whoever filled the form on emacagency.github.io.
+// Each form message is answered once, even when Gmail groups them in one conversation.
 
 var LABEL = 'emac-replied';
 var PAGE = 'https://emacagency.github.io/email/autoreply.html';
+var FORM_SUBJECT = 'طلب حملة جديد من موقع إي ماك';
 var SUBJECT = 'شكرًا لتواصلك مع إي ماك';
 var TEXT = 'شكرًا جزيلًا لتواصلك مع إي ماك! وصلتنا رسالتك بنجاح، وسيرد عليك فريقنا خلال 48 ساعة.\nhttps://emacagency.github.io';
 
-function emacAutoReply() {
-  var threads = GmailApp.search('(from:formsubmit.co OR subject:"طلب حملة جديد من موقع إي ماك") -label:' + LABEL + ' newer_than:2d');
-  if (!threads.length) return;
+function emacAutoReply() { run(false); }
+
+function run(markOnly) {
+  var props = PropertiesService.getScriptProperties();
+  var done = JSON.parse(props.getProperty('done') || '{}');
+  var now = Date.now(), html = null;
   var label = GmailApp.getUserLabelByName(LABEL) || GmailApp.createLabel(LABEL);
-  var html = UrlFetchApp.fetch(PAGE).getContentText();
+  var threads = GmailApp.search('from:formsubmit.co subject:"' + FORM_SUBJECT + '" newer_than:2d');
   threads.forEach(function (t) {
-    var to = visitorEmail(t.getMessages()[0]);
-    if (to) GmailApp.sendEmail(to, SUBJECT, TEXT, { htmlBody: html, name: 'EMAC | إي ماك' });
-    t.addLabel(label);
+    t.getMessages().forEach(function (m) {
+      var id = m.getId();
+      if (done[id]) return;
+      done[id] = now;
+      if (markOnly) return;
+      if (!/formsubmit/i.test(m.getFrom()) || m.getSubject().indexOf(FORM_SUBJECT) < 0) return;
+      var to = visitorEmail(m);
+      if (!to) return;
+      html = html || UrlFetchApp.fetch(PAGE).getContentText();
+      GmailApp.sendEmail(to, SUBJECT, TEXT, { htmlBody: html, name: 'EMAC | إي ماك' });
+      t.addLabel(label);
+    });
   });
+  for (var k in done) if (now - done[k] > 4 * 864e5) delete done[k];
+  props.setProperty('done', JSON.stringify(done));
 }
 
 function visitorEmail(m) {
@@ -28,9 +44,9 @@ function visitorEmail(m) {
   return null;
 }
 
-// Run this once: it switches on the automatic check every minute.
+// Run this once: old messages are skipped, and a check runs every minute from now on.
 function setup() {
   ScriptApp.getProjectTriggers().forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  run(true);
   ScriptApp.newTrigger('emacAutoReply').timeBased().everyMinutes(1).create();
-  emacAutoReply();
 }
