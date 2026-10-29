@@ -23,7 +23,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Montserrat:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Montserrat:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a deep-space hero with a live star field and the 45° mark, then quiet paper-like sections; the mark is matte brushed steel; steel accents mark key numbers and the primary button. */
 :root {
@@ -60,6 +60,8 @@ a { color: inherit; }
 .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; font: inherit; font-size: 16px; font-weight: 500; border-radius: var(--r); text-decoration: none; cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--fg); transition: border-color .2s, transform .2s; }
 .btn:hover { border-color: var(--accent); transform: translateY(-1px); }
 .btn.p { background: linear-gradient(180deg, var(--st1), var(--st2) 48%, var(--st3) 52%, var(--st4)); color: var(--on-accent); border-color: var(--st3); }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .btn.p { background: linear-gradient(180deg, #2A2E35, #0C0C14); color: #E4E8EC; border-color: #0C0C14; } }
+:root[data-theme="light"] .btn.p { background: linear-gradient(180deg, #2A2E35, #0C0C14); color: #E4E8EC; border-color: #0C0C14; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* nav */
@@ -70,7 +72,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .brand svg { width: 34px; height: auto; }
 .brand .wordmark { font-size: 14px; }
 .nav ul { list-style: none; display: flex; gap: 26px; margin: 0; padding: 0; font-size: 15px; }
-.nav ul a { text-decoration: none; color: var(--muted); }
+.nav ul a { text-decoration: none; color: var(--muted); display: inline-block; padding-block: 10px; }
 .nav ul a:hover { color: var(--fg); }
 @media (max-width: 760px) { .nav .in { flex-wrap: wrap; row-gap: 4px; padding-block: 10px 6px; } .nav ul { order: 3; width: 100%; gap: 22px; overflow-x: auto; scrollbar-width: none; font-size: 14px; } .nav ul a { display: inline-block; padding-block: 8px; white-space: nowrap; } }
 
@@ -110,6 +112,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 @media (max-width: 820px) { .hero .in { grid-template-columns: 1fr; padding-block: 64px 56px; } .hero-mark { max-width: 200px; justify-self: start; grid-row: 1; } }
 
 section.block { padding-block: 96px; border-bottom: 1px solid var(--line); }
+@media (max-width: 600px) { section.block { padding-block: 64px; } }
 .head { display: grid; gap: 12px; margin-bottom: 48px; max-width: 62ch; }
 .head h2 { font-size: clamp(27px, 3.4vw, 40px); }
 
@@ -351,13 +354,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
         <h2 style="font-size:clamp(27px,3.4vw,40px)">لديك بحث يستحق أن يُرى؟</h2>
         <p class="muted">أرسل لنا نبذة عن البحث وهدفك منه، ونرد عليك خلال 48 ساعة باقتراح أولي للحملة.</p>
         <div class="addr"><span class="mono" id="mail">agencyemac@gmail.com</span><button class="copy" type="button" data-copy="mail">نسخ</button></div>
-        <div class="socials" aria-label="حساباتنا">
-          <a href="https://instagram.com/emacagency" target="_blank" rel="noopener">Instagram @emacagency</a>
-          <a href="https://www.linkedin.com/company/emacagency" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://x.com/emacagency" target="_blank" rel="noopener">X @emacagency</a>
-          <a href="https://www.youtube.com/@emacagency" target="_blank" rel="noopener">YouTube</a>
-          <a href="https://www.tiktok.com/@emacagency" target="_blank" rel="noopener">TikTok</a>
-        </div>
+        <p class="muted" style="font-size:14px">حساباتنا على المنصات قيد الإطلاق باسم <span class="lat">@emacagency</span>.</p>
       </div>
       <form id="brief" action="https://formsubmit.co/agencyemac@gmail.com" method="POST" novalidate>
         <input type="hidden" name="_subject" value="طلب حملة جديد من موقع إي ماك">
@@ -377,6 +374,7 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
         <label for="f-msg">عن ماذا يتحدث البحث وما هدفك من الحملة؟<textarea id="f-msg" name="Message" required></textarea></label>
         <input type="text" id="f-hp" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;inset-inline-start:0;width:1px;height:1px;opacity:0;pointer-events:none;clip-path:inset(50%)" aria-hidden="true">
         <button class="btn p" type="submit" id="f-send">أرسل رسالتك</button>
+        <p class="muted" style="font-size:13px;margin:0">نستخدم بياناتك للرد عليك فقط، ولا نشاركها مع أي جهة.</p>
         <p class="ok" id="err" hidden></p>
         <div class="out" id="out" hidden>
           <p class="ok" id="sent">وصلتنا رسالتك، وسنرد عليك على بريدك خلال 48 ساعة.</p>
@@ -463,7 +461,12 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
   document.getElementById('done-ok').addEventListener('click', hideDone);
   done.addEventListener('click', e => { if (e.target === done) hideDone(); });
   addEventListener('keydown', e => { if (e.key === 'Escape' && !done.hidden) hideDone(); });
-  if (new URLSearchParams(location.search).get('sent')) { history.replaceState(null, '', location.pathname + '#contact'); showDone(); }
+  if (new URLSearchParams(location.search).get('sent')) {
+    document.getElementById('intro')?.remove();
+    history.replaceState(null, '', location.pathname + '#contact');
+    try { ac = new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch {}
+    showDone();
+  }
   const f = document.getElementById('brief');
   f.addEventListener('submit', e => {
     e.preventDefault();
@@ -482,17 +485,12 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     err.hidden = true;
     const btn = document.getElementById('f-send');
     btn.disabled = true; btn.textContent = 'جارٍ الإرسال…';
-    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch {}
-    const data = new FormData(f);
-    if (HOOK && !data.get('_honey')) fetch(HOOK, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ email: v('f-mail'), name: v('f-name') }) }).catch(() => {});
-    const reset = () => { btn.disabled = false; btn.textContent = 'أرسل رسالتك'; };
-    fetch('https://formsubmit.co/ajax/agencyemac@gmail.com', { method: 'POST', headers: { Accept: 'application/json' }, body: data })
-      .then(r => r.json())
-      .then(j => {
-        if (String(j.success) !== 'true') throw 0;
-        reset(); f.reset(); showDone();
-      })
-      .catch(() => { f.submit(); setTimeout(reset, 12000); });
+    // Plain POST to FormSubmit: the proven path; it returns to ?sent=1 and the overlay shows there.
+    if (HOOK && !document.getElementById('f-hp').value) {
+      try { navigator.sendBeacon(HOOK, new URLSearchParams({ email: v('f-mail'), name: v('f-name') })); } catch {}
+    }
+    f.submit();
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'أرسل رسالتك'; }, 12000);
   });
   addEventListener('pageshow', () => { const btn = document.getElementById('f-send'); btn.disabled = false; btn.textContent = 'أرسل رسالتك'; });
 })();
@@ -501,7 +499,13 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"}}</script>
 <script type="module">
   const h = document.getElementById('hero3d');
-  import('./hero3d.js').then(() => h.closest('.hero').classList.add('has3d')).catch(() => h.remove());
+  const net = navigator.connection || {};
+  if (net.saveData || /(^|-)2g|3g/.test(net.effectiveType || '')) h.remove();
+  else {
+    const go = () => import('./hero3d.js').then(() => h.closest('.hero').classList.add('has3d')).catch(() => h.remove());
+    const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 300));
+    document.readyState === 'complete' ? idle() : addEventListener('load', idle, { once: true });
+  }
 </script>
 </body>
 </html>
