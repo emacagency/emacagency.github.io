@@ -61,10 +61,7 @@
       <h1>مدينة كاملة داخل الخلية</h1>
       <p class="dek">في كل واحدة من تريليونات الخلايا في جسمك مصانع للطاقة، ومكتبة جينية، وشبكة طرق، وخطوط إنتاج للبروتين. جولة هولوغرامية في الداخل، مع أحدث ما كشفته أدوات التصوير والذكاء الاصطناعي.</p>
       <div class="a-meta"><span>6 دقائق قراءة</span><span>آخر تحديث للبيانات: 2024</span><span>5 مصادر</span></div>
-      <div class="a-listen" data-src="audio/cell-abdullah.mp3" hidden>
-        <span class="a-listen-l">استمع للمقال بصوت معلّق إيماك</span>
-        <audio controls preload="none"></audio>
-      </div>
+      <div class="a-listen" data-src="audio/cell.mp3" hidden><span class="a-listen-l">استمع للمقال بصوت معلّق إيماك</span><audio controls preload="none"></audio></div>
     </div>
     <div><div class="holo" id="h-cell" data-holo="cell">
   <div class="hud"><span>EUKARYOTIC CELL · ≈ 20 µm</span><span>37 °C · pH 7.2</span></div>
@@ -171,11 +168,5 @@
   </div>
 </footer>
 <script type="module" src="research.js"></script>
-<script>
-document.querySelectorAll('.a-listen').forEach(function(el){
-  var src=el.getAttribute('data-src');
-  fetch(src,{method:'HEAD'}).then(function(r){if(r.ok){el.querySelector('audio').src=src;el.hidden=false;}}).catch(function(){});
-});
-</script>
 </body>
 </html>

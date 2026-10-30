@@ -258,3 +258,11 @@ if (fl) {
   const h = location.hash.slice(1);
   if (h && fl.querySelector(`[data-c="${h}"]`)) set(h);
 }
+
+// Narrated article: the player shows only once research/audio/<slug>.mp3 has been published.
+for (const el of document.querySelectorAll('.a-listen')) {
+  const src = el.dataset.src;
+  fetch(src, { method: 'HEAD' }).then(r => {
+    if (r.ok) { el.querySelector('audio').src = src; el.hidden = false; }
+  }).catch(() => {});
+}
