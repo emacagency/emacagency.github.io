@@ -1,0 +1,80 @@
+<!--{
+ "title": "أين توجد المياه العذبة على الأرض؟",
+ "dek": "لا تتجاوز المياه العذبة 2.5% من ماء الكوكب، ومعظمها متجمد. خريطة تفاعلية لنصيب الفرد من الموارد المائية المتجددة في كل دولة، ولماذا تقع المنطقة العربية في قلب الندرة.",
+ "cat": "water",
+ "read": 5,
+ "data": "2.5% fresh · 2.1B",
+ "has": ["خريطة تفاعلية", "هولوغرام بيانات"],
+ "date": "2026-10-30",
+ "updated": "أغسطس 2025",
+ "sources": [
+  ["USGS Water Science School: How much water is there on Earth? (عن Shiklomanov 1993)", "https://www.usgs.gov/water-science-school/science/how-much-water-there-earth"],
+  ["FAO AQUASTAT / World Bank، عبر Our World in Data: Renewable internal freshwater resources per capita", "https://ourworldindata.org/grapher/renewable-water-resources-per-capita"],
+  ["WHO / UNICEF JMP: 1 in 4 people globally still lack access to safe drinking water (أغسطس 2025)", "https://www.unicef.org/press-releases/fast-facts-1-4-people-globally-still-lack-access-safe-drinking-water-who-unicef"],
+  ["FAO AQUASTAT", "https://www.fao.org/aquastat/en/"]
+ ]
+}-->
+<!--hero-->
+<div class="holo" id="h-water" data-holo="earth" data-ind="water">
+  <div class="hud"><span>DATA GLOBE · FRESHWATER / CAPITA</span><span>2022</span></div>
+  <div class="fallback"><svg viewBox="0 0 320 320" width="70%" aria-hidden="true"><circle cx="160" cy="160" r="120" fill="none" stroke="#55a5d1" stroke-opacity=".5"/></svg></div>
+  <div class="hint">ارتفاع كل عمود نصيب الفرد من المياه المتجددة (مقياس لوغاريتمي) · اسحب للتدوير</div>
+</div>
+<!--/hero-->
+
+<p>تغطي المياه أكثر من 70% من سطح الأرض، لكن المحيطات وحدها تحمل نحو <strong>96.5%</strong> منها. أما المياه العذبة فلا تتجاوز قرابة <strong>2.5%</strong>، وأكثر من ثلثيها محبوس في الجليد والثلوج الدائمة.</p>
+
+<figure class="fig wide reveal">
+  <div class="stage diagram">
+    <div class="fig-head"><h3>كل ماء الأرض في عمود واحد</h3><span class="sub">USGS عن Shiklomanov (1993)</span></div>
+    <svg viewBox="0 0 960 300" role="img" aria-label="توزيع المياه: 96.5 بالمئة محيطات، والمياه العذبة 2.5 بالمئة منها 68.7 بالمئة جليد و30.1 بالمئة مياه جوفية و1.2 بالمئة مياه سطحية وغيرها">
+      <rect x="40" y="40" width="200" height="220" rx="6" fill="#003d5b"/>
+      <rect x="40" y="40" width="200" height="8" fill="#87c3e7"/>
+      <rect x="40" y="48" width="200" height="4" fill="#55a5d1"/>
+      <text x="140" y="160" text-anchor="middle" fill="#bae1f9" font-size="22" font-family="IBM Plex Mono">96.5%</text>
+      <text x="140" y="186" text-anchor="middle" fill="#bae1f9" font-size="15">محيطات وبحار</text>
+      <path d="M240 40 L420 40 L420 260 L240 52 Z" fill="rgba(159,220,235,.06)"/>
+      <line x1="240" y1="40" x2="420" y2="40" stroke="#9FDCEB" stroke-opacity=".4"/><line x1="240" y1="52" x2="420" y2="260" stroke="#9FDCEB" stroke-opacity=".4"/>
+      <text x="140" y="30" text-anchor="middle" fill="#9AA3B5" font-size="13">الملح الآخر في البحيرات والمياه الجوفية المالحة ≈ 1%</text>
+      <rect x="420" y="40" width="160" height="151" fill="#87c3e7"/>
+      <rect x="420" y="193" width="160" height="64" fill="#2584b2"/>
+      <rect x="420" y="259" width="160" height="2" fill="#F2C46B"/>
+      <g font-size="15" fill="#0B0D15" text-anchor="middle"><text x="500" y="112">جليد وثلوج دائمة</text><text x="500" y="136" font-family="IBM Plex Mono">68.7%</text></g>
+      <g font-size="15" fill="#E9EEF4" text-anchor="middle"><text x="500" y="222">مياه جوفية</text><text x="500" y="244" font-family="IBM Plex Mono">30.1%</text></g>
+      <text x="500" y="28" text-anchor="middle" fill="#E9EEF4" font-size="15">المياه العذبة ≈ 2.5% من الإجمالي</text>
+      <line x1="580" y1="260" x2="640" y2="260" stroke="#F2C46B"/>
+      <g transform="translate(650 200)" font-size="15" fill="#E9EEF4">
+        <text x="0" y="0"><tspan fill="#F2C46B">◼</tspan> البحيرات والأنهار والمستنقعات والتربة: نحو 1.2%</text>
+        <text x="0" y="26" fill="#9AA3B5" font-size="13">الأنهار وحدها 0.006% من المياه العذبة</text>
+        <text x="0" y="46" fill="#9AA3B5" font-size="13">وهي ما نشرب منه ونزرع به غالبًا</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption>نسب تقريبية من تقدير واحد شائع الاستخدام، وقد تختلف قليلًا بين المصادر.</figcaption>
+</figure>
+
+<h2>نصيب كل فرد من الماء</h2>
+<p>يقيس علماء المياه الندرة غالبًا بمؤشر فالكنمارك: إذا قلّ نصيب الفرد من الموارد المتجددة عن <strong>1,700 م³</strong> سنويًا فالبلد في «إجهاد مائي»، وتحت <strong>1,000 م³</strong> «ندرة»، وتحت <strong>500 م³</strong> «ندرة مطلقة». ألوان الخريطة مبنية على هذه العتبات.</p>
+
+<figure class="fig wide reveal" data-map="water" data-sub="1">
+  <div class="stage"><div class="fig-head"><div><h3>الموارد الداخلية المتجددة من المياه العذبة للفرد</h3><span class="sub"></span></div></div></div>
+  <figcaption>«الداخلية» تعني الأمطار والأنهار والمياه الجوفية التي تتولد داخل حدود الدولة، ولا تشمل مياه الأنهار القادمة من دول أخرى. لهذا تظهر مصر بأقل من 10 م³ للفرد رغم نهر النيل، لأن مياهه تأتي من خارج حدودها. <span class="src">المصدر: FAO AQUASTAT عبر البنك الدولي و Our World in Data، 2022.</span></figcaption>
+</figure>
+
+<p>المنطقة العربية هي الأشد ندرة في العالم: الكويت بلا موارد داخلية متجددة تقريبًا، والبحرين نحو 3 م³ للفرد، والإمارات 15، وقطر 21، واليمن 55، والأردن 61، والسعودية 75. في المقابل يتجاوز نصيب الفرد في كندا 73 ألف م³، وفي آيسلندا 445 ألفًا.</p>
+
+<div class="stats">
+  <div class="stat"><b data-to="2.1" data-suf=" B">2.1 B</b><span>شخص بلا مياه شرب مُدارة بأمان (2024)</span></div>
+  <div class="stat"><b data-to="106" data-suf=" M">106 M</b><span>يشربون مباشرة من مياه سطحية غير معالجة</span></div>
+  <div class="stat"><b data-to="3.4" data-suf=" B">3.4 B</b><span>بلا صرف صحي مُدار بأمان</span></div>
+  <div class="stat"><b data-to="70" data-pre="≈ " data-suf="%">≈ 70%</b><span>من سحب المياه العذبة عالميًا يذهب إلى الزراعة</span></div>
+</div>
+
+<h2>كيف تعيش الدول الجافة؟</h2>
+<ul>
+  <li><strong>تحلية مياه البحر:</strong> مصدر رئيسي لمياه الشرب في الخليج، لكنها تستهلك طاقة كبيرة وتنتج محلولًا ملحيًا مركّزًا.</li>
+  <li><strong>المياه الجوفية الأحفورية:</strong> مخزونات تراكمت قبل آلاف السنين ولا تتجدد تقريبًا، فاستنزافها لا يعوَّض.</li>
+  <li><strong>المياه «الافتراضية»:</strong> استيراد الغذاء يعني عمليًا استيراد الماء الذي استُخدم في زراعته.</li>
+  <li><strong>إعادة الاستخدام:</strong> معالجة مياه الصرف لإعادتها إلى الزراعة والصناعة، وأحيانًا إلى الشرب.</li>
+</ul>
+<p>نعرض هذه الحلول بالتفصيل، ومعها نموذج هولوغرامي لغشاء التحلية، في مقال <a href="water-sustainability.html">تصاميم استدامة المياه</a>.</p>

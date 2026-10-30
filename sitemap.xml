@@ -2,4 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://emacagency.github.io/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://emacagency.github.io/en.html</loc></url>
+  <url><loc>https://emacagency.github.io/research/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://emacagency.github.io/research/mars.html</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://emacagency.github.io/research/cell.html</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://emacagency.github.io/research/climate-carbon.html</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://emacagency.github.io/research/food-security.html</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://emacagency.github.io/research/freshwater.html</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://emacagency.github.io/research/disease-map.html</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://emacagency.github.io/research/water-sustainability.html</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://emacagency.github.io/research/alternative-energy.html</loc><lastmod>2026-10-30</lastmod></url>
 </urlset>

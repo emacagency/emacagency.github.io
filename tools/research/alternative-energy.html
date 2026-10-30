@@ -1,0 +1,71 @@
+<!--{
+ "title": "علوم الطاقة البديلة: من الخلية الشمسية إلى نجم في قارورة",
+ "dek": "في 2025 أنتجت الشمس كهرباء أكثر من الرياح لأول مرة، وصار ثلث كهرباء العالم متجددًا. كيف تعمل هذه التقنيات علميًا، وأين وصل حلم الاندماج النووي؟ مع نموذج هولوغرامي لمفاعل توكاماك.",
+ "cat": "energy",
+ "read": 7,
+ "data": "33.8% · 2,779 TWh solar",
+ "has": ["هولوغرام تفاعلي", "خريطة", "رسوم بيانية"],
+ "date": "2026-10-30",
+ "updated": "2025",
+ "sources": [
+  ["Ember و Energy Institute، عبر Our World in Data: Energy dataset", "https://github.com/owid/energy-data"],
+  ["IRENA: Renewable Power Generation Costs in 2024", "https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2025/Jul/IRENA_TEC_RPGC_in_2024_2025.pdf"],
+  ["Enerdata: 91% of utility-scale renewable projects were cheaper than thermal in 2024", "https://www.enerdata.net/publications/daily-energy-news/91-utility-scale-renewable-projects-were-cheaper-thermal-2024.html"],
+  ["Lawrence Livermore National Laboratory: National Ignition Facility", "https://lasers.llnl.gov/"],
+  ["ITER: What is ITER?", "https://www.iter.org/"]
+ ]
+}-->
+<!--hero-->
+<div class="holo" id="h-fusion" data-holo="energy">
+  <div class="hud"><span>TOKAMAK · D + T → He + n</span><span>150,000,000 K</span></div>
+  <div class="fallback"><svg viewBox="0 0 320 200" width="90%" aria-hidden="true"><ellipse cx="160" cy="100" rx="104" ry="42" fill="none" stroke="#9FDCEB" stroke-opacity=".5"/><ellipse cx="160" cy="100" rx="87" ry="33" fill="none" stroke="#F49FAC" stroke-width="3"/></svg></div>
+  <div class="hint">اسحب لتدوير المفاعل · اختر جزءًا لإبرازه</div>
+</div>
+<div class="hotspots" data-for="h-fusion" role="group" aria-label="أجزاء مفاعل التوكاماك">
+  <button type="button" aria-pressed="false" data-info="غاز من نظيري الهيدروجين، الديوتيريوم والتريتيوم، يُسخَّن إلى نحو 150 مليون درجة، أي عشرة أضعاف حرارة قلب الشمس، فتندمج أنويته وتطلق الطاقة.">البلازما</button>
+  <button type="button" aria-pressed="false" data-info="مغناطيسات فائقة التوصيل تُبرَّد إلى قرب الصفر المطلق، تصنع مجالًا مغناطيسيًا يحبس البلازما في حلقة فلا تلمس الجدران.">الملفات الحلقية</button>
+  <button type="button" aria-pressed="false" data-info="ملف مركزي يولّد تيارًا كهربائيًا هائلًا داخل البلازما نفسها، فيسخّنها ويلفّ خطوط المجال حولها كالحبل.">الملف المركزي</button>
+  <button type="button" aria-pressed="false" data-info="وعاء مفرغ من الهواء على شكل كعكة. تمتص جدرانه النيوترونات السريعة الناتجة من الاندماج وتحوّلها إلى حرارة تدير التوربينات.">وعاء التفريغ</button>
+</div>
+<div class="hs-info" data-for="h-fusion">النقاط الوردية والزرقاء جسيمات بلازما تدور في مسارات حلزونية حول الحلقة.</div>
+<!--/hero-->
+
+<p>بحسب بيانات Ember ومعهد الطاقة، جاءت <strong>33.8%</strong> من كهرباء العالم في 2025 من مصادر متجددة. واللافت أن الطاقة الشمسية أنتجت <strong>2,779 تيراواط ساعة</strong> متجاوزة الرياح (2,713) لأول مرة، بعد أن كانت لا تتجاوز 256 تيراواط ساعة قبل عشر سنوات فقط.</p>
+
+<div class="stats">
+  <div class="stat"><b data-to="33.8" data-suf="%">33.8%</b><span>حصة المتجددة من كهرباء العالم (2025)</span></div>
+  <div class="stat"><b data-to="10.9" data-suf="×">10.9×</b><span>نمو الكهرباء الشمسية بين 2015 و2025</span></div>
+  <div class="stat"><b data-to="91" data-suf="%">91%</b><span>من مشاريع المتجددة الجديدة في 2024 أرخص من أرخص بديل أحفوري</span></div>
+  <div class="stat"><b data-to="0.043" data-pre="$" data-suf="/kWh">$0.043/kWh</b><span>متوسط كلفة الكهرباء من محطات الطاقة الشمسية الكبيرة (2024)</span></div>
+</div>
+
+<figure class="fig wide reveal">
+  <div class="stage"><div class="fig-head"><h3>توليد الكهرباء في العالم من الشمس والرياح والماء</h3><span class="sub">تيراواط ساعة · 2000–2025</span></div>
+  <div class="chart" data-chart="elec" data-label="ثلاثة خطوط: الشمسية ترتفع بحدة لتتجاوز الرياح في 2025، والمائية مستقرة قرب 4400 تيراواط ساعة"></div></div>
+  <figcaption>ما زال الفحم أكبر مصدر منفرد للكهرباء بنحو 10,500 تيراواط ساعة، لكن نموه توقف تقريبًا. <span class="src">المصدر: Ember و Energy Institute عبر Our World in Data.</span></figcaption>
+</figure>
+
+<h2>العلم وراء كل تقنية</h2>
+<h3>الخلية الشمسية</h3>
+<p>حين يصطدم فوتون من ضوء الشمس بذرة سيليكون، يحرر إلكترونًا. الخلية مكوّنة من طبقتين من السيليكون المطعّم بمواد مختلفة، وبينهما مجال كهربائي يدفع الإلكترونات المحررة في اتجاه واحد، فيتولد تيار. الجيل القادم يضيف فوق السيليكون طبقة من مادة <strong>البيروفسكايت</strong> تلتقط جزءًا آخر من طيف الضوء، وقد تجاوزت كفاءة هذه الخلايا المزدوجة في المختبر 33%.</p>
+<h3>توربينات الرياح</h3>
+<p>تحوّل الشفرات طاقة حركة الهواء إلى دوران، ثم يحوّل المولّد الدوران إلى كهرباء. هناك حد فيزيائي يسمى <strong>حد بيتز</strong>: لا يمكن لأي توربين أن يستخلص أكثر من 59.3% من طاقة الريح المارّة به، لأن الهواء يجب أن يواصل الحركة خلفه.</p>
+<h3>الهيدروجين الأخضر والتخزين</h3>
+<p>حين تفيض الكهرباء الشمسية ظهرًا، يمكن تخزينها في البطاريات لساعات، أو استخدامها في التحليل الكهربائي لفصل الماء إلى هيدروجين وأكسجين. الهيدروجين يُخزَّن ويُنقل ثم يُحرق أو يُستخدم في خلايا الوقود دون أن ينتج غير بخار الماء.</p>
+<h3>الاندماج النووي: نجم في قارورة</h3>
+<p>بدل شطر الذرات الثقيلة كما في المفاعلات الحالية، يدمج الاندماج أنوية الهيدروجين الخفيفة كما يحدث في الشمس. في ديسمبر 2022 حقق مرفق الإشعال الوطني في الولايات المتحدة <strong>أول إشعال</strong>: أطلق التفاعل 3.15 ميغاجول مقابل 2.05 ميغاجول من طاقة الليزر التي وصلت إلى الهدف. أما مشروع <strong>ITER</strong> الدولي في فرنسا فيبني أكبر توكاماك في العالم، وهو النوع الموضح في النموذج أعلاه، لإثبات أن الاندماج يمكن أن يعمل محطةً للطاقة.</p>
+<p class="callout">الإشعال إنجاز علمي لا محطة كهرباء بعد: الطاقة التي استهلكها الليزر نفسه من الشبكة كانت أكبر بكثير مما أنتجه التفاعل. الطريق إلى الكهرباء التجارية ما زال يُقاس بالعقود.</p>
+
+<h2>من يقود التحول؟</h2>
+<figure class="fig wide reveal" data-map="renew" data-sub="1">
+  <div class="stage"><div class="fig-head"><div><h3>حصة المصادر المتجددة من توليد الكهرباء</h3><span class="sub"></span></div></div></div>
+  <figcaption>تشمل المتجددة هنا الطاقة المائية والشمسية والرياح والحرارة الجوفية والكتلة الحيوية. أحدث سنة متاحة لكل دولة بين 2022 و2025. <span class="src">المصدر: Ember و Energy Institute عبر Our World in Data.</span></figcaption>
+</figure>
+
+<p>دول مثل آيسلندا والنرويج والباراغواي وإثيوبيا تقترب من 100% بفضل الطاقة المائية والحرارة الجوفية. وفي المنطقة العربية يتقدم المغرب والأردن بنحو 24% لكل منهما، ثم مصر بنحو 13%، بينما ما زالت الحصة دون 10% في معظم دول الخليج رغم مشاريعها الشمسية الضخمة الجديدة.</p>
+
+<figure class="fig wide reveal">
+  <div class="stage"><div class="fig-head"><h3>حصة المتجددة من كهرباء العالم</h3><span class="sub">2000–2025</span></div>
+  <div class="chart" data-chart="renewShare" data-label="خط بياني لحصة المتجددة من كهرباء العالم من نحو 18% في 2000 إلى 33.8% في 2025"></div></div>
+  <figcaption><span class="src">المصدر: Ember و Energy Institute عبر Our World in Data.</span></figcaption>
+</figure>

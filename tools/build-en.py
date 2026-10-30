@@ -17,6 +17,7 @@ T = [
  ('<meta property="og:url" content="https://emacagency.github.io/">', '<meta property="og:url" content="https://emacagency.github.io/en.html">'),
  ('direction: rtl;', 'direction: ltr;'),
  ('aria-label="EMAC الرئيسية"', 'aria-label="EMAC home"'),
+ ('>أحدث الأبحاث<', '>Research<'), ('>اقرأ أحدث الأبحاث بالخرائط والهولوغرام ←<', '>Read our latest research, with maps and holograms (Arabic) →<'),
  ('>الخدمات<', '>Services<'), ('>كيف نعمل<', '>How we work<'), ('>لمن نعمل<', '>Who we serve<'), ('>نماذج<', '>Concepts<'),
  ('<a class="lang" href="en.html" hreflang="en" lang="en">EN</a>', '<a class="lang" href="./" hreflang="ar" lang="ar">عربي</a>'),
  ('>ابدأ حملتك<', '>Start a campaign<'),
