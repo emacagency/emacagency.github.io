@@ -234,3 +234,8 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
 .prose .stage ol, .prose .stage ul { margin-top: 0; padding-inline-start: 0; }
 .prose .stage li + li { margin-top: 0; }
 .stripes, .stripes-ax { direction: ltr; }
+
+/* Narrated article player */
+.a-listen { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 18px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+.a-listen-l { font-size: .9rem; color: var(--muted); }
+.a-listen audio { flex: 1 1 240px; min-width: 0; height: 36px; }
