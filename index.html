@@ -485,12 +485,26 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
     err.hidden = true;
     const btn = document.getElementById('f-send');
     btn.disabled = true; btn.textContent = 'جارٍ الإرسال…';
-    // Plain POST to FormSubmit: the proven path; it returns to ?sent=1 and the overlay shows there.
-    if (HOOK && !document.getElementById('f-hp').value) {
-      try { navigator.sendBeacon(HOOK, new URLSearchParams({ email: v('f-mail'), name: v('f-name') })); } catch {}
-    }
-    f.submit();
-    setTimeout(() => { btn.disabled = false; btn.textContent = 'أرسل رسالتك'; }, 12000);
+    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch {}
+    const data = new FormData(f);
+    const reset = () => { btn.disabled = false; btn.textContent = 'أرسل رسالتك'; };
+    const post = (url, opts, ms) => {
+      const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+      return fetch(url, { method: 'POST', signal: c.signal, ...opts }).then(r => r.json()).finally(() => clearTimeout(t));
+    };
+    // 1) EMAC's own Google script, 2) FormSubmit, 3) the visitor's mail app: never a dead end
+    const viaHook = () => HOOK ? post(HOOK, { body: new URLSearchParams(data) }, 15000).then(j => { if (!j.ok) throw 0; }) : Promise.reject();
+    const viaFormSubmit = () => post('https://formsubmit.co/ajax/agencyemac@gmail.com', { headers: { Accept: 'application/json' }, body: data }, 12000)
+      .then(j => { if (String(j.success) !== 'true') throw 0; });
+    viaHook().catch(viaFormSubmit)
+      .then(() => { reset(); f.reset(); showDone(); })
+      .catch(() => {
+        reset();
+        const body = ['الاسم: ' + v('f-name'), 'الجهة: ' + v('f-org'), 'البريد: ' + v('f-mail'), 'نوع البحث: ' + document.getElementById('f-type').value, '', v('f-msg')].join('\n');
+        const href = 'mailto:agencyemac@gmail.com?subject=' + encodeURIComponent('طلب حملة جديد من موقع إي ماك') + '&body=' + encodeURIComponent(body);
+        err.hidden = false; err.style.color = '';
+        err.innerHTML = 'تعذّر الإرسال من الموقع الآن. <a href="' + href + '">اضغط هنا لإرسال رسالتك من بريدك</a>، وقد جهّزناها لك.';
+      });
   });
   addEventListener('pageshow', () => { const btn = document.getElementById('f-send'); btn.disabled = false; btn.textContent = 'أرسل رسالتك'; });
 })();
