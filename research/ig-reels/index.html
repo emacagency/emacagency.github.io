@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540">
+<meta name="robots" content="noindex">
+<title>EMAC Reel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Montserrat:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=block">
+<link rel="stylesheet" href="../research.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"}}</script>
+<style>
+/* One 9:16 Instagram reel frame (540x960 CSS px, rendered at 2x = 1080x1920) for a research article.
+   tools/render-reel.mjs steps reel.seek(t) frame by frame; opened in a browser it plays with its audio. */
+html, body { margin: 0; background: #0B0D15; }
+body { width: 540px; height: 960px; overflow: hidden; position: relative; color: #E9EEF4; font-family: var(--f-ar); direction: rtl; }
+.bg { position: absolute; inset: 0; background: radial-gradient(70% 40% at 50% 42%, rgba(159,220,235,.13), transparent 70%), radial-gradient(60% 30% at 50% 100%, rgba(185,166,242,.10), transparent 70%), #0B0D15; }
+.grid { position: absolute; inset: 0; background: linear-gradient(rgba(159,220,235,.05) 1px, transparent 1px) 0 0 / 100% 36px, linear-gradient(90deg, rgba(159,220,235,.05) 1px, transparent 1px) 0 0 / 36px 100%; mask-image: radial-gradient(70% 55% at 50% 45%, #000, transparent); }
+.top { position: absolute; top: 46px; inset-inline: 28px; display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 10px; direction: ltr; }
+.brand svg { width: 30px; height: 20px; fill: url(#steelG); }
+.brand b { font: 600 15px var(--f-lat); letter-spacing: .5em; color: #DCE1E6; }
+.chip { font-size: 13px; font-weight: 600; color: #0B0D15; background: #9FDCEB; padding: 3px 12px; border-radius: 99px; }
+h1 { position: absolute; top: 92px; inset-inline: 28px; margin: 0; font-size: 33px; line-height: 1.3; font-weight: 700; text-wrap: balance; }
+h1 small { display: block; font: 500 11px var(--f-lat); letter-spacing: .3em; color: #9FDCEB; margin-bottom: 6px; direction: ltr; text-align: right; }
+.stage { position: absolute; top: 170px; left: 0; width: 540px; height: 540px; transform-origin: 50% 50%; -webkit-mask-image: linear-gradient(transparent, #000 9%, #000 86%, transparent); mask-image: linear-gradient(transparent, #000 9%, #000 86%, transparent); }
+.stage .holo { max-height: none; height: 100%; border: 0; border-radius: 0; background: transparent; cursor: default; }
+.stage .holo .hud { font-size: 10px; inset: 40px 28px auto; }
+.stage .hotspots, .stage .hint { display: none; }
+.card { position: absolute; top: 600px; inset-inline: 28px; padding: 14px 18px; border: 1px solid rgba(159,220,235,.35); border-radius: 12px; background: rgba(11,13,21,.72); backdrop-filter: blur(8px); opacity: 0; transform: translateY(12px); }
+.card b { display: block; font: 700 30px/1.25 var(--f-ar); color: #9FDCEB; unicode-bidi: plaintext; text-align: right; }
+.card span { display: block; font-size: 16px; color: #C9D2DD; margin-top: 2px; }
+.cap { position: absolute; top: 718px; inset-inline: 24px; min-height: 96px; text-align: center; font-size: 29px; line-height: 1.45; font-weight: 700; text-shadow: 0 2px 12px rgba(0,0,0,.8); }
+.cap i { font-style: normal; color: rgba(233,238,244,.45); }
+.cap i.on { color: #fff; }
+.cap i.now { color: #9FDCEB; }
+.foot { position: absolute; top: 832px; inset-inline: 28px; display: flex; justify-content: space-between; font: 500 12px var(--f-lat); color: #9AA3B5; direction: ltr; letter-spacing: .06em; }
+.bar { position: absolute; top: 822px; inset-inline: 28px; height: 2px; background: rgba(159,220,235,.15); }
+.bar div { height: 100%; width: 0; background: #9FDCEB; }
+.end { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 18px; background: radial-gradient(60% 40% at 50% 45%, rgba(159,220,235,.16), transparent 70%), #0B0D15; opacity: 0; }
+.end svg { width: 120px; height: 82px; margin: 0 auto; fill: url(#steelG); }
+.end .wm { font: 600 30px var(--f-lat); letter-spacing: .5em; margin-inline-end: -.5em; color: #E4E8EC; direction: ltr; }
+.end p { margin: 0; font-size: 30px; font-weight: 700; }
+.end .url { font: 500 16px var(--f-lat); color: #9FDCEB; direction: ltr; letter-spacing: .04em; }
+.end .go { font-size: 17px; color: #C9D2DD; font-weight: 500; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="steelG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D3D7DB"/><stop offset=".46" stop-color="#B4BAC0"/><stop offset=".54" stop-color="#9CA3AA"/><stop offset="1" stop-color="#C4C9CE"/></linearGradient></defs>
+  <symbol id="mk" viewBox="-12 -105 525 355"><g transform="rotate(-45)"><rect x="0" y="0" width="132" height="96" rx="20"/><rect x="0" y="120" width="252" height="96" rx="20"/><rect x="0" y="240" width="372" height="96" rx="20"/></g></symbol>
+</svg>
+<div class="bg"></div><div class="grid"></div>
+<div class="top"><div class="brand"><svg viewBox="-12 -105 525 355"><use href="#mk"/></svg><b>EMAC</b></div><span class="chip" id="cat"></span></div>
+<h1><small>EMAC RESEARCH</small><span id="title"></span></h1>
+<div class="stage" id="stage"><div class="holo" id="h-reel"><div class="hud"></div></div><div class="hotspots" data-for="h-reel"></div></div>
+<div class="card" id="card"><b></b><span></span></div>
+<div class="cap" id="cap"></div>
+<div class="bar"><div id="bar"></div></div>
+<div class="foot"><span>emacagency.github.io</span><span>@emacagency</span></div>
+<div class="end" id="end"><svg viewBox="-12 -105 525 355"><use href="#mk"/></svg><div class="wm">EMAC</div><p>العلم، كما لم تره من قبل</p><div class="go">المقال كاملًا مع الهولوغرام التفاعلي</div><div class="url">emacagency.github.io/research</div></div>
+<script type="module">
+const slug = location.search.slice(1) || 'cell';
+const R = await (await fetch(`${slug}.json`)).json();
+const $ = id => document.getElementById(id);
+$('title').textContent = R.title; $('cat').textContent = R.category;
+document.querySelector('.hud').innerHTML = R.hud.map(s => `<span>${s}</span>`).join('');
+
+// hologram: the article's own scene, focused through its hotspot buttons
+const holo = $('h-reel'), hs = document.querySelector('.hotspots');
+hs.innerHTML = '<button></button>'.repeat(6);
+const { mount } = await import('../holo.js');
+holo.dataset.holo = R.holo;
+await mount(holo);
+let focus = -1;
+function setFocus(i) {
+  if (i === focus) return;
+  const b = hs.children[i < 0 ? focus : i]; focus = i; b.click();
+  // keep it turning while a part is lit
+  holo.dispatchEvent(new PointerEvent('pointerdown', { clientX: 0, clientY: 0 })); dispatchEvent(new PointerEvent('pointerup'));
+}
+
+// captions: at most six words on screen, the spoken one lit
+const chunks = [];
+R.lines.forEach(l => { const n = Math.ceil(l.words.length / 6), k = Math.ceil(l.words.length / n);
+  for (let i = 0; i < l.words.length; i += k) { const w = l.words.slice(i, i + k), next = l.words[i + k];
+    chunks.push({ a: w[0].t, b: next ? next.t : l.b + .25, words: w }); } });
+const ease = x => 1 - Math.pow(1 - Math.max(0, Math.min(1, x)), 3);
+let shown = null, beatShown = null;
+const beatAt = t => { let cur = null; for (const b of R.beats) if (R.lines[b.at].a - .15 <= t) cur = b; return cur; };
+
+window.reel = { duration: R.duration + 1.2, seek(t) {
+  // gentle push-in on the hologram
+  $('stage').style.transform = `scale(${1 + .06 * t / R.duration})`;
+  $('bar').style.width = `${Math.min(100, 100 * t / R.duration)}%`;
+  const c = chunks.find(c => t >= c.a - .05 && t < c.b);
+  if (c !== shown) { shown = c; $('cap').innerHTML = c ? c.words.map(w => `<i>${w.w}</i>`).join(' ') : ''; }
+  if (c) [...$('cap').children].forEach((el, i) => { const on = t >= c.words[i].t - .05; el.className = on ? (i === c.words.findLastIndex(w => t >= w.t - .05) ? 'now' : 'on') : ''; });
+  const b = beatAt(t);
+  if (b && b.focus !== undefined) setFocus(b.focus);
+  const card = $('card'), withText = b && b.big ? b : null;
+  if (withText !== beatShown) { beatShown = withText; if (withText) { card.firstElementChild.textContent = b.big; card.lastElementChild.textContent = b.small; } }
+  const since = withText ? t - (R.lines[b.at].a - .15) : 0;
+  card.style.opacity = withText ? ease(since / .35) : 0; card.style.transform = `translateY(${12 * (1 - ease(since / .35))}px)`;
+  const endB = R.beats.find(b => b.end), e = endB ? ease((t - R.lines[endB.at].a + .3) / .6) : 0;
+  $('end').style.opacity = e;
+} };
+window.reel.seek(0);
+document.fonts.ready.then(() => { document.body.dataset.ready = '1'; });
+
+// opened in a browser (not by the renderer): click to play with the narration
+if (!navigator.webdriver) {
+  const audio = new Audio(`../audio/${R.article}.mp3`);
+  addEventListener('click', () => { audio.currentTime = 0; audio.play(); });
+  (function tick() { window.reel.seek(audio.currentTime); requestAnimationFrame(tick); })();
+}
+</script>
+</body>
+</html>
