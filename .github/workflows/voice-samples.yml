@@ -1,0 +1,24 @@
+name: Voice samples
+
+on:
+  push:
+    paths: ["tools/voice-samples.py"]
+
+permissions:
+  contents: write
+
+jobs:
+  samples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install edge-tts==7.3.1
+      - run: python tools/voice-samples.py
+      - run: |
+          git config user.name "emac-narrator"
+          git config user.email "actions@users.noreply.github.com"
+          git add research/audio/samples
+          git diff --cached --quiet || (git commit -m "Add voice samples" && git push)
