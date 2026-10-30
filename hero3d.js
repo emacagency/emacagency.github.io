@@ -217,7 +217,7 @@ function resize() {
   const wide = w > 820;
   camera.fov = wide ? 30 : 34;
   // on wide screens move the figure into the left column; RTL text stays on the right
-  if (wide) camera.setViewOffset(w, h, w * .27, 0, w, h); else camera.clearViewOffset();
+  if (wide) camera.setViewOffset(w, h, w * .27 * (document.dir === 'ltr' ? -1 : 1), 0, w, h); else camera.clearViewOffset();
   camera.updateProjectionMatrix();
 }
 addEventListener('resize', resize); resize();

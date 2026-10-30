@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+"""Build en.html from index.html. Run after every change to index.html:  python3 tools/build-en.py"""
+import pathlib, re, sys
+root = pathlib.Path(__file__).resolve().parent.parent
+s = (root / 'index.html').read_text()
+
+T = [
+ ('<html lang="ar" dir="rtl">', '<html lang="en" dir="ltr">'),
+ ('<title>إي ماك EMAC | ترويج وإدارة حملات الأبحاث العلمية والطبية والتقنية</title>', '<title>EMAC | Campaigns for scientific, medical and technology research</title>'),
+ ('content="إي ماك EMAC: وكالة ترويج وإدارة حملات رقمية للأبحاث العلمية والطبية والتقنية. تجسيد النظريات، تصوير علمي ثلاثي الأبعاد، واستعراض تقنيات المستقبل."',
+  'content="EMAC is a digital campaign agency for scientific, medical and technology research: theories made visual, 3D scientific imagery and future technology showcases."'),
+ ('<meta property="og:site_name" content="EMAC إي ماك">', '<meta property="og:site_name" content="EMAC">'),
+ ('<meta property="og:locale" content="ar_AR">', '<meta property="og:locale" content="en_US">'),
+ ('content="إي ماك EMAC | نعرض العلم كما هو"', 'content="EMAC | Science, made visible"'),
+ ('content="ترويج وإدارة حملات للأبحاث العلمية والطبية والتقنية."', 'content="Campaigns for scientific, medical and technology research."'),
+ ('<link rel="canonical" href="https://emacagency.github.io/">', '<link rel="canonical" href="https://emacagency.github.io/en.html">'),
+ ('<meta property="og:url" content="https://emacagency.github.io/">', '<meta property="og:url" content="https://emacagency.github.io/en.html">'),
+ ('direction: rtl;', 'direction: ltr;'),
+ ('aria-label="EMAC الرئيسية"', 'aria-label="EMAC home"'),
+ ('>الخدمات<', '>Services<'), ('>كيف نعمل<', '>How we work<'), ('>لمن نعمل<', '>Who we serve<'), ('>نماذج<', '>Concepts<'),
+ ('<a class="lang" href="en.html" hreflang="en" lang="en">EN</a>', '<a class="lang" href="./" hreflang="ar" lang="ar">عربي</a>'),
+ ('>ابدأ حملتك<', '>Start a campaign<'),
+ ('إي ماك حاليًا معرض أعمال لعرض أسلوبنا ونماذجنا، والخدمات قيد التفعيل قريبًا. يسعدنا تواصلك لأي استفسار.', 'EMAC is currently a showcase of our style and concepts. Services open soon, and we are happy to answer any question.'),
+ ('نعرض العلم كما هو:', 'We show science as it is:'), ('واضحًا ودقيقًا', 'clear, precise'), ('وقابلًا للتصديق.', 'and credible.'),
+ ('إي ماك وكالة ترويج وإدارة حملات رقمية للأبحاث العلمية والطبية والتقنية. نحوّل الورقة البحثية والنظرية المعقدة إلى صورة وحملة يفهمها الناس ويثقون بها.',
+  'EMAC runs digital campaigns for scientific, medical and technology research. We turn papers and complex theories into images and campaigns people understand and trust.'),
+ ('>اطلب عرض حملة<', '>Request a proposal<'), ('>استكشف خدماتنا<', '>Explore services<'),
+ ('aria-label="مثال من مشاريعنا"', 'aria-label="Example from our work"'), ('aria-label="شعار EMAC"', 'aria-label="EMAC logo"'),
+ ('من المختبر إلى الشاشة، نتولى الحملة كاملة', 'From the lab to the screen, we run the whole campaign'),
+ ('كل خدمة تبدأ من البحث نفسه: نقرأ المصدر، نتحقق من الأرقام، ثم نصمم طريقة العرض.', 'Every service starts with the research itself: we read the source, check the numbers, then design how to show it.'),
+ ('إدارة الحملات الرقمية', 'Digital campaign management'),
+ ('خطة إطلاق وإعلانات ممولة على المنصات المناسبة لجمهور البحث، مع تقارير أداء شهرية واضحة.', 'A launch plan and paid ads on the right platforms for your audience, with clear monthly reports.'),
+ ('ترويج الأبحاث الطبية', 'Medical research promotion'),
+ ('محتوى طبي يراعي أخلاقيات النشر والمراجعة، لنشر نتائج الدراسات والتجارب السريرية بثقة.', 'Medical content that respects publication and review ethics, to share study and trial results with confidence.'),
+ ('التصوير العلمي ثلاثي الأبعاد', '3D scientific imagery'),
+ ('نجسّد الخلية والجزيء والمجرة بصور ومقاطع متحركة دقيقة علميًا وجذابة بصريًا.', 'Cells, molecules and galaxies in stills and motion that are scientifically accurate and visually striking.'),
+ ('تجسيد النظريات', 'Theories made visual'),
+ ('نحوّل المعادلة والفرضية إلى قصة مرئية خطوة بخطوة، يفهمها غير المتخصص دون تبسيط مخلّ.', 'We turn equations and hypotheses into step-by-step visual stories that non-specialists follow without oversimplifying.'),
+ ('استعراض المستقبل', 'Future showcases'),
+ ('تصور بصري لتقنيات الغد ومفاهيم الخيال العلمي القائمة على أبحاث حقيقية، للمعارض والعروض الكبرى.', 'Visions of tomorrow\'s technology grounded in real research, for exhibitions and keynotes.'),
+ ('المحتوى والحسابات', 'Content and channels'),
+ ('إدارة حسابات المختبرات والمؤسسات البحثية، ومقاطع قصيرة وملخصات مرئية لكل ورقة جديدة.', 'Running channels for labs and institutes, with short videos and visual summaries for every new paper.'),
+ ('ثلاث مراحل نرافق فيها الفكرة حتى تصل إلى الناس', 'Three stages that carry an idea to people'),
+ ('هي نفسها الكتل الثلاث في شعارنا: كل مرحلة تبني على ما قبلها.', 'They are the three bars of our logo: each stage builds on the one before.'),
+ ('>فرضية<', '>Hypothesis<'), ('نفهم البحث وجمهوره، ونحدد الرسالة الواحدة التي يجب أن يتذكرها الناس.', 'We understand the research and its audience, and pick the one message people should remember.'),
+ ('قراءة المصدر ومقابلة الفريق البحثي', 'Reading the source and meeting the team'), ('خريطة الجمهور والمنصات', 'Audience and platform map'),
+ ('>بحث<', '>Research<'), ('نصمم العرض البصري ونراجع كل رقم ومصطلح مع أصحاب البحث قبل النشر.', 'We design the visuals and check every number and term with the researchers before publishing.'),
+ ('نماذج بصرية ومسودات المحتوى', 'Visual drafts and content'), ('مراجعة علمية معتمدة', 'Scientific sign-off'),
+ ('>أثر<', '>Impact<'), ('نطلق الحملة ونديرها، ونقيس الوصول والتفاعل والإشارات في الإعلام.', 'We launch and run the campaign, and measure reach, engagement and press mentions.'),
+ ('إطلاق متعدد المنصات', 'Multi-platform launch'), ('تقرير أداء وتوصيات', 'Performance report and next steps'),
+ ('نعمل مع من يصنع المعرفة', 'We work with the people who make knowledge'),
+ ('الجامعات ومراكز الأبحاث', 'Universities and research centres'), ('إبراز الأوراق المنشورة والمختبرات، وجذب التمويل والطلاب.', 'Showcasing papers and labs, and attracting funding and students.'),
+ ('الجهات الحكومية', 'Government bodies'), ('حملات توعية مبنية على البيانات، وعروض للمشاريع الوطنية.', 'Data-driven awareness campaigns and national project showcases.'),
+ ('شركات التقنية', 'Technology companies'), ('إطلاق منتجات تقنية متقدمة بلغة يفهمها السوق.', 'Launching advanced products in language the market understands.'),
+ ('القطاع الطبي والدوائي', 'Medical and pharmaceutical'), ('نشر نتائج الدراسات والابتكارات الطبية بدقة ومسؤولية.', 'Sharing study results and medical innovation accurately and responsibly.'),
+ ('نماذج من طريقة عرضنا', 'Concepts of how we present'),
+ ('داخل الخلية الحية', 'Inside the living cell'), ('جولة ثلاثية الأبعاد لشرح آلية علاج جديد لجمهور غير متخصص.', 'A 3D tour explaining how a new treatment works, for a general audience.'),
+ ('الثقب الأسود في 60 ثانية', 'A black hole in 60 seconds'), ('تجسيد نظرية النسبية العامة وأفق الحدث في مقطع قصير للمنصات.', 'General relativity and the event horizon in one short video.'),
+ ('كيف نعيش على المريخ؟', 'How do we live on Mars?'), ('سلسلة مرئية تشرح تحديات الاستيطان على الكوكب الأحمر بالأرقام.', 'A visual series on the challenges of settling the red planet, in numbers.'),
+ ('نماذج توضيحية لطريقة العرض، وليست أعمالًا منشورة لعملاء.', 'Illustrative concepts of our approach, not published client work.'),
+ ('لديك بحث يستحق أن يُرى؟', 'Have research that deserves to be seen?'),
+ ('أرسل لنا نبذة عن البحث وهدفك منه، ونرد عليك خلال 48 ساعة باقتراح أولي للحملة.', 'Tell us about the research and your goal, and we will reply within 48 hours with a first campaign idea.'),
+ ('data-copy="mail">نسخ<', 'data-copy="mail">Copy<'),
+ ('حساباتنا على المنصات قيد الإطلاق باسم', 'Our social channels are launching soon as'),
+ ('>الاسم<', '>Name<'), ('>الجهة<', '>Organization<'), ('placeholder="جامعة، مركز أبحاث، شركة"', 'placeholder="University, research centre, company"'),
+ ('>البريد الإلكتروني<', '>Email<'), ('نوع البحث\n', 'Research type\n'),
+ ('<option>علمي</option><option>طبي</option><option>تقني</option><option>استعراض مستقبلي</option>', '<option>Scientific</option><option>Medical</option><option>Technology</option><option>Future showcase</option>'),
+ ('عن ماذا يتحدث البحث وما هدفك من الحملة؟', 'What is the research about, and what is your campaign goal?'),
+ ('أرسل رسالتك', 'Send message'),
+ ('نستخدم بياناتك للرد عليك فقط، ولا نشاركها مع أي جهة.', 'We use your details only to reply to you, and never share them.'),
+ ('وصلتنا رسالتك، وسنرد عليك على بريدك خلال 48 ساعة.', 'We got your message and will reply within 48 hours.'),
+ ('© 2026 إي ماك · EMAC', '© 2026 EMAC'),
+ ('>تم الإرسال<', '>Sent<'), ('وصلت رسالتك إلى إي ماك.', 'Your message reached EMAC.'), ('شكرًا لك، سنرد عليك خلال 48 ساعة.', 'Thank you, we will reply within 48 hours.'), ('>حسنًا<', '>OK<'),
+ ("'تم النسخ'", "'Copied'"), ("'اضغط نسخ الآن'", "'Press copy now'"),
+ ("miss.push('الاسم')", "miss.push('your name')"), ("miss.push('بريد إلكتروني صحيح')", "miss.push('a valid email')"), ("miss.push('نبذة عن البحث')", "miss.push('a note about the research')"),
+ ("'ينقص: ' + miss.join('، ')", "'Missing: ' + miss.join(', ')"),
+ ("'جارٍ الإرسال…'", "'Sending…'"),
+ ("'الاسم: ' + v('f-name'), 'الجهة: ' + v('f-org'), 'البريد: ' + v('f-mail'), 'نوع البحث: '", "'Name: ' + v('f-name'), 'Organization: ' + v('f-org'), 'Email: ' + v('f-mail'), 'Research type: '"),
+ ("'تعذّر الإرسال من الموقع الآن. <a href=\"' + href + '\">اضغط هنا لإرسال رسالتك من بريدك</a>، وقد جهّزناها لك.'",
+  "'We could not send from the site right now. <a href=\"' + href + '\">Send it from your email instead</a>; it is already written for you.'"),
+]
+for a, b in T:
+    n = s.count(a)
+    if n == 0: sys.exit('missing: ' + a[:60])
+    s = s.replace(a, b)
+# the subject stays Arabic on purpose: EMAC's inbox and script look for it
+left = [l.strip()[:80] for l in s.split('\n') if re.search('[؀-ۿ]', l)]
+(root / 'en.html').write_text(s)
+print('en.html written; Arabic lines kept:', len(left))
+for l in left: print('  ', l)
