@@ -2,8 +2,7 @@ name: Narrate articles
 
 on:
   push:
-    branches: [main]
-    paths: ["research/narration/**"]
+    paths: ["research/narration/**", "tools/narrate.py", ".github/workflows/narrate.yml"]
   workflow_dispatch:
     inputs:
       force:
