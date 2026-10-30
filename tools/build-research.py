@@ -182,6 +182,7 @@ for i, a in enumerate(seq):
       <h1>{a['title']}</h1>
       <p class="dek">{a['dek']}</p>
       <div class="a-meta"><span>{a['read']} دقائق قراءة</span><span>آخر تحديث للبيانات: {a['updated']}</span><span>{len(a['sources'])} مصادر</span></div>
+      <div class="a-listen" data-src="audio/{a['slug']}.mp3" hidden><span class="a-listen-l">استمع للمقال بصوت معلّق إيماك</span><audio controls preload="none"></audio></div>
     </div>
     <div>{a['hero']}</div>
   </div></header>
