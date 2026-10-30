@@ -9,9 +9,12 @@ const q = new URLSearchParams(location.search).get('form');
 const FORM = FORMS.includes(q) ? q : (host.dataset.form || 'bands');
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// phones get a lighter body (18k triangles, ~165 KB) instead of the full 70k
+const SMALL = matchMedia('(max-width: 820px)').matches;
+
 function loadMesh() {
   if (window.MESH) return Promise.resolve();
-  return new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'emac-body.js'; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+  return new Promise((ok, no) => { const s = document.createElement('script'); s.src = SMALL ? 'emac-body-m.js' : 'emac-body.js'; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
 }
 
 function decode(o) {
