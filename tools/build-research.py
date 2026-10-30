@@ -128,6 +128,14 @@ FOOT = '''<section class="cta"><div class="in">
 </html>
 '''
 
+def reel(slug):
+    """Narrated vertical video for the article, if tools/make-reel.mjs has rendered one."""
+    if not (out / 'video' / f'{slug}.mp4').exists():
+        return ''
+    return (f'<section class="a-reel" aria-labelledby="reel-h"><h2 id="reel-h">شاهد المقال في دقيقة</h2>'
+            f'<video controls playsinline preload="none" poster="video/{slug}.jpg" src="video/{slug}.mp4"></video>'
+            f'<p>جولة هولوغرامية بصوت معلّق إيماك. يمكنك مشاركة الفيديو أو تنزيله.</p></section>\n  ')
+
 def card(a, lead=False):
     return f'''<a class="card{' lead-card' if lead else ''}" href="{a['slug']}.html" data-c="{a['cat']}">
   <div class="vis">{svg(a['slug'])}</div>
@@ -189,7 +197,7 @@ for i, a in enumerate(seq):
   <article class="in"><div class="prose">
 {a['body'].strip()}
   </div>
-  <section class="sources" aria-labelledby="src-h"><h2 id="src-h">المصادر</h2><ol>{srcs}</ol>
+  {reel(a['slug'])}<section class="sources" aria-labelledby="src-h"><h2 id="src-h">المصادر</h2><ol>{srcs}</ol>
   <p style="margin-top:14px">الأرقام منقولة كما نشرها مصدرها، وقد تتغير مع كل إصدار جديد. المقال من إعداد فريق إي ماك لأغراض التوعية والعرض.</p></section>
   </article>
   <section class="related"><div class="in"><h2>تابع القراءة</h2><div class="grid">{''.join(card(r) for r in rel)}</div></div></section>

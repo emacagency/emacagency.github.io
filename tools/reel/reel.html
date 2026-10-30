@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<meta charset="utf-8">
+<title>EMAC reel</title>
+<!-- 1080x1920 reel stage, stepped frame by frame by tools/make-reel.py through window.__reel. -->
+<script type="importmap">{"imports":{"three":"./three.module.js"}}</script>
+<style>
+@font-face { font-family: Plex; src: url(fonts/arabic-600.woff2) format("woff2"); font-weight: 600; unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: Plex; src: url(fonts/latin-600.woff2) format("woff2"); font-weight: 600; }
+@font-face { font-family: Plex; src: url(fonts/arabic-400.woff2) format("woff2"); font-weight: 400; unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: Plex; src: url(fonts/latin-400.woff2) format("woff2"); font-weight: 400; }
+:root { --bg: #07090F; --holo: #9FDCEB; --fg: #F5F4F8; --muted: #9AA3B5; --stage: #0B0D15; --stage-line: #232838; --f-mono: ui-monospace, monospace; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); color: var(--fg); font-family: Plex, sans-serif; }
+body { background: radial-gradient(70% 40% at 50% 46%, rgba(159,220,235,.13), transparent 70%), var(--bg); }
+header { position: absolute; top: 110px; inset-inline: 80px; display: flex; justify-content: space-between; align-items: center; }
+.mark { font-weight: 600; font-size: 44px; letter-spacing: .02em; direction: ltr; }
+.mark span { color: var(--holo); }
+.cat { font-size: 30px; color: var(--holo); border: 2px solid rgba(159,220,235,.45); border-radius: 999px; padding: 6px 26px; }
+h1 { position: absolute; top: 210px; inset-inline: 80px; margin: 0; font-size: 76px; line-height: 1.25; font-weight: 600; }
+.holo { position: absolute; top: 400px; left: 40px; width: 1000px; height: 1000px; }
+.holo canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.holo .hud { position: absolute; inset: 24px 30px auto; display: flex; justify-content: space-between; font: 22px/1.4 var(--f-mono); color: rgba(159,220,235,.7); direction: ltr; letter-spacing: .08em; }
+.holo::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(159,220,235,.05) 0 1px, transparent 1px 3px); pointer-events: none; }
+.chip { position: absolute; top: 1400px; inset-inline: 0; text-align: center; font-size: 34px; color: var(--holo); opacity: 0; transition: opacity .3s; }
+.chip.on { opacity: 1; }
+.cap { position: absolute; top: 1500px; inset-inline: 70px; height: 230px; display: grid; place-items: center; text-align: center; font-size: 60px; line-height: 1.45; font-weight: 600; text-wrap: balance; text-shadow: 0 4px 24px rgba(0,0,0,.6); }
+.bar { position: absolute; bottom: 120px; inset-inline: 80px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.12); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--holo); }
+.url { position: absolute; bottom: 60px; inset-inline: 0; text-align: center; font-size: 28px; color: var(--muted); direction: ltr; }
+.outro { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 30px; background: rgba(7,9,15,.82); opacity: 0; }
+.outro b { font-size: 150px; direction: ltr; font-weight: 600; } .outro b span { color: var(--holo); }
+.outro p { margin: 0; font-size: 64px; font-weight: 600; } .outro small { font-size: 34px; color: var(--muted); direction: ltr; }
+.hotspots { display: none; }
+</style>
+<header><div class="mark">EMAC<span>.</span></div><div class="cat" id="cat"></div></header>
+<h1 id="title"></h1>
+<div class="holo" id="h-reel"><div class="hud"><span>EMAC HOLO</span><span id="hud2"></span></div></div>
+<div class="hotspots" data-for="h-reel" id="hs"></div>
+<div class="chip" id="chip"></div>
+<div class="cap" id="cap"></div>
+<div class="bar"><i id="bar"></i></div>
+<div class="url">emacagency.github.io</div>
+<div class="outro" id="outro"><b>EMAC<span>.</span></b><p>العلم، كما لم تره من قبل</p><small>emacagency.github.io</small></div>
+<script>
+// Virtual clock: the renderer asks for frames, the page only moves when __reel.step() is called.
+(() => {
+  let vt = 0, q = [];
+  performance.now = () => vt;
+  window.requestAnimationFrame = f => (q.push(f), q.length);
+  window.cancelAnimationFrame = () => {};
+  window.__reel = { t: () => vt, flush() { const c = q; q = []; c.forEach(f => f(vt)); }, advance(ms) { vt += ms; } };
+})();
+</script>
+<script type="module">
+import { mount } from './holo.js';
+const spec = await (await fetch('reel.json')).json();
+const $ = id => document.getElementById(id);
+$('title').textContent = spec.title; $('cat').textContent = spec.category;
+const holo = $('h-reel'); holo.dataset.holo = spec.holo;
+$('hs').innerHTML = Array.from({ length: 8 }, () => '<button aria-pressed="false"></button>').join('');
+await mount(holo);
+const btns = [...$('hs').children];
+let focused = -1;
+const setFocus = i => {
+  if (i === focused) return;
+  const target = i < 0 ? btns[focused] : btns[i];
+  if (target) target.click();
+  focused = i;
+};
+const dur = spec.duration;
+window.__reel.render = s => {
+  const f = [...spec.focus].reverse().find(x => x[0] <= s) || [0, -1, ''];
+  setFocus(f[1]);
+  $('chip').textContent = f[2]; $('chip').classList.toggle('on', !!f[2]);
+  const c = spec.captions.find(x => s >= x[0] && s < x[1]);
+  $('cap').textContent = c ? c[2] : '';
+  $('bar').style.width = Math.min(100, s / dur * 100) + '%';
+  $('hud2').textContent = 'T+' + s.toFixed(1).padStart(4, '0') + 's';
+  $('outro').style.opacity = Math.max(0, Math.min(1, (s - spec.outro) / .6));
+};
+window.__reel.ready = true;
+</script>
+</html>
