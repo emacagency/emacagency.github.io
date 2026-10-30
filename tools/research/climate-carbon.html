@@ -1,0 +1,80 @@
+<!--{
+ "title": "الاحتباس الحراري وبصمة كل دولة الكربونية",
+ "dek": "عام 2024 كان الأحرّ منذ بدء القياس، والانبعاثات ما زالت ترتفع. خريطة تفاعلية تُظهر من يطلق ثاني أكسيد الكربون اليوم، ومن أطلقه عبر التاريخ، ونصيب الفرد في كل دولة.",
+ "cat": "climate",
+ "read": 7,
+ "data": "+1.55 °C · 38.6 Gt CO₂",
+ "has": ["خريطة تفاعلية", "هولوغرام بيانات", "رسوم بيانية"],
+ "date": "2026-10-30",
+ "updated": "2025",
+ "sources": [
+  ["NASA GISS Surface Temperature Analysis (GISTEMP v4)، عبر datasets/global-temp", "https://data.giss.nasa.gov/gistemp/"],
+  ["WMO: 2024 warmest year on record at about 1.55°C above pre-industrial level", "https://wmo.int/news/media-centre/wmo-confirms-2024-warmest-year-record-about-155degc-above-pre-industrial-level"],
+  ["Global Carbon Budget، عبر Our World in Data: CO₂ and Greenhouse Gas Emissions dataset", "https://github.com/owid/co2-data"],
+  ["Our World in Data: CO₂ emissions", "https://ourworldindata.org/co2-emissions"]
+ ]
+}-->
+<!--hero-->
+<div class="holo" id="h-co2" data-holo="earth" data-ind="co2pc">
+  <div class="hud"><span>DATA GLOBE · CO₂ PER CAPITA</span><span>2024</span></div>
+  <div class="fallback"><svg viewBox="0 0 320 320" width="70%" aria-hidden="true"><circle cx="160" cy="160" r="120" fill="none" stroke="#9FDCEB" stroke-opacity=".5"/><ellipse cx="160" cy="160" rx="120" ry="40" fill="none" stroke="#9FDCEB" stroke-opacity=".2"/></svg></div>
+  <div class="hint">كل عمود دولة، وارتفاعه نصيب الفرد من انبعاثات CO₂ · اسحب للتدوير</div>
+</div>
+<!--/hero-->
+
+<p>أكدت المنظمة العالمية للأرصاد الجوية أن عام <strong>2024</strong> كان الأحرّ في السجل، بمتوسط يزيد نحو <strong>1.55 °م</strong> على مستوى ما قبل الثورة الصناعية. وهي المرة الأولى التي يتجاوز فيها عام كامل عتبة 1.5 °م، مع أن هدف اتفاق باريس يُقاس على متوسط عقود لا على سنة واحدة.</p>
+
+<div class="stats">
+  <div class="stat"><b data-to="1.55" data-pre="+" data-suf=" °C">+1.55 °C</b><span>متوسط 2024 فوق مستوى ما قبل الصناعة (WMO)</span></div>
+  <div class="stat"><b data-to="38.6" data-suf=" Gt">38.6 Gt</b><span>CO₂ من الوقود الأحفوري والصناعة في 2024</span></div>
+  <div class="stat"><b data-to="4.7" data-suf=" t">4.7 t</b><span>متوسط نصيب الفرد عالميًا سنويًا</span></div>
+  <div class="stat"><b data-to="6.5" data-suf="×">6.5×</b><span>حجم الانبعاثات السنوية اليوم مقارنة بعام 1950</span></div>
+</div>
+
+<h2>145 عامًا في شريط واحد</h2>
+<p>كل خط عمودي أدناه سنة واحدة منذ 1880. الأزرق أبرد من متوسط 1951–1980 والأحمر أدفأ منه. لا حاجة إلى قراءة أي رقم لترى أين نحن الآن.</p>
+
+<figure class="fig wide reveal">
+  <div class="stage"><div class="fig-head"><h3>شرائط الاحترار</h3><span class="sub">NASA GISTEMP v4 · 1880–2025</span></div><div data-chart="stripes"></div></div>
+  <figcaption>الألوان مقطوعة عند −0.5 و+1.3 °م عن متوسط 1951–1980. مرّر المؤشر فوق أي شريط لترى سنته وقيمته. <span class="src">المصدر: NASA GISS.</span></figcaption>
+</figure>
+
+<figure class="fig wide reveal">
+  <div class="stage"><div class="fig-head"><h3>انحراف متوسط حرارة سطح الأرض</h3><span class="sub">°م، مقارنة بمتوسط 1951–1980</span></div>
+  <div class="chart" data-chart="temp" data-label="خط بياني لانحراف حرارة الأرض من 1880 حتى 2025، يبلغ ذروته 1.29 درجة في 2024"></div></div>
+  <figcaption>بلغ الانحراف في سجل ناسا 1.29 °م عام 2024، ثم 1.19 °م في 2025. يختلف الرقم عن 1.55 لأن خط الأساس هنا هو 1951–1980 لا ما قبل الصناعة. <span class="src">المصدر: NASA GISTEMP v4.</span></figcaption>
+</figure>
+
+<h2>من أين يأتي الكربون؟</h2>
+<p>ارتفعت انبعاثات ثاني أكسيد الكربون العالمية من نحو <strong>6 مليارات طن</strong> عام 1950 إلى <strong>38.6 مليار طن</strong> عام 2024. معظمها من حرق الفحم والنفط والغاز، والباقي من صناعة الإسمنت وحرق الغاز المصاحب.</p>
+
+<figure class="fig wide reveal">
+  <div class="stage"><div class="fig-head"><h3>انبعاثات CO₂ العالمية السنوية</h3><span class="sub">الوقود الأحفوري والصناعة · 1900–2024</span></div>
+  <div class="chart" data-chart="co2" data-label="خط بياني لانبعاثات ثاني أكسيد الكربون العالمية من 1900 حتى 2024"></div></div>
+  <figcaption>لا تشمل الأرقام انبعاثات تغيير استخدام الأراضي مثل إزالة الغابات. <span class="src">المصدر: Global Carbon Budget عبر Our World in Data.</span></figcaption>
+</figure>
+
+<h2>خريطة البصمة الكربونية</h2>
+<p>السؤال «من المسؤول؟» له ثلاث إجابات مختلفة بحسب طريقة القياس. بدّل بين المؤشرات الثلاثة لترى كيف تتغير الصورة.</p>
+
+<figure class="fig wide reveal" data-map="co2pc,co2tot,co2cum" data-labels="للفرد|إجمالي سنوي|تاريخي منذ 1750" data-sub="1">
+  <div class="stage"><div class="fig-head"><div><h3>انبعاثات CO₂ حسب الدولة</h3><span class="sub"></span></div></div></div>
+  <figcaption>مرّر المؤشر أو المس أي دولة لترى قيمتها، واستخدم الأزرار أو اضغط Ctrl مع عجلة الفأرة للتكبير. الانبعاثات هنا «إقليمية»، أي ما يُطلق داخل حدود الدولة. <span class="src">المصدر: Global Carbon Budget عبر Our World in Data، 2024.</span></figcaption>
+</figure>
+
+<ul>
+  <li><strong>للفرد:</strong> تتصدر دول الخليج المنتجة للنفط، إذ يطلق الفرد في قطر نحو <strong>41 طنًا</strong> سنويًا، مقابل 14 طنًا في الولايات المتحدة، و8.7 في الصين، و2.2 في الهند، وأقل من 0.2 طن في إثيوبيا.</li>
+  <li><strong>إجمالًا:</strong> تطلق الصين وحدها نحو <strong>12.3 مليار طن</strong>، أي قرابة ثلث الإجمالي العالمي، تليها الولايات المتحدة ثم الهند وروسيا.</li>
+  <li><strong>تاريخيًا:</strong> الولايات المتحدة مسؤولة عن نحو <strong>23.5%</strong> من كل ما أُطلق منذ 1750، والصين عن 15.4%، والهند عن 3.6% فقط رغم أنها الأكثر سكانًا.</li>
+</ul>
+
+<h3>البصمة الإقليمية مقابل بصمة الاستهلاك</h3>
+<p>حين تشتري هاتفًا صُنع في بلد آخر، تُسجَّل انبعاثات تصنيعه على ذلك البلد. إذا أعدنا حساب الانبعاثات بحسب مكان <strong>الاستهلاك</strong> لا الإنتاج، يرتفع نصيب الفرد في المملكة المتحدة من 4.5 إلى نحو 7.1 أطنان (2023)، وينخفض نصيب الفرد في الصين من 8.6 إلى 7.6 أطنان، لأن جزءًا من مصانعها يعمل لأسواق أخرى.</p>
+
+<h2>التحديات الكبرى</h2>
+<ul>
+  <li><strong>التراكم:</strong> ثاني أكسيد الكربون يبقى في الجو قرونًا، فالحرارة تتبع إجمالي ما أطلقناه لا ما نطلقه هذا العام فقط.</li>
+  <li><strong>العدالة:</strong> أكثر الدول تضررًا من موجات الحر والجفاف هي غالبًا الأقل إسهامًا في الانبعاثات التاريخية.</li>
+  <li><strong>السرعة:</strong> انخفضت انبعاثات بعض الدول الغنية، لكن الإجمالي العالمي ما زال يرتفع ببطء بدل أن يهبط بسرعة.</li>
+</ul>
+<p class="callout">تقرأ هذه الخريطة كل جهة بطريقة مختلفة: الحكومات ترى فيها التزاماتها، والشركات بصمة سلاسل توريدها، والجمهور نصيبه الشخصي. الحملة الجيدة تختار السؤال المناسب لجمهورها.</p>

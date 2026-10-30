@@ -1,0 +1,79 @@
+<!--{
+ "title": "خريطة انتشار الأمراض في العالم",
+ "dek": "الملاريا والسل وحدهما يصيبان قرابة 300 مليون إنسان سنويًا ويقتلان نحو 1.8 مليون. خريطة تفاعلية تُظهر أين تتركز الإصابات، وما الذي تغيّر في أحدث تقارير منظمة الصحة العالمية.",
+ "cat": "health",
+ "read": 5,
+ "data": "282M malaria · 10.7M TB",
+ "has": ["خريطة تفاعلية", "هولوغرام بيانات", "دورة العدوى"],
+ "date": "2026-10-30",
+ "updated": "ديسمبر 2025",
+ "sources": [
+  ["WHO: New tools saved a million lives from malaria last year (World Malaria Report 2025)", "https://www.who.int/news/item/04-12-2025-new-tools-saved-a-million-lives-from-malaria-last-year-but-progress-under-threat-as-drug-resistance-rises"],
+  ["CIDRAP: WHO Global Tuberculosis Report 2025", "https://www.cidrap.umn.edu/tuberculosis/who-cites-progress-against-tb-globally-warns-about-reduced-funding"],
+  ["WHO، عبر Our World in Data: Incidence of malaria", "https://ourworldindata.org/grapher/incidence-of-malaria"],
+  ["WHO، عبر Our World in Data: Incidence of tuberculosis", "https://ourworldindata.org/grapher/incidence-of-tuberculosis-sdgs"]
+ ]
+}-->
+<!--hero-->
+<div class="holo" id="h-dis" data-holo="earth" data-ind="malaria">
+  <div class="hud"><span>DATA GLOBE · MALARIA INCIDENCE</span><span>2024</span></div>
+  <div class="fallback"><svg viewBox="0 0 320 320" width="70%" aria-hidden="true"><circle cx="160" cy="160" r="120" fill="none" stroke="#df7789" stroke-opacity=".5"/></svg></div>
+  <div class="hint">ارتفاع كل عمود معدل الإصابة بالملاريا · اسحب للتدوير</div>
+</div>
+<!--/hero-->
+
+<p>في تقريرها العالمي عن الملاريا لعام 2025 قدّرت منظمة الصحة العالمية <strong>282 مليون إصابة</strong> و<strong>610 آلاف وفاة</strong> في 2024، معظمها بين أطفال دون الخامسة في أفريقيا. وفي العام نفسه أصيب <strong>10.7 مليون</strong> شخص بالسل وتوفي نحو <strong>1.2 مليون</strong>، ليبقى السل أكثر الأمراض المعدية فتكًا في العالم.</p>
+
+<div class="stats">
+  <div class="stat"><b data-to="282" data-suf=" M">282 M</b><span>إصابة بالملاريا (2024)، بزيادة نحو 9 ملايين عن 2023</span></div>
+  <div class="stat"><b data-to="95" data-suf="%">95%</b><span>من وفيات الملاريا في الإقليم الأفريقي</span></div>
+  <div class="stat"><b data-to="10.7" data-suf=" M">10.7 M</b><span>إصابة جديدة بالسل (2024)</span></div>
+  <div class="stat"><b data-to="29" data-pre="−" data-suf="%">−29%</b><span>انخفاض وفيات السل منذ 2015</span></div>
+</div>
+
+<h2>خريطة الإصابات</h2>
+<p>بدّل بين المرضين لترى الفرق: الملاريا محصورة جغرافيًا حيث يعيش البعوض الناقل لها، أما السل فمنتشر في كل القارات لكنه يتركز في جنوب آسيا وجنوب شرقها وأفريقيا.</p>
+
+<figure class="fig wide reveal" data-map="malaria,tb" data-labels="الملاريا|السل" data-sub="1">
+  <div class="stage"><div class="fig-head"><div><h3>معدل الإصابة حسب الدولة</h3><span class="sub"></span></div></div></div>
+  <figcaption>الملاريا: حالات لكل 1,000 شخص من السكان المعرضين للخطر، ولذلك تظهر الدول الخالية من الملاريا بلا بيانات. السل: حالات جديدة لكل 100,000 نسمة. <span class="src">المصدر: منظمة الصحة العالمية عبر Our World in Data، 2024.</span></figcaption>
+</figure>
+
+<ul>
+  <li><strong>الملاريا:</strong> أعلى المعدلات في بنين وبوركينا فاسو ومالي وجمهورية أفريقيا الوسطى (أكثر من 340 حالة لكل ألف معرّض للخطر)، ثم الكونغو الديمقراطية وبوروندي والنيجر.</li>
+  <li><strong>السل:</strong> كيريباتي وبابوا غينيا الجديدة والفلبين تسجل أعلى المعدلات نسبةً إلى السكان، بينما تستحوذ خمس دول هي الهند وإندونيسيا والفلبين والصين وباكستان على أكثر من نصف الإصابات في العالم.</li>
+  <li><strong>إنجازات:</strong> صار عدد الدول المعتمدة خالية من الملاريا 47 دولة وإقليمًا واحدًا، منها مصر والرأس الأخضر في 2024، وجورجيا وسورينام وتيمور الشرقية في 2025.</li>
+</ul>
+
+<h2>كيف تنتقل الملاريا؟</h2>
+<figure class="fig wide reveal">
+  <div class="stage diagram">
+    <div class="fig-head"><h3>دورة طفيلي البلازموديوم</h3><span class="sub">رسم توضيحي مبسّط</span></div>
+    <svg viewBox="0 0 960 360" role="img" aria-label="دورة الملاريا: البعوضة تلدغ الإنسان، الطفيلي يتكاثر في الكبد ثم في خلايا الدم الحمراء، ثم تلتقطه بعوضة أخرى">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#9FDCEB"/></marker></defs>
+      <ellipse cx="480" cy="180" rx="300" ry="120" fill="none" stroke="#9FDCEB" stroke-opacity=".25" stroke-dasharray="4 6"/>
+      <g fill="none" stroke="#9FDCEB" stroke-width="2" marker-end="url(#ar)">
+        <path d="M262 98 Q 360 50 450 62"/><path d="M700 92 Q 770 130 772 200"/><path d="M700 280 Q 600 318 520 306"/><path d="M262 270 Q 190 230 186 170"/>
+      </g>
+      <g transform="translate(200 160)"><circle r="54" fill="#1A1F2C" stroke="#9FDCEB" stroke-opacity=".5"/><path d="M-26 6 q26-30 52 0 M-30 -4 l-16 -16 M30 -4 l16 -16 M0 -8 v-26" stroke="#E9EEF4" stroke-width="2" fill="none"/><ellipse cx="0" cy="10" rx="30" ry="9" fill="#9AA3B5"/></g>
+      <g transform="translate(520 72)"><circle r="44" fill="#1A1F2C" stroke="#F2C46B" stroke-opacity=".6"/><path d="M-26 6 q8-26 40-22 q20 4 12 26 q-14 14-52 -4z" fill="#94340a" fill-opacity=".8"/><g fill="#F2C46B"><circle cx="-6" cy="0" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="2" cy="-8" r="3"/></g></g>
+      <g transform="translate(760 250)"><circle r="54" fill="#1A1F2C" stroke="#F49FAC" stroke-opacity=".6"/><g fill="#bd5167"><circle cx="-16" cy="-10" r="14"/><circle cx="16" cy="-4" r="14"/><circle cx="-2" cy="18" r="14"/></g><g fill="#F2C46B"><circle cx="-16" cy="-10" r="3"/><circle cx="16" cy="-4" r="3"/><circle cx="-2" cy="18" r="3"/></g></g>
+      <g transform="translate(430 300)"><circle r="40" fill="#1A1F2C" stroke="#96CAA0" stroke-opacity=".6"/><g fill="#96CAA0"><path d="M-14 -4 q14-12 28 0 q-14 12 -28 0z"/></g></g>
+      <g font-size="15" fill="#E9EEF4" text-anchor="middle">
+        <text x="200" y="244">1 · لدغة بعوضة الأنوفيلة</text><text x="200" y="264" fill="#9AA3B5" font-size="13">تحقن الطفيلي في الدم</text>
+        <text x="620" y="40">2 · التكاثر في الكبد</text><text x="620" y="60" fill="#9AA3B5" font-size="13">أيام بلا أعراض</text>
+        <text x="760" y="330">3 · غزو خلايا الدم الحمراء</text><text x="760" y="350" fill="#9AA3B5" font-size="13">تبدأ الحمى والقشعريرة</text>
+        <text x="280" y="320">4 · بعوضة جديدة تلتقط الطفيلي</text><text x="280" y="340" fill="#9AA3B5" font-size="13">وتبدأ الدورة من جديد</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption>كسر أي حلقة في هذه الدورة يوقف العدوى: الناموسيات المعالجة تمنع اللدغة، والأدوية تقتل الطفيلي في الدم، واللقاحات الجديدة تهيئ مناعة الأطفال.</figcaption>
+</figure>
+
+<h2>ما الذي يهدد التقدم؟</h2>
+<ul>
+  <li><strong>مقاومة الأدوية:</strong> حذّرت المنظمة من انتشار مقاومة الطفيلي لأدوية الأرتيميسينين في شرق أفريقيا.</li>
+  <li><strong>التمويل:</strong> تراجع الدعم الدولي في 2025 يهدد برامج الوقاية والتشخيص في الدول الأفقر.</li>
+  <li><strong>المناخ:</strong> ارتفاع الحرارة وتغير الأمطار يوسّع المناطق التي يستطيع البعوض العيش فيها، ومنها مرتفعات كانت باردة عليه سابقًا.</li>
+</ul>
+<p class="callout">الخريطة أداة توعية قوية لأنها تحوّل رقمًا مجردًا مثل «282 مليونًا» إلى مكان يعرفه الناس. هذا ما تحتاجه حملات الصحة العامة: أن يرى الجمهور أين تقع المشكلة وكيف تُحل.</p>
