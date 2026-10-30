@@ -6,7 +6,7 @@ hash of each voiced text is kept in research/audio/.hashes.json.
 
 With ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID set, it uses ElevenLabs.
 Otherwise it uses Microsoft's free neural voices through edge-tts
-(EDGE_VOICE, default ar-SA-HamedNeural), which need no account.
+(EDGE_VOICE, default ar-KW-FahedNeural), which need no account.
 """
 import asyncio, hashlib, json, os, pathlib, urllib.request
 
@@ -20,7 +20,7 @@ voice = os.environ.get("ELEVENLABS_VOICE_ID")
 if key and voice:
     engine = "elevenlabs"
 else:
-    engine, voice = "edge", os.environ.get("EDGE_VOICE") or "ar-SA-HamedNeural"
+    engine, voice = "edge", os.environ.get("EDGE_VOICE") or "ar-KW-FahedNeural"
 print("engine:", engine, "voice:", voice)
 
 
@@ -39,7 +39,7 @@ def elevenlabs(text, mp3):
 
 def edge(text, mp3):
     import edge_tts
-    asyncio.run(edge_tts.Communicate(text, voice, rate="-8%").save(str(mp3)))
+    asyncio.run(edge_tts.Communicate(text, voice, rate="+6%", pitch="+3Hz").save(str(mp3)))
 
 
 OUT.mkdir(parents=True, exist_ok=True)
