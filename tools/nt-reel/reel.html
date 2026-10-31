@@ -13,8 +13,10 @@ body { position: relative; font-family: Tajawal, sans-serif; color: #fff; direct
 .grid { position: absolute; inset: 0; background: linear-gradient(rgba(80,170,255,.07) 1px, transparent 1px) 0 0 / 100% 30px, linear-gradient(90deg, rgba(80,170,255,.07) 1px, transparent 1px) 0 0 / 30px 100%; -webkit-mask-image: radial-gradient(75% 60% at 50% 45%, #000, transparent); }
 canvas { position: absolute; inset: 0; width: 540px; height: 960px; }
 .tag { position: absolute; top: 52px; right: 26px; font-weight: 500; font-size: 15px; color: #9FD4FF; letter-spacing: .02em; }
-.name { position: absolute; top: 74px; right: 26px; font-weight: 800; font-size: 40px; line-height: 1.15; text-shadow: 0 0 18px rgba(80,170,255,.55); }
-.name small { display: block; font: 500 15px Tajawal, sans-serif; color: #FF6B78; direction: ltr; text-align: right; letter-spacing: .12em; margin-top: 2px; }
+.cover { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 170px; text-align: center; background: linear-gradient(transparent 45%, rgba(4,10,24,.85) 75%); }
+.cover h1 { margin: 0; font-weight: 800; font-size: 78px; line-height: 1.05; color: #fff; text-shadow: 0 0 24px rgba(255,59,74,.85), 0 0 60px rgba(255,59,74,.45), 0 3px 4px rgba(0,0,0,.6); }
+.cover p { margin: 10px 0 0; font: 800 20px Tajawal, sans-serif; color: #FF8A94; letter-spacing: .3em; direction: ltr; }
+.cover span { margin-top: 18px; font-weight: 500; font-size: 18px; color: #BFE3FF; }
 .lab { position: absolute; left: 0; top: 0; white-space: nowrap; font-weight: 800; font-size: 19px; color: #fff; text-shadow: 0 0 10px rgba(80,170,255,.9), 0 0 2px #000; opacity: 0; }
 .lab.hot { color: #FF6B78; text-shadow: 0 0 12px rgba(255,59,74,.9), 0 0 2px #000; }
 .lab small { display: block; font: 500 12px Tajawal, sans-serif; color: #BFE3FF; direction: ltr; letter-spacing: .08em; }
@@ -34,15 +36,16 @@ svg.lines { position: absolute; inset: 0; width: 540px; height: 960px; }
 <svg class="lines" id="lines"></svg>
 <div id="labs"></div>
 <div class="tag">علم الشعور · النواقل العصبية</div>
-<div class="name" id="name"></div>
 <div class="fact" id="fact"></div>
 <div class="cap" id="cap"></div>
+<div class="cover" id="cover"><h1 id="cv-name"></h1><p id="cv-latin"></p><span>علم الشعور · النواقل العصبية</span></div>
 <script type="module">
 import * as THREE from './three.module.js';
 const slug = location.search.slice(1);
 const R = await (await fetch(`${slug}.json`)).json();
 const $ = id => document.getElementById(id);
-$('name').innerHTML = `${R.name}<small>${R.latin}</small>`;
+$('cv-name').textContent = R.name; $('cv-latin').textContent = R.latin;
+const LEAD = R.lead ?? 1.4; // seconds of cover before the narration starts
 
 // deterministic randomness
 let seed = 11; const rnd = (a = 0, b = 1) => a + (b - a) * (((seed = (seed * 16807) % 2147483647) - 1) / 2147483646);
@@ -76,32 +79,60 @@ const track = m => { m.traverse(o => o.material?.uniforms && mats.push(o.materia
 
 /* ---------- brain ---------- */
 const brain = new THREE.Group(); scene.add(brain);
+// smooth 3D value noise, used for the gyri and sulci
+const hash = (x, y, z) => { const h = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return h - Math.floor(h); };
+function vnoise(x, y, z) {
+  const X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z), u = x - X, v = y - Y, w = z - Z;
+  const f = q => q * q * (3 - 2 * q), a = f(u), b = f(v), c = f(w), L = (p, q, k) => p + (q - p) * k;
+  return L(L(L(hash(X, Y, Z), hash(X + 1, Y, Z), a), L(hash(X, Y + 1, Z), hash(X + 1, Y + 1, Z), a), b),
+           L(L(hash(X, Y, Z + 1), hash(X + 1, Y, Z + 1), a), L(hash(X, Y + 1, Z + 1), hash(X + 1, Y + 1, Z + 1), a), b), c);
+}
+// narrow grooves where the noise crosses its middle: wide rounded gyri, thin sulci
+const sulci = (x, y, z) => { let g = 0, amp = 1, fr = 5.2; for (let o = 0; o < 2; o++) { const n = vnoise(x * fr + o * 7, y * fr, z * fr); g += amp * Math.pow(1 - Math.abs(n * 2 - 1), 6); amp *= .45; fr *= 2.1; } return g; };
+// a hemisphere is the union of four lobes (local x points away from the midline)
+const LOBES = [[0, .1, -.02, .8, .55, 1.0], [0, .04, .42, .74, .5, .62], [0, .0, -.58, .64, .46, .5], [.1, -.28, .16, .66, .27, .56]];
+function rayR(d) { let best = 0;
+  for (const [cx, cy, cz, rx, ry, rz] of LOBES) { const ax = d.x / rx, ay = d.y / ry, az = d.z / rz, bx = cx / rx, by = cy / ry, bz = cz / rz;
+    const A = ax * ax + ay * ay + az * az, B = -2 * (ax * bx + ay * by + az * bz), C = bx * bx + by * by + bz * bz - 1, D = B * B - 4 * A * C;
+    if (D >= 0) best = Math.max(best, (-B + Math.sqrt(D)) / (2 * A)); }
+  return best; }
 function hemisphere(side) {
-  const g = new THREE.IcosahedronGeometry(1, 40), p = g.attributes.position, v = new THREE.Vector3();
+  const g = new THREE.IcosahedronGeometry(1, 72), p = g.attributes.position, d = new THREE.Vector3();
   for (let i = 0; i < p.count; i++) {
-    v.fromBufferAttribute(p, i);
-    // folds: ridged noise from a few rotated waves
-    const fold = Math.abs(Math.sin(v.x * 13 + v.y * 8 + Math.sin(v.z * 9) * 2.2)) * .5 + Math.abs(Math.sin(v.z * 12 - v.y * 9 + Math.cos(v.x * 8) * 2)) * .5;
-    v.multiplyScalar(1 + .07 * fold);
-    v.x *= .58; v.y *= .7; v.z *= 1.1;
-    if (v.y < 0) v.y *= .78;                         // flatter base
-    if (v.x * side < 0) v.x *= .25;                   // flat medial wall
-    if (v.y < -.15 && v.z > -.2) v.x *= 1 + .12 * Math.min(1, (-.15 - v.y) * 4); // temporal lobes bulge out
-    v.x += side * .5;
-    p.setXYZ(i, v.x, v.y, v.z);
+    d.fromBufferAttribute(p, i).normalize();
+    let r = rayR(d), x = d.x * r, y = d.y * r, z = d.z * r;
+    // lateral (Sylvian) fissure between the temporal lobe and the lobes above, and the central sulcus
+    const ys = -.1 + .2 * (.45 - z), lat = Math.max(0, Math.min(1, (x - .15) * 4)) * (z > -.45 && z < .55 ? 1 : 0);
+    let dent = .07 * lat * Math.exp(-(((y - ys) / .045) ** 2));
+    const zc = .04 - .3 * (y - .55); dent += .045 * (y > -.02 ? 1 : 0) * Math.exp(-(((z - zc) / .03) ** 2));
+    dent += .028 * sulci(x, y, z);
+    const k = 1 - dent / Math.max(r, .3); x *= k; y *= k; z *= k;
+    if (x < 0) x *= .12;                    // flat medial wall along the longitudinal fissure
+    if (y < -.42) y = -.42 + (y + .42) * .45; // flatter base
+    p.setXYZ(i, side * (x + .1), y, z);
   }
   g.computeVertexNormals();
   const m = new THREE.Mesh(g, holo(BLUE, .9));
   const sub = new THREE.BufferGeometry(), arr = [];
-  for (let i = 0; i < p.count; i += 3) arr.push(p.getX(i), p.getY(i), p.getZ(i));
+  for (let i = 0; i < p.count; i += 5) arr.push(p.getX(i), p.getY(i), p.getZ(i));
   sub.setAttribute('position', new THREE.Float32BufferAttribute(arr, 3));
-  m.add(pts(sub, '#7CC8FF', .008, .3));
+  m.add(pts(sub, '#7CC8FF', .006, .22));
   return m;
 }
 const hemis = [hemisphere(1), hemisphere(-1)]; hemis.forEach(h => brain.add(h));
-const cereb = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), holo('#3FA2F0', .8)); cereb.scale.set(.62, .3, .36); cereb.position.set(0, -.5, -.85); brain.add(cereb);
-const stem = new THREE.Mesh(new THREE.CylinderGeometry(.13, .09, .75, 24, 1, true), holo('#3FA2F0', .8)); stem.position.set(0, -.75, -.42); stem.rotation.x = .35; brain.add(stem);
-const cordB = new THREE.Mesh(new THREE.CylinderGeometry(.09, .08, 1.6, 20, 1, true), holo('#3FA2F0', .8)); cordB.position.set(0, -1.75, -.68); cordB.rotation.x = .2; brain.add(cordB);
+// cerebellum with fine horizontal folia and a central vermis
+const cereb = (() => { const g = new THREE.SphereGeometry(1, 96, 64), p = g.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const ph = Math.atan2(v.y, -v.z);
+    const k = (1 + .018 * Math.sin(ph * 64)) * (1 - .1 * Math.exp(-((v.x / .07) ** 2)) * (v.z < 0 ? 1 : .3)); v.multiplyScalar(k); p.setXYZ(i, v.x, v.y, v.z); }
+  g.computeVertexNormals(); const m = new THREE.Mesh(g, holo('#3FA2F0', .8)); m.scale.set(.66, .3, .36); m.position.set(0, -.46, -.8); return m; })();
+brain.add(cereb);
+// brainstem (midbrain, pons, medulla) and the spinal cord below it
+const stemProfile = [[.15, .12], [.15, 0], [.2, -.16], [.21, -.28], [.15, -.42], [.12, -.6], [.1, -.72]].map(([r, y]) => new THREE.Vector2(r, y));
+const makeStem = (mat, k = 1) => { const g = new THREE.Group();
+  const a = new THREE.Mesh(new THREE.LatheGeometry(stemProfile.map(v => new THREE.Vector2(v.x * k, v.y)), 32), mat()); a.scale.z = .85; g.add(a);
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(.095 * k, .085 * k, .8, 20, 1, true), mat()); c.position.set(0, -1.1, -.06); c.rotation.x = .16; g.add(c);
+  g.position.set(0, -.26, -.3); g.rotation.x = .32; return g; };
+const stem = makeStem(() => holo('#3FA2F0', .8)); brain.add(stem);
 // regions, shown red when explained
 const regions = {};
 const blob = (sx, sy, sz) => { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), holo(RED, 0)); m.scale.set(sx, sy, sz); return m; };
@@ -114,10 +145,16 @@ regions.motor = pair(s => { const c = new THREE.EllipseCurve(0, 0, .55, .62, 0, 
 regions.hypothalamus = (() => { const m = blob(.1, .07, .09); m.position.set(0, -.25, .1); return m; })();
 regions.pituitary = (() => { const g = new THREE.Group(), b = blob(.06, .05, .06); b.position.set(0, -.45, .2); g.add(b);
   const st = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, .16, 8, 1, true), holo(RED, 0)); st.position.set(0, -.36, .16); g.add(st); return g; })();
-regions.cord = (() => { const g = new THREE.Group();
-  const a = new THREE.Mesh(new THREE.CylinderGeometry(.14, .1, .75, 24, 1, true), holo(RED, 0)); a.position.set(0, -.75, -.42); a.rotation.x = .35; g.add(a);
-  const b = new THREE.Mesh(new THREE.CylinderGeometry(.1, .09, 1.6, 20, 1, true), holo(RED, 0)); b.position.set(0, -1.75, -.68); b.rotation.x = .2; g.add(b); return g; })();
+regions.cord = makeStem(() => holo(RED, 0), 1.06);
 regions.cortex = new THREE.Group(); // handled by tinting the hemispheres
+// a soft red glow at the centre of every region, lit with it
+const glows = {};
+for (const [k, r] of Object.entries(regions)) {
+  const box = new THREE.Box3().setFromObject(r); if (box.isEmpty()) continue;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: RED, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+  const size = box.getSize(new THREE.Vector3()); sp.position.copy(box.getCenter(new THREE.Vector3())); sp.scale.setScalar(Math.min(.9, Math.max(.35, Math.max(size.x, size.y) * 1.6)));
+  brain.add(sp); glows[k] = sp; r.userData.center = sp.position.clone();
+}
 Object.values(regions).forEach(r => { brain.add(r); track(r); });
 track(brain);
 // projections from the basal forebrain to the cortex
@@ -216,17 +253,25 @@ const stateAt = t => { const s = { scene: 'brain', hot: [], labels: [], cortex: 
   return { ...s, since, sceneSince }; };
 let lastScene = 'brain', fade = { brain: 1, syn: 0, mus: 0 };
 
-window.reel = { duration: R.duration + .6, seek(t) {
+// close in on small parts, less on wide ones (cord, several parts at once)
+const k2dist = parts => parts.includes('cord') ? 6.9 : parts.length > 1 ? 6.0 : 5.3;
+const view = new THREE.Vector3(0, .2, 1).normalize(), camT = new THREE.Vector3(0, -.1, 0), wp = new THREE.Vector3();
+let camD = 15;
+cam.setViewOffset(540, 960, 0, 110, 540, 960); // keep the subject above the captions
+window.reel = { duration: R.duration + .6 + LEAD, lead: LEAD, seek(tr) {
+  const t = tr - LEAD;
   const s = stateAt(t);
+  if (t < 0) Object.assign(s, { hot: R.coverHot || [], labels: [], hotLabels: [], fact: '' });
   // scene crossfade
   const k = ease(s.sceneSince / .7);
   for (const n of ['brain', 'syn', 'mus']) fade[n] = n === s.scene ? k : Math.min(fade[n], 1 - k);
   brain.visible = fade.brain > .01; syn.visible = fade.syn > .01; mus.visible = fade.mus > .01;
   // brain: slow turn, gentle push-in, regions in red
-  brain.rotation.y = 1.15 + .45 * Math.sin(t * .16); brain.rotation.x = .1;
+  brain.rotation.y = 1.05 + .075 * tr; brain.rotation.x = .08; // slow turn so the volume reads
   const hotSet = new Set(s.hot);
   for (const [k2, r] of Object.entries(regions)) r.traverse(o => { if (o.material?.uniforms) { const u = o.material.uniforms; const target = hotSet.has(k2) ? 1 : 0; u.uA.value += (target * (.75 + .25 * Math.sin(t * 5)) - u.uA.value) * .25; u.uHot.value = 1; } });
   hemis.forEach(h => { h.material.uniforms.uHot.value += ((hotSet.has('cortex') || hotSet.has('motor') && false ? .8 : 0) - h.material.uniforms.uHot.value) * .15; });
+  for (const [k2, sp] of Object.entries(glows)) sp.material.opacity += ((hotSet.has(k2) ? .55 + .15 * Math.sin(tr * 4) : 0) * fade.brain - sp.material.opacity) * .2;
   proj.material.opacity += ((s.proj ? .55 : 0) - proj.material.opacity) * .15;
   // synapse: release, cross, bind; ions flow when bound
   const rel = s.release ? ease((t - s.releaseT0) / 1) : 0;
@@ -253,15 +298,23 @@ window.reel = { duration: R.duration + .6, seek(t) {
   // fades
   const setA = (g, a) => g.traverse(o => { if (o.material) { if (o.material.uniforms?.uA && g !== brain) o.material.uniforms.uA.value = (o.userData.a0 ??= o.material.uniforms.uA.value) * a; else if (o.material.uniforms?.uA) {} else { o.material.opacity = (o.userData.o0 ??= o.material.opacity) * a; } } });
   setA(syn, fade.syn); setA(mus, fade.mus);
-  hemis.concat([cereb, stem, cordB]).forEach(m => m.material.uniforms.uA.value = .9 * fade.brain);
-  hemis.forEach(h => h.children[0].material.opacity = .3 * fade.brain);
+  hemis.concat([cereb]).forEach(m => m.material.uniforms.uA.value = .9 * fade.brain); stem.children.forEach(m => m.material.uniforms.uA.value = .8 * fade.brain);
+  hemis.forEach(h => h.children[0].material.opacity = .22 * fade.brain);
   // camera
-  const z = { brain: 7.4 - .8 * ease(s.since / 5) * (s.hot.length ? 1 : 0), syn: 8.6, mus: 8.8 }[s.scene];
-  cam.position.lerp(new THREE.Vector3(0, s.scene === 'brain' ? .35 : .2, z), t < .05 ? 1 : .08);
-  cam.lookAt(0, s.scene === 'brain' ? -.75 : s.scene === 'mus' ? -.75 : -.25, 0);
-  mats.forEach(m => m.uniforms.uT && (m.uniforms.uT.value = t));
+  // camera: wide on the cover, then into the brain toward the part in red
+  let tgt = new THREE.Vector3(0, -.15, 0), dist = 8.4;
+  if (s.scene === 'syn') { tgt.set(0, .35, 0); dist = 8.6; }
+  else if (s.scene === 'mus') { tgt.set(0, -.4, 0); dist = 8.8; }
+  else if (t >= 0) { const parts = s.hot.filter(k => regions[k]?.userData.center);
+    if (parts.length) { tgt.set(0, 0, 0); parts.forEach(k => tgt.add(brain.localToWorld(wp.copy(regions[k].userData.center)))); tgt.divideScalar(parts.length); dist = k2dist(parts); }
+    else if (s.hot.includes('cortex')) dist = 6.4; else dist = 6.9; }
+  else dist = 6.2; // cover
+  camT.lerp(tgt, tr < .02 ? 1 : .05); camD += (dist - camD) * (tr < .02 ? 0 : .045);
+  cam.position.copy(camT).addScaledVector(view, camD); cam.lookAt(camT);
+  mats.forEach(m => m.uniforms.uT && (m.uniforms.uT.value = tr));
   fiberMat.uniforms.uT.value = t;
   ren.render(scene, cam);
+  $('cover').style.opacity = 1 - ease((tr - LEAD + .35) / .5);
   // labels
   const on = {}, hot = {}; const la = ease(s.since / .4);
   (s.labels || []).forEach(id => { on[id] = la * Math.max(fade[s.scene], 0); });
