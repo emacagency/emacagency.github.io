@@ -1,0 +1,142 @@
+{
+ "name": "الهيستامين",
+ "latin": "HISTAMINE",
+ "projFrom": [
+  0,
+  -0.25,
+  0.1
+ ],
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 2,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 4,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [
+    "hypothalamus"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 6,
+   "hot": [
+    "hypothalamus",
+    "cortex"
+   ],
+   "labels": [
+    "hypothalamus"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": true
+  },
+  {
+   "at": 7,
+   "hot": [
+    "hypothalamus",
+    "cortex"
+   ],
+   "labels": [],
+   "fact": "اليقظة: <b>نشاط مرتفع</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": true
+  },
+  {
+   "at": 8,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "fact": "النوم: <b>شبه صمت</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": false
+  },
+  {
+   "at": 9,
+   "hot": [
+    "hypothalamus",
+    "cortex"
+   ],
+   "labels": [],
+   "fact": "مفتاح <b>الصحو والانتباه</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": true
+  },
+  {
+   "at": 10,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "fact": "مضادات الهيستامين القديمة: <b>تحجب المستقبلات</b>",
+   "hotLabels": [
+    "receptor"
+   ],
+   "scene": "syn",
+   "release": false,
+   "proj": false
+  },
+  {
+   "at": 11,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "fact": "النتيجة: <b>نعاس</b>",
+   "hotLabels": [],
+   "scene": "syn"
+  },
+  {
+   "at": 12,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "fact": "الأجيال الأحدث: <b>دخول أقل إلى الدماغ</b>",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true
+  },
+  {
+   "at": 14,
+   "hot": [],
+   "labels": [],
+   "fact": "في الحساسية: <b>حكة وعطاس</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "release": false
+  },
+  {
+   "at": 17,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  }
+ ]
+}

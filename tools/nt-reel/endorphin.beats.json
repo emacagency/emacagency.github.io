@@ -1,0 +1,107 @@
+{
+ "name": "الإندورفينات",
+ "latin": "ENDORPHINS",
+ "projFrom": [
+  0,
+  -0.3,
+  0.12
+ ],
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 3,
+   "hot": [
+    "hypothalamus",
+    "pituitary"
+   ],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 4,
+   "hot": [
+    "hypothalamus",
+    "pituitary"
+   ],
+   "labels": [],
+   "fact": "إندو + مورفين = <b>المورفين الداخلي</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 6,
+   "hot": [
+    "hypothalamus",
+    "pituitary"
+   ],
+   "labels": [
+    "hypothalamus",
+    "pituitary"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 7,
+   "hot": [],
+   "labels": [
+    "receptor",
+    "pre"
+   ],
+   "fact": "",
+   "hotLabels": [
+    "receptor"
+   ],
+   "scene": "syn",
+   "release": true
+  },
+  {
+   "at": 8,
+   "hot": [],
+   "labels": [
+    "post"
+   ],
+   "fact": "إشارات الألم: <b>تضعف</b>",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true
+  },
+  {
+   "at": 9,
+   "hot": [
+    "cortex"
+   ],
+   "labels": [],
+   "fact": "الرياضة الطويلة والضحك <b>يرفعان إفرازها</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "release": false
+  },
+  {
+   "at": 12,
+   "hot": [],
+   "labels": [],
+   "fact": "الألم المستمر: <b>راجع الطبيب</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 14,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  }
+ ]
+}

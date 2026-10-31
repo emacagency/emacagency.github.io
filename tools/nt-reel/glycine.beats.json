@@ -1,0 +1,145 @@
+{
+ "name": "الغلايسين",
+ "latin": "GLYCINE",
+ "ion": "أيونات الكلوريد",
+ "ionLatin": "Cl⁻",
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 2,
+   "hot": [
+    "cord"
+   ],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 3,
+   "hot": [
+    "cord"
+   ],
+   "labels": [],
+   "fact": "أبسط <b>حمض أميني</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 4,
+   "hot": [
+    "cord"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 5,
+   "hot": [],
+   "labels": [
+    "pre",
+    "receptor"
+   ],
+   "fact": "",
+   "hotLabels": [
+    "receptor"
+   ],
+   "scene": "syn",
+   "release": true
+  },
+  {
+   "at": 6,
+   "hot": [],
+   "labels": [
+    "ions",
+    "receptor"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "ionflow": "in"
+  },
+  {
+   "at": 7,
+   "hot": [],
+   "labels": [
+    "post"
+   ],
+   "fact": "الخلايا الحركية: <b>تهدأ</b>",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "ionflow": "in"
+  },
+  {
+   "at": 8,
+   "hot": [
+    "cord"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "fact": "نوم <b>REM</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "release": false,
+   "ionflow": false
+  },
+  {
+   "at": 9,
+   "hot": [
+    "cord"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "fact": "الغلايسين <b>+</b> غابا = <b>عضلات مرتخية</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 11,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "fact": "الإستركنين: <b>يحجب المستقبلات</b>",
+   "hotLabels": [
+    "receptor"
+   ],
+   "scene": "syn",
+   "release": false,
+   "ionflow": false
+  },
+  {
+   "at": 12,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "fact": "النتيجة: <b>تشنج بلا كابح</b>",
+   "hotLabels": [],
+   "scene": "syn"
+  },
+  {
+   "at": 13,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  }
+ ]
+}
