@@ -111,9 +111,27 @@ for b in cfg["beats"]:
     if set(b.get("hot", [])) - set(prev["hot"]): put(t + .1, shimmer(), .06)
     if b.get("chart") and b["chart"] != prev.get("chart"):
         put(t - .1, sweep(.9), .08)
-        for k in range(16): put(t + .3 + k * .1, chirp(2200 + 60 * k, 2400 + 60 * k, .04), .035)
+        ch = cfg.get("charts", {}).get(b["chart"], {})
+        if ch.get("type") == "table":  # a pop for each cell as it lands
+            for r in ch["rows"]:
+                for c in r["cells"]:
+                    if c and c.get("t", 0) > .05: put(t + c["t"], chirp(900 if c["dir"] == "down" else 1500, 600 if c["dir"] == "down" else 2400, .09), .09)
+        else:
+            for k in range(16): put(t + .3 + k * .1, chirp(2200 + 60 * k, 2400 + 60 * k, .04), .035)
     prev["chart"] = b.get("chart")
     prev["labels"], prev["hot"] = b.get("labels", []), b.get("hot", [])
+# heartbeat thumps that follow the on-screen heart (same smoothing as reel.html, one step per frame)
+if any("hr" in b for b in cfg["beats"]):
+    def thump():
+        k = np.arange(int(.18 * SR)) / SR; return np.sin(2 * np.pi * (48 + 30 * np.exp(-k / .03)) * k) * env(len(k), .004, .05)
+    bt = [(lines[b["at"]]["a"] - .2 if "at" in b else b["t"], b) for b in cfg["beats"]]
+    hr, ph, t_end = 70.0, 0.0, lines[-1]["b"] + .35
+    for f in range(int(t_end * 30)):
+        t = f / 30; cur = [b for t0, b in bt if t0 <= t]; b = cur[-1] if cur else {}
+        if b.get("scene", "brain") != "kid": continue
+        hr += (b.get("hr", 70) - hr) * .06; p0 = ph; ph += hr / 60 / 30
+        for q, g in ((.08, .5), (.26, .3)):
+            if int(p0 - q) != int(ph - q) or (p0 - q) // 1 != (ph - q) // 1: put(t, thump(), g)
 if cfg.get("outro"):
     t_out = lines[-1]["b"] + .35
     put(t_out - .3, whoosh(.8), .16); put(t_out + .1, shimmer(1.6), .09)

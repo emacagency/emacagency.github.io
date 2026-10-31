@@ -1,0 +1,426 @@
+{
+ "name": "الأدرينالين ضد الأسيتيل كولين",
+ "latin": "ADRENALINE  ×  ACETYLCHOLINE",
+ "series": "علم الشعور · الجهاز العصبي الذاتي",
+ "coverHot": [
+  "hypothalamus"
+ ],
+ "outro": 2.6,
+ "hookRed": [
+  2,
+  5
+ ],
+ "charts": {
+  "tab1": {
+   "type": "table",
+   "title": "تأثير الأدرينالين",
+   "cols": [
+    "الأدرينالين",
+    "الأسيتيل كولين"
+   ],
+   "rows": [
+    {
+     "label": "القلب",
+     "cells": [
+      {
+       "dir": "up",
+       "w": "أسرع",
+       "t": 0.3
+      },
+      null
+     ]
+    },
+    {
+     "label": "القصبات",
+     "cells": [
+      {
+       "dir": "up",
+       "w": "تتسع",
+       "t": 3.09
+      },
+      null
+     ]
+    },
+    {
+     "label": "الأمعاء",
+     "cells": [
+      {
+       "dir": "down",
+       "w": "أبطأ",
+       "t": 7.48
+      },
+      null
+     ]
+    }
+   ]
+  },
+  "tab2": {
+   "type": "table",
+   "title": "عكس بعضهما تمامًا",
+   "cols": [
+    "الأدرينالين",
+    "الأسيتيل كولين"
+   ],
+   "rows": [
+    {
+     "label": "القلب",
+     "cells": [
+      {
+       "dir": "up",
+       "w": "أسرع",
+       "t": 0
+      },
+      {
+       "dir": "down",
+       "w": "أبطأ",
+       "t": 2.65
+      }
+     ]
+    },
+    {
+     "label": "القصبات",
+     "cells": [
+      {
+       "dir": "up",
+       "w": "تتسع",
+       "t": 0
+      },
+      {
+       "dir": "down",
+       "w": "تضيق",
+       "t": 3.72
+      }
+     ]
+    },
+    {
+     "label": "الأمعاء",
+     "cells": [
+      {
+       "dir": "down",
+       "w": "أبطأ",
+       "t": 0
+      },
+      {
+       "dir": "up",
+       "w": "أنشط",
+       "t": 5.25
+      }
+     ]
+    }
+   ]
+  },
+  "hr": {
+   "type": "bars",
+   "title": "نبض القلب في الراحة",
+   "sub": "بدون العصب المبهم يرتفع النبض",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": 100,
+    "suf": "نبضة/دقيقة"
+   },
+   "bars": [
+    {
+     "label": "مع الأسيتيل كولين",
+     "v": 0.58
+    },
+    {
+     "label": "بدونه",
+     "v": 0.83,
+     "hot": true
+    }
+   ]
+  }
+ },
+ "beats": [
+  {
+   "at": 0,
+   "hot": [
+    "heart"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "chart": null,
+   "scene": "kid",
+   "hr": 130
+  },
+  {
+   "at": 1,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "<b>خطر!</b>",
+   "chart": null,
+   "scene": "kid",
+   "hr": 95
+  },
+  {
+   "at": 2,
+   "hot": [
+    "adrenal"
+   ],
+   "labels": [
+    "adrenal"
+   ],
+   "hotLabels": [],
+   "fact": "فوق الكليتين ← <b>الأدرينالين</b>",
+   "chart": null,
+   "scene": "kid",
+   "adr": 1,
+   "hr": 100,
+   "focus": [
+    0,
+    -0.15,
+    -0.45
+   ],
+   "kdist": 7.2
+  },
+  {
+   "at": 3,
+   "hot": [
+    "heart"
+   ],
+   "labels": [
+    "heart"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "tab1",
+   "scene": "kid",
+   "adr": 1,
+   "hr": 140,
+   "focus": [
+    0.18,
+    0.62,
+    0.32
+   ],
+   "kdist": 7.4
+  },
+  {
+   "at": 4,
+   "hot": [
+    "bronchi"
+   ],
+   "labels": [
+    "bronchi"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "tab1",
+   "scene": "kid",
+   "adr": 1,
+   "hr": 140,
+   "bro": 1.5,
+   "focus": [
+    0,
+    1.2,
+    0
+   ],
+   "kdist": 7.8
+  },
+  {
+   "at": 5,
+   "hot": [
+    "gut"
+   ],
+   "labels": [
+    "gut"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "tab1",
+   "scene": "kid",
+   "adr": 1,
+   "hr": 140,
+   "bro": 1.5,
+   "gutv": 0.2,
+   "focus": [
+    0,
+    -1.2,
+    0.2
+   ],
+   "kdist": 7.6
+  },
+  {
+   "at": 6,
+   "hot": [
+    "gut"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "الهضم <b>ينتظر</b>",
+   "chart": null,
+   "scene": "kid",
+   "adr": 1,
+   "hr": 140,
+   "bro": 1.5,
+   "gutv": 0.2
+  },
+  {
+   "at": 7,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "من يعيد <b>الهدوء</b>؟",
+   "chart": null,
+   "scene": "brain"
+  },
+  {
+   "at": 8,
+   "hot": [
+    "cord"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "hotLabels": [],
+   "fact": "<b>أسيتيل كولين</b>",
+   "chart": null,
+   "scene": "brain"
+  },
+  {
+   "at": 9,
+   "hot": [
+    "vagus"
+   ],
+   "labels": [
+    "vagus"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "chart": null,
+   "scene": "kid",
+   "ach": 1,
+   "hr": 140,
+   "bro": 1.5,
+   "gutv": 0.2,
+   "focus": [
+    -0.15,
+    0.9,
+    0
+   ],
+   "kdist": 8.6
+  },
+  {
+   "at": 10,
+   "hot": [
+    "vagus"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "tab2",
+   "scene": "kid",
+   "ach": 1,
+   "hr": 140,
+   "bro": 1.5,
+   "gutv": 0.2
+  },
+  {
+   "at": 11,
+   "hot": [
+    "heart"
+   ],
+   "labels": [
+    "heart"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "tab2",
+   "scene": "kid",
+   "ach": 1,
+   "hr": 68,
+   "bro": 1.5,
+   "gutv": 0.2
+  },
+  {
+   "at": 12,
+   "hot": [
+    "bronchi"
+   ],
+   "labels": [
+    "bronchi"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "tab2",
+   "scene": "kid",
+   "ach": 1,
+   "hr": 68,
+   "bro": 0.72,
+   "gutv": 0.2
+  },
+  {
+   "at": 13,
+   "hot": [
+    "gut"
+   ],
+   "labels": [
+    "gut"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "tab2",
+   "scene": "kid",
+   "ach": 1,
+   "hr": 68,
+   "bro": 0.72,
+   "gutv": 2.4
+  },
+  {
+   "at": 14,
+   "hot": [
+    "heart"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "hr",
+   "scene": "kid",
+   "ach": 0,
+   "hr": 100,
+   "focus": [
+    0.18,
+    0.62,
+    0.32
+   ],
+   "kdist": 7.4
+  },
+  {
+   "at": 15,
+   "hot": [
+    "heart"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "chart": "hr",
+   "scene": "kid",
+   "ach": 1,
+   "hr": 70,
+   "focus": [
+    0.18,
+    0.62,
+    0.32
+   ],
+   "kdist": 7.4
+  },
+  {
+   "at": 16,
+   "hot": [
+    "heart",
+    "bronchi",
+    "gut"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "chart": null,
+   "scene": "kid",
+   "ach": 1,
+   "hr": 70,
+   "gutv": 1.4
+  }
+ ]
+}

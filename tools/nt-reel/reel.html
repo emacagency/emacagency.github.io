@@ -60,7 +60,7 @@ import * as THREE from './three.module.js';
 const slug = location.search.slice(1);
 const R = await (await fetch(`${slug}.json`)).json();
 const $ = id => document.getElementById(id);
-$('cv-name').textContent = R.name; if (R.series) document.querySelectorAll('.tag, .cover span').forEach(e => e.textContent = R.series); $('cv-latin').textContent = R.latin;
+$('cv-name').textContent = R.name; if (R.name.length > 14) $('cv-name').style.fontSize = '60px'; if (R.series) document.querySelectorAll('.tag, .cover span').forEach(e => e.textContent = R.series); $('cv-latin').textContent = R.latin;
 const OUT = R.outro || 0;                     // seconds of name card after the narration (new layout)
 const LEAD = R.lead ?? (OUT ? .15 : 1.4);     // seconds of cover before the narration starts (old layout)
 const lastB = R.lines[R.lines.length - 1].b, outStart = lastB + .35;
@@ -244,6 +244,64 @@ const maGeo = new THREE.BufferGeometry(); maGeo.setAttribute('position', new THR
 const ach = pts(maGeo, '#FF3B4A', .06, 1); ach.frustumCulled = false; mus.add(ach);
 track(mus);
 
+
+/* ---------- body: heart, airways, gut, adrenals (adrenaline vs acetylcholine) ---------- */
+const kid = new THREE.Group(); scene.add(kid);
+const Yax = new THREE.Vector3(0, 1, 0), organs = {};
+const organ = (id, ...m) => { const g = organs[id] ??= new THREE.Group(); m.forEach(x => g.add(x)); kid.add(g); return g; };
+const oblob = (r, sx, sy, sz, col = BLUE, a = 1, f = null) => { const geo = new THREE.IcosahedronGeometry(r, 40), p = geo.attributes.position, d = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { d.fromBufferAttribute(p, i); const k = f ? f(d.clone().normalize()) : 1; p.setXYZ(i, d.x * sx * k, d.y * sy * k, d.z * sz * k); }
+  geo.computeVertexNormals(); return new THREE.Mesh(geo, holo(col, a)); };
+const at = (m, x, y, z) => { m.position.set(x, y, z); return m; };
+// lungs: two lobed sacs, the left one (viewer's right) notched for the heart
+organ('lungs', at(oblob(1, .52, .95, .42, BLUE, .55, d => 1 - .05 * Math.max(0, -d.y)), -.66, 1.0, -.05),
+  at(oblob(1, .48, .9, .4, BLUE, .55, d => 1 - .28 * Math.exp(-(((d.y + .35) / .35) ** 2)) * Math.max(0, -d.x) ** 2), .66, .98, -.05));
+// airway tree: trachea, two main bronchi, then branches that widen or narrow
+const bronchi = [];
+function branch(a, dir, len, r, lvl) { const b = a.clone().addScaledVector(dir, len);
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(r * .82, r, len, 18, 1, true), holo('#7FD0FF', .9)); c.position.copy(a).add(b).multiplyScalar(.5); c.quaternion.setFromUnitVectors(Yax, dir); c.userData.base = 1;
+  organ('bronchi', c); if (lvl > 0) bronchi.push(c);
+  if (lvl < 3) for (const s of [-1, 1]) { const d2 = dir.clone().applyAxisAngle(new THREE.Vector3(0, 0, 1), s * (.42 + .1 * lvl)).applyAxisAngle(Yax, s * .3).normalize(); branch(b, d2, len * .68, r * .66, lvl + 1); } }
+branch(new THREE.Vector3(0, 2.25, 0), new THREE.Vector3(0, -1, 0), .7, .085, 0);
+// heart: tilted cone-ish muscle, apex down and to the left
+const heartM = oblob(1, .36, .44, .32, BLUE, 1, d => 1 + .25 * Math.max(0, -d.y) ** 2 - .12 * Math.max(0, d.y) ** 3); heartM.rotation.z = .5;
+const heart = organ('heart', heartM); heart.position.set(.18, .62, .32);
+// gut: a coiled small intestine framed by the colon
+const coilPts = []; for (let i = 0; i <= 140; i++) { const u = i / 140, row = u * 4.2, y = -.75 - .28 * row, x = .62 * Math.cos(Math.PI * row) * (1 - .08 * row), z = .25 + .1 * Math.sin(u * 30); coilPts.push(new THREE.Vector3(x, y, z)); }
+const gutC = new THREE.CatmullRomCurve3(coilPts), colonC = new THREE.CatmullRomCurve3([[-.95, -2.0, .1], [-1.0, -.7, .1], [-.5, -.52, .15], [.5, -.52, .15], [1.0, -.7, .1], [.95, -2.0, .1]].map(q => new THREE.Vector3(...q)));
+organ('gut', new THREE.Mesh(new THREE.TubeGeometry(gutC, 400, .085, 14, false), holo(BLUE, .9)), new THREE.Mesh(new THREE.TubeGeometry(colonC, 160, .13, 14, false), holo(BLUE, .6)));
+const wave = new THREE.Mesh(new THREE.TorusGeometry(.12, .035, 10, 28), holo('#FFFFFF', 1)); organ('gut', wave);
+// kidneys behind the gut, each capped by an adrenal gland
+for (const sd of [1, -1]) { const k = oblob(1, .24, .4, .2, BLUE, .5, d => 1 - .35 * Math.max(0, -sd * d.x) ** 3 * Math.exp(-((d.y / .4) ** 2))); organ('kidney', at(k, sd * .78, -.42, -.55));
+  const ad = oblob(1, .17, .13, .1, BLUE, 1, d => 1 + .35 * Math.max(0, d.y) ** 2); ad.rotation.z = -sd * .3; organ('adrenal', at(ad, sd * .74, -.04, -.55)); }
+// vagus nerve: from the brainstem down past the heart to the gut
+const vagC = new THREE.CatmullRomCurve3([[-.32, 2.9, -.2], [-.3, 1.6, -.15], [-.05, .6, .1], [-.2, -.3, .15], [-.1, -1.2, .3]].map(q => new THREE.Vector3(...q)));
+organ('vagus', new THREE.Mesh(new THREE.TubeGeometry(vagC, 120, .03, 10, false), holo('#BFE6FF', 1)));
+track(kid);
+const pPool = (n, col, size, op) => { const pos = new Float32Array(n * 3), geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const P = pts(geo, col, size, op); P.frustumCulled = false; kid.add(P); return { n, pos, geo, seed: Array.from({ length: n }, (_, i) => ({ d: rnd(0, 1), j: rnd(0, 6.28), s: i % 2 ? 1 : -1, r: rnd(.2, 1) })) }; };
+const adrP = pPool(180, '#FF3B4A', .065, 1), achP = pPool(70, '#FFFFFF', .06, 1), food = pPool(40, '#FFFFFF', .05, .8);
+let beatPh = 0, gutPh = 0, lastT = 0, bro = 1, hrNow = 70, gutNow = 1;
+function flowKid(t, s) {
+  const dt = Math.max(0, Math.min(.1, t - lastT)); lastT = t;
+  hrNow += ((s.hr || 70) - hrNow) * .06; gutNow += ((s.gutv ?? 1) - gutNow) * .06; bro += ((s.bro ?? 1) - bro) * .06;
+  beatPh += dt * hrNow / 60; const q = beatPh % 1, pulse = Math.exp(-(((q - .08) / .05) ** 2)) + .55 * Math.exp(-(((q - .26) / .06) ** 2));
+  heart.scale.setScalar(1 + .09 * pulse * Math.min(1.6, hrNow / 70));
+  bronchi.forEach(c => c.scale.set(bro, 1, bro));
+  gutPh += dt * .12 * gutNow; const wp2 = gutC.getPointAt(gutPh % 1); wave.position.copy(wp2); wave.lookAt(gutC.getPointAt(Math.min(1, gutPh % 1 + .01))); wave.scale.setScalar(.6 + .6 * Math.min(1.5, gutNow));
+  food.seed.forEach((f, i) => { const v = gutC.getPointAt((gutPh * .9 + f.d) % 1); food.pos.set([v.x, v.y, v.z], i * 3); });
+  // adrenaline: from the adrenals into the blood, up to the heart and lungs
+  const aOn = s.adr ? ease((t - s.adrT0) / .8) : 0;
+  adrP.seed.forEach((f, i) => { const p = ((t * .35 + f.d) % 1 + 1) % 1, x0 = f.s * .74, y = -.04 + p * 1.6, x = x0 * (1 - p) + (.18 + .5 * Math.sin(f.j) * f.r) * p, z = -.55 + p * (.55 + .3 * Math.cos(f.j));
+    adrP.pos.set(f.d < aOn ? [x + .04 * Math.sin(t * 3 + f.j), y, z] : [0, -50, 0], i * 3); });
+  // acetylcholine signals running down the vagus nerve
+  const cOn = s.ach ? ease((t - s.achT0) / .6) : 0;
+  achP.seed.forEach((f, i) => { const v = vagC.getPointAt(((t * .4 + f.d) % 1 + 1) % 1); achP.pos.set(f.d < cOn ? [v.x, v.y, v.z] : [0, -50, 0], i * 3); });
+  [adrP, achP, food].forEach(P => P.geo.attributes.position.needsUpdate = true);
+  const hot = new Set(s.hot); for (const [id, g] of Object.entries(organs)) g.traverse(o => { const u = o.material?.uniforms; if (u?.uHot) u.uHot.value += ((hot.has(id) ? .85 + .15 * Math.sin(t * 5) : 0) - u.uHot.value) * .15; });
+  kid.rotation.y = Math.sin(t * .2) * .35; kid.rotation.x = .06;
+}
+const organAt = id => { const b = new THREE.Box3().setFromObject(organs[id]); return b.getCenter(new THREE.Vector3()); };
 /* ---------- labels ---------- */
 const labs = {}, lineEls = {};
 function label(id, ar, la, anchor, dx, dy) {
@@ -284,6 +342,12 @@ label('receptor', 'المستقبِلات', 'RECEPTORS', anchorAt(syn, .9, -.25,
 label('ions', R.ion || '', R.ionLatin || '', anchorAt(syn, -.3, -.45, 0), -70, 110);
 label('nerve', 'العصب الحركي', 'MOTOR NEURON', anchorAt(mus, 0, .7, 0), 110, 70);
 label('muscle', 'الليف العضلي', 'MUSCLE FIBER', anchorAt(mus, 1.4, -.35, 0), -20, -90);
+label('adrenal', 'الغدة الكظرية', 'ADRENAL GLAND', anchorAt(kid, .74, 0, -.55), 70, 150);
+label('heart', 'القلب', 'HEART', anchorAt(kid, .25, .6, .35), 90, 150);
+label('bronchi', 'القصبات الهوائية', 'BRONCHI', anchorAt(kid, -.35, 1.25, 0), -80, 200);
+label('lungs', 'الرئتان', 'LUNGS', anchorAt(kid, .7, 1.3, -.05), 60, 220);
+label('gut', 'الأمعاء', 'INTESTINES', anchorAt(kid, .3, -1.3, .3), 60, 70);
+label('vagus', 'العصب المبهم', 'VAGUS NERVE', anchorAt(kid, -.05, .6, .1), -110, 190);
 label('enzyme', 'إنزيم التفكيك', 'ACETYLCHOLINESTERASE', anchorAt(mus, -.4, -.35, 0), -40, 120);
 
 /* ---------- captions ---------- */
@@ -322,6 +386,17 @@ for (const [id, c] of Object.entries(R.charts || {})) {
       return svgEl('rect', { x, width: bw, rx: 10, fill: b.hot ? 'rgba(255,90,104,.85)' : 'rgba(90,180,255,.85)', filter: `drop-shadow(0 0 10px ${b.hot ? '#FF3B4A' : '#4FB4FF'})` }, g); });
     CH[id] = { g, draw(p, since) { c.bars.forEach((b, i) => { const grow = ease(since / .7), drop = b.to !== undefined ? ease((since - .9) / 1.1) : 0, v = b.v * grow + ((b.to ?? b.v) - b.v) * drop;
       const h = (PY0 - PY1) * v; els[i].setAttribute('y', PY0 - h); els[i].setAttribute('height', Math.max(0, h)); }); return ease((since - .9) / 1.1); } };
+  } else if (c.type === 'table') {
+    // which way each organ goes: a column per messenger, cells pop in on cue
+    const CX = [400, 262, 112], RY = [128, 176, 222, 268];
+    c.cols.forEach((h, j) => { const e = svgEl('text', { x: CX[j + 1], y: RY[0], 'text-anchor': 'middle', style: `font-size:17px;font-weight:800;fill:${j ? '#9FD4FF' : '#FF8A94'}` }, g); e.textContent = h; });
+    svgEl('line', { x1: 30, x2: 458, y1: RY[0] + 14, y2: RY[0] + 14, stroke: 'rgba(110,190,255,.3)' }, g);
+    const cells = [];
+    c.rows.forEach((r, i) => { const e = svgEl('text', { x: CX[0] + 40, y: RY[i + 1], 'text-anchor': 'end', style: 'font-size:19px;font-weight:700;fill:#CFE9FF' }, g); e.textContent = r.label;
+      r.cells.forEach((cl, j) => { if (!cl) return; const up = cl.dir === 'up', el = svgEl('text', { x: CX[j + 1], y: RY[i + 1], 'text-anchor': 'middle', style: `font-size:20px;font-weight:800;fill:${up ? '#FF5A68' : '#7FD0FF'};filter:drop-shadow(0 0 6px ${up ? '#FF3B4A' : '#4FB4FF'})`, opacity: 0 }, g);
+        el.textContent = `${up ? '▲' : '▼'} ${cl.w}`; cells.push({ el, t: cl.t ?? 0, x: CX[j + 1], y: RY[i + 1] }); }); });
+    CH[id] = { g, draw(p, since) { cells.forEach(q => { const k = ease((since - q.t) / .3), sc = k < 1 ? .4 + .6 * k + .25 * Math.sin(Math.PI * k) : 1;
+      q.el.setAttribute('opacity', k); q.el.setAttribute('transform', `translate(${q.x} ${q.y}) scale(${sc}) translate(${-q.x} ${-q.y})`); }); return 1; } };
   }
 }
 let chartOp = 0;
@@ -330,9 +405,9 @@ function drawChart(s, t) {
   chartOp += ((c ? 1 : 0) - chartOp) * .2; $('chart').style.opacity = chartOp; $('chart').style.transform = `translateY(${(1 - chartOp) * -16}px) scale(${.96 + .04 * chartOp})`;
   for (const [id, C] of Object.entries(CH)) C.g.setAttribute('opacity', id === s.chart ? 1 : 0);
   if (!c) return;
-  const p = ease(since / (c.dur || 2.4)), v = CH[s.chart].draw(p, since), k = c.type === 'bars' ? v : v / Math.max(...c.pts.map(q => q[1]));
+  const p = ease(since / (c.dur || 2.4)), v = CH[s.chart].draw(p, since), k = c.type === 'curve' ? v / Math.max(...c.pts.map(q => q[1])) : v;
   $('chtitle').textContent = c.title; $('chsub').textContent = c.sub || '';
-  const n = c.big; if (n) { const val = n.from + (n.to - n.from) * k; $('chbig').innerHTML = `<bdi dir="ltr">${(n.pre || '') + (val < -.5 ? '−' + Math.round(-val) : Math.round(val))}</bdi>${n.suf ? `<small style="font-size:24px"> ${n.suf}</small>` : ''}`; $('chbig').className = 'big' + (n.to < n.from ? ' down' : ''); }
+  const n = c.big; if (!n) $('chbig').innerHTML = ''; if (n) { const val = n.from + (n.to - n.from) * k; $('chbig').innerHTML = `<bdi dir="ltr">${(n.pre || '') + (val < -.5 ? '−' + Math.round(-val) : Math.round(val))}</bdi>${n.suf ? `<small style="font-size:24px"> ${n.suf}</small>` : ''}`; $('chbig').className = 'big' + (n.to < n.from ? ' down' : ''); }
 }
 
 /* ---------- timeline ---------- */
@@ -342,7 +417,7 @@ const beats = R.beats.map(b => ({ ...b, t0: T(b) }));
 const stateAt = t => { const s = { scene: 'brain', hot: [], labels: [], cortex: 0, proj: 0, fact: '', chart: null }; let since = 99, sceneSince = 99;
   for (const b of beats) if (b.t0 <= t) { if (b.scene && b.scene !== s.scene) sceneSince = t - b.t0; Object.assign(s, b); since = t - b.t0; }
   return { ...s, since, sceneSince }; };
-let lastScene = 'brain', fade = { brain: 1, syn: 0, mus: 0 };
+let lastScene = 'brain', fade = { brain: 1, syn: 0, mus: 0, kid: 0 };
 
 // close in on small parts, less on wide ones (cord, several parts at once)
 const k2dist = parts => parts.includes('cord') ? 6.9 : parts.includes('optic') ? 6.8 : parts.length > 1 ? 6.2 : ['pineal', 'scn'].includes(parts[0]) ? 6.0 : 5.3;
@@ -361,8 +436,8 @@ window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + 
   if (inOut) { if (s.scene !== 'brain') s.sceneSince = t - outStart; Object.assign(s, { scene: 'brain', hot: R.coverHot || [], labels: [], hotLabels: [], fact: '', proj: 0, chart: null }); }
   // scene crossfade
   const k = ease(s.sceneSince / .7);
-  for (const n of ['brain', 'syn', 'mus']) fade[n] = n === s.scene ? k : Math.min(fade[n], 1 - k);
-  brain.visible = fade.brain > .01; syn.visible = fade.syn > .01; mus.visible = fade.mus > .01;
+  for (const n of ['brain', 'syn', 'mus', 'kid']) fade[n] = n === s.scene ? k : Math.min(fade[n], 1 - k);
+  brain.visible = fade.brain > .01; syn.visible = fade.syn > .01; mus.visible = fade.mus > .01; kid.visible = fade.kid > .01;
   // brain: slow turn, gentle push-in, regions in red
   brain.rotation.y = 1.05 + .075 * tr; brain.rotation.x = .08; // slow turn so the volume reads
   const hotSet = new Set(s.hot);
@@ -395,7 +470,8 @@ window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + 
   mus.rotation.y = -.35 + Math.sin(t * .2) * .15;
   // fades
   const setA = (g, a) => g.traverse(o => { if (o.material) { if (o.material.uniforms?.uA && g !== brain) o.material.uniforms.uA.value = (o.userData.a0 ??= o.material.uniforms.uA.value) * a; else if (o.material.uniforms?.uA) {} else { o.material.opacity = (o.userData.o0 ??= o.material.opacity) * a; } } });
-  setA(syn, fade.syn); setA(mus, fade.mus);
+  setA(syn, fade.syn); setA(mus, fade.mus); setA(kid, fade.kid);
+  if (kid.visible) flowKid(t, s);
   hemis.concat([cereb]).forEach(m => m.material.uniforms.uA.value = .9 * fade.brain); callosum.material.uniforms.uA.value = .55 * fade.brain; stem.children.forEach(m => m.material.uniforms.uA.value = .8 * fade.brain);
   hemis.forEach(h => h.children[0].material.opacity = .22 * fade.brain);
   // camera
@@ -403,6 +479,7 @@ window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + 
   let tgt = new THREE.Vector3(0, -.15, 0), dist = 8.4;
   if (s.scene === 'syn') { tgt.set(0, .35, 0); dist = 8.6; }
   else if (s.scene === 'mus') { tgt.set(0, -.4, 0); dist = 8.8; }
+  else if (s.scene === 'kid') { if (s.focus) tgt.copy(kid.localToWorld(wp.set(...s.focus))); else tgt.set(0, .35, 0); dist = s.kdist || 10.5; }
   else if (t >= 0) { const parts = s.hot.filter(k => regions[k]?.userData.center);
     if (parts.length) { tgt.set(0, 0, 0); parts.forEach(k => tgt.add(brain.localToWorld(wp.copy(regions[k].userData.center)))); tgt.divideScalar(parts.length); dist = k2dist(parts); }
     else if (s.hot.includes('cortex')) dist = 6.4; else dist = 6.9; }
@@ -436,10 +513,10 @@ window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + 
   $('cap').innerHTML = c ? c.words.map(w => `<i class="${t >= w.t - .04 ? (w === c.words.findLast(x => t >= x.t - .04) ? 'now' : 'on') : ''}">${w.w}</i>`).join(' ') : '';
 } };
 // release/ion start times from beats
-for (const b of beats) { if (b.release) b.releaseT0 = b.t0; if (b.ionflow) b.ionT0 = b.t0; if (b.chart) b.chartT0 = b.t0; }
+for (const b of beats) { if (b.release) b.releaseT0 = b.t0; if (b.ionflow) b.ionT0 = b.t0; if (b.chart) b.chartT0 = b.t0; if (b.adr) b.adrT0 = b.t0; if (b.ach) b.achT0 = b.t0; }
 for (let i = 1; i < beats.length; i++) if (beats[i].chart && beats[i].chart === beats[i - 1].chart) beats[i].chartT0 = beats[i - 1].chartT0;
 for (let i = 1; i < beats.length; i++) { const p = beats[i - 1], b = beats[i];
-  if (b.release && p.release && b.scene === undefined) b.releaseT0 = p.releaseT0; if (b.ionflow && p.ionflow) b.ionT0 = p.ionT0; }
+  if (b.release && p.release && b.scene === undefined) b.releaseT0 = p.releaseT0; if (b.ionflow && p.ionflow) b.ionT0 = p.ionT0; if (b.adr && p.adr) b.adrT0 = p.adrT0; if (b.ach && p.ach) b.achT0 = p.achT0; }
 window.reel.seek(0);
 await document.fonts.ready;
 document.body.dataset.ready = 1;
