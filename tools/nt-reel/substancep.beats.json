@@ -1,0 +1,120 @@
+{
+ "name": "المادة P",
+ "latin": "SUBSTANCE P",
+ "coverHot": [
+  "cord"
+ ],
+ "fix": {
+  "«بي»": "P"
+ },
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 1,
+   "hot": [
+    "cord"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "fact": "الكابسايسين <b>ينشّط أعصاب الألم</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 2,
+   "hot": [],
+   "labels": [
+    "pre",
+    "receptor"
+   ],
+   "fact": "",
+   "hotLabels": [
+    "receptor"
+   ],
+   "scene": "syn",
+   "release": true
+  },
+  {
+   "at": 3,
+   "hot": [
+    "cord",
+    "thalamus"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "fact": "رسالة الألم ← <b>الدماغ</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "release": false
+  },
+  {
+   "at": 4,
+   "hot": [
+    "cord",
+    "thalamus"
+   ],
+   "labels": [],
+   "fact": "النتيجة: <b>حرقة</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 5,
+   "hot": [],
+   "labels": [],
+   "fact": "لماذا <b>نعتاد على الحار؟</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 6,
+   "hot": [],
+   "labels": [
+    "pre"
+   ],
+   "fact": "التكرار <b>يُفرغ المادة P</b>",
+   "hotLabels": [
+    "pre"
+   ],
+   "scene": "syn",
+   "release": false
+  },
+  {
+   "at": 7,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "fact": "رسالة الألم: <b>أضعف</b>",
+   "hotLabels": [],
+   "scene": "syn"
+  },
+  {
+   "at": 9,
+   "hot": [
+    "cord"
+   ],
+   "labels": [],
+   "fact": "كريمات الكابسايسين: <b>تسكين موضعي</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 10,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  }
+ ]
+}

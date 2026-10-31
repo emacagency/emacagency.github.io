@@ -1,0 +1,124 @@
+{
+ "name": "الأناندامايد",
+ "latin": "ANANDAMIDE",
+ "coverHot": [
+  "amygdala",
+  "cerebellum"
+ ],
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 1,
+   "hot": [
+    "cortex"
+   ],
+   "labels": [],
+   "fact": "الأناندامايد: <b>جزيء السعادة</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 3,
+   "hot": [],
+   "labels": [
+    "post",
+    "pre"
+   ],
+   "fact": "رسالة <b>عكسية</b>",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "reverse": true
+  },
+  {
+   "at": 4,
+   "hot": [],
+   "labels": [
+    "post"
+   ],
+   "fact": "تصنعها <b>الخلية المستقبلة</b>",
+   "hotLabels": [
+    "post"
+   ],
+   "scene": "syn",
+   "release": true,
+   "reverse": true
+  },
+  {
+   "at": 5,
+   "hot": [],
+   "labels": [
+    "pre"
+   ],
+   "fact": "وتُهدّئ <b>الخلية المرسلة</b>",
+   "hotLabels": [
+    "pre"
+   ],
+   "scene": "syn",
+   "release": true,
+   "reverse": true
+  },
+  {
+   "at": 6,
+   "hot": [],
+   "labels": [],
+   "fact": "أين <b>يظهر أثرها؟</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "release": false,
+   "reverse": false
+  },
+  {
+   "at": 7,
+   "hot": [
+    "amygdala"
+   ],
+   "labels": [
+    "amygdala"
+   ],
+   "fact": "تهدئة <b>الخوف</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 8,
+   "hot": [
+    "cerebellum"
+   ],
+   "labels": [
+    "cerebellum"
+   ],
+   "fact": "تنسيق <b>الحركة</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 9,
+   "hot": [
+    "hypothalamus",
+    "cord"
+   ],
+   "labels": [
+    "hypothalamus"
+   ],
+   "fact": "الشهية <b>والإحساس بالألم</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 10,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  }
+ ]
+}

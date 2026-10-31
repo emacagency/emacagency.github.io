@@ -43,7 +43,7 @@ const done = new Promise((ok, no) => ff.on('close', c => c ? no(new Error('ffmpe
 for (let f = 0; f < frames; f++) {
   await page.evaluate(t => reel.seek(t), f / FPS);
   const png = await shot();
-  if (f === Math.round(lead / 1000 * FPS * .6)) await writeFile(join(HERE, `out/${slug}-cover.jpg`), png); // the cover card, for the post
+  if (f === Math.round(lead / 1000 * FPS * .85)) await writeFile(join(HERE, `out/${slug}-cover.jpg`), png); // the cover card, for the post
   if (!ff.stdin.write(png)) await new Promise(r => ff.stdin.once('drain', r));
   if (f % 300 === 0) console.log(`${slug}: frame ${f}/${frames}`);
 }

@@ -146,6 +146,7 @@ regions.hypothalamus = (() => { const m = blob(.1, .07, .09); m.position.set(0, 
 regions.pituitary = (() => { const g = new THREE.Group(), b = blob(.06, .05, .06); b.position.set(0, -.45, .2); g.add(b);
   const st = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, .16, 8, 1, true), holo(RED, 0)); st.position.set(0, -.36, .16); g.add(st); return g; })();
 regions.cord = makeStem(() => holo(RED, 0), 1.06);
+regions.cerebellum = (() => { const m = new THREE.Mesh(cereb.geometry, holo(RED, 0)); m.scale.copy(cereb.scale).multiplyScalar(1.03); m.position.copy(cereb.position); return m; })();
 regions.cortex = new THREE.Group(); // handled by tinting the hemispheres
 // a soft red glow at the centre of every region, lit with it
 const glows = {};
@@ -228,6 +229,7 @@ label('forebrain', 'قاعدة الدماغ الأمامي', 'BASAL FOREBRAIN', 
 label('hypothalamus', 'تحت المهاد', 'HYPOTHALAMUS', anchorAt(brain, 0, -.25, .1), 80, 120);
 label('pituitary', 'الغدة النخامية', 'PITUITARY', anchorAt(brain, 0, -.45, .2), -60, 110);
 label('cord', 'جذع الدماغ والحبل الشوكي', 'BRAINSTEM · SPINAL CORD', anchorAt(brain, 0, -1.2, -.6), 150, -20);
+label('cerebellum', 'المخيخ', 'CEREBELLUM', anchorAt(brain, 0, -.5, -.85), -60, 100);
 label('cortex', 'القشرة الدماغية', 'CORTEX', anchorAt(brain, .75, .45, .1), 30, -70);
 label('motor', 'القشرة الحركية', 'MOTOR CORTEX', anchorAt(brain, -.45, .55, .02), -30, -70);
 label('pre', 'الخلية المُرسِلة', 'PRESYNAPTIC', anchorAt(syn, .9, 1.2, 0), 40, -60);
@@ -256,7 +258,7 @@ let lastScene = 'brain', fade = { brain: 1, syn: 0, mus: 0 };
 // close in on small parts, less on wide ones (cord, several parts at once)
 const k2dist = parts => parts.includes('cord') ? 6.9 : parts.length > 1 ? 6.0 : 5.3;
 const view = new THREE.Vector3(0, .2, 1).normalize(), camT = new THREE.Vector3(0, -.1, 0), wp = new THREE.Vector3();
-let camD = 15;
+let camD = 10;
 cam.setViewOffset(540, 960, 0, 110, 540, 960); // keep the subject above the captions
 window.reel = { duration: R.duration + .6 + LEAD, lead: LEAD, seek(tr) {
   const t = tr - LEAD;
@@ -277,7 +279,8 @@ window.reel = { duration: R.duration + .6 + LEAD, lead: LEAD, seek(tr) {
   const rel = s.release ? ease((t - s.releaseT0) / 1) : 0;
   const ph = t * .45;
   for (let i = 0; i < NT; i++) { const q = ntSeed[i], r = receptors[q.r].position, p = (ph + q.d) % 1, on = rel * (p < .85 ? 1 : 0);
-    const y = .25 - p * .55, x = q.x + (r.x - q.x) * ease(p * 1.25) + .03 * Math.sin(t * 3 + q.j), z = q.z + (r.z - q.z) * ease(p * 1.25);
+    const pp = s.reverse ? 1 - p : p; // retrograde messengers travel from the receiving cell back up
+    const y = .25 - pp * .55, x = q.x + (r.x - q.x) * ease(pp * 1.25) + .03 * Math.sin(t * 3 + q.j), z = q.z + (r.z - q.z) * ease(pp * 1.25);
     ntPos.set(on ? [x, y, z] : [0, -50, 0], i * 3); }
   ntGeo.attributes.position.needsUpdate = true;
   const ionOn = s.ionflow ? ease((t - s.ionT0) / 1) : 0;

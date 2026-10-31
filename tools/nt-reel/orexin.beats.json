@@ -1,0 +1,112 @@
+{
+ "name": "الأوركسين",
+ "latin": "OREXIN",
+ "coverHot": [
+  "hypothalamus"
+ ],
+ "projFrom": [
+  0,
+  -0.25,
+  0.1
+ ],
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 2,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 4,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [
+    "hypothalamus"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 5,
+   "hot": [
+    "hypothalamus",
+    "cortex"
+   ],
+   "labels": [],
+   "fact": "الأوركسين ← <b>مراكز اليقظة</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": true
+  },
+  {
+   "at": 7,
+   "hot": [
+    "hypothalamus",
+    "cortex"
+   ],
+   "labels": [],
+   "fact": "يثبّت <b>الصحو</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": true
+  },
+  {
+   "at": 8,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [
+    "hypothalamus"
+   ],
+   "fact": "ماذا لو <b>فُقدت هذه الخلايا؟</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": false
+  },
+  {
+   "at": 9,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "fact": "النوم القهري: <b>نعاس مفاجئ</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 12,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "fact": "بعض أدوية الأرق: <b>تحجب الأوركسين</b>",
+   "hotLabels": [
+    "receptor"
+   ],
+   "scene": "syn",
+   "release": false
+  },
+  {
+   "at": 14,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  }
+ ]
+}
