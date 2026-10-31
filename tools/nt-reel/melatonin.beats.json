@@ -1,0 +1,323 @@
+{
+ "name": "الميلاتونين",
+ "latin": "MELATONIN",
+ "coverHot": [
+  "pineal"
+ ],
+ "projFrom": [
+  0,
+  -0.08,
+  -0.34
+ ],
+ "outro": 2.6,
+ "hookRed": [
+  2,
+  5
+ ],
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "scene": "brain",
+   "hotLabels": [],
+   "chart": null
+  },
+  {
+   "at": 1,
+   "hot": [
+    "optic"
+   ],
+   "labels": [
+    "optic"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 2,
+   "hot": [
+    "optic",
+    "scn"
+   ],
+   "labels": [
+    "optic"
+   ],
+   "fact": "الظلام ← <b>العين</b> ← الساعة",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 3,
+   "hot": [
+    "scn"
+   ],
+   "labels": [
+    "scn"
+   ],
+   "fact": "الساعة البيولوجية: <b>تحت المهاد</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 4,
+   "hot": [
+    "scn",
+    "pineal"
+   ],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 5,
+   "hot": [
+    "pineal"
+   ],
+   "labels": [
+    "pineal"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 6,
+   "hot": [
+    "pineal"
+   ],
+   "labels": [
+    "pineal"
+   ],
+   "fact": "الغدة الصنوبرية ← <b>الميلاتونين</b>",
+   "proj": true,
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": "night"
+  },
+  {
+   "at": 7,
+   "hot": [
+    "pineal"
+   ],
+   "labels": [],
+   "fact": "<b>وقت النوم</b> قد حان",
+   "proj": false,
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": "night"
+  },
+  {
+   "at": 8,
+   "hot": [],
+   "labels": [],
+   "fact": "لماذا يهرب النوم <b>أمام الشاشة؟</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 9,
+   "hot": [
+    "optic"
+   ],
+   "labels": [
+    "optic"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 10,
+   "hot": [
+    "optic"
+   ],
+   "labels": [
+    "optic"
+   ],
+   "fact": "<b>الضوء الأزرق</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 11,
+   "hot": [
+    "optic",
+    "scn"
+   ],
+   "labels": [
+    "scn"
+   ],
+   "fact": "<b>الضوء الأزرق</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 12,
+   "hot": [
+    "scn"
+   ],
+   "labels": [
+    "scn"
+   ],
+   "fact": "الساعة تظن أنه <b>نهار</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 13,
+   "hot": [],
+   "labels": [
+    "pineal"
+   ],
+   "fact": "إفراز الميلاتونين <b>يتوقف</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": "light"
+  },
+  {
+   "at": 14,
+   "hot": [
+    "pineal"
+   ],
+   "labels": [
+    "pineal"
+   ],
+   "fact": "إضاءة خافتة ← <b>نوم في وقته</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  },
+  {
+   "at": 15,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "chart": null
+  }
+ ],
+ "charts": {
+  "night": {
+   "type": "curve",
+   "title": "الميلاتونين خلال 24 ساعة",
+   "sub": "ذروته ليلًا مقارنة بالنهار",
+   "dur": 2.6,
+   "big": {
+    "from": 1,
+    "to": 10,
+    "pre": "×"
+   },
+   "night": [
+    0.36,
+    0.83
+   ],
+   "pts": [
+    [
+     0,
+     0.06
+    ],
+    [
+     0.125,
+     0.05
+    ],
+    [
+     0.25,
+     0.06
+    ],
+    [
+     0.375,
+     0.2
+    ],
+    [
+     0.46,
+     0.62
+    ],
+    [
+     0.58,
+     1
+    ],
+    [
+     0.67,
+     0.93
+    ],
+    [
+     0.75,
+     0.5
+    ],
+    [
+     0.83,
+     0.13
+    ],
+    [
+     0.92,
+     0.06
+    ],
+    [
+     1,
+     0.06
+    ]
+   ],
+   "xl": [
+    [
+     0,
+     "12 ظهرًا"
+    ],
+    [
+     0.25,
+     "6 مساءً"
+    ],
+    [
+     0.5,
+     "12 ليلًا"
+    ],
+    [
+     0.75,
+     "6 صباحًا"
+    ],
+    [
+     1,
+     "12 ظهرًا"
+    ]
+   ]
+  },
+  "light": {
+   "type": "bars",
+   "title": "مدة إفراز الميلاتونين",
+   "sub": "إضاءة الغرفة قبل النوم تقصّرها",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": -90,
+    "suf": "دقيقة"
+   },
+   "bars": [
+    {
+     "label": "إضاءة خافتة",
+     "v": 0.92
+    },
+    {
+     "label": "إضاءة الغرفة",
+     "v": 0.92,
+     "to": 0.68,
+     "hot": true
+    }
+   ]
+  }
+ },
+ "series": "علم الشعور · الهرمونات"
+}

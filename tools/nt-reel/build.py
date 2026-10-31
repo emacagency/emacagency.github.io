@@ -85,7 +85,7 @@ for i, l in enumerate(lines): print(i, l["a"], " ".join(w["w"] for w in l["words
 # change, a chirp when labels appear and a shimmer when a part lights up red
 import numpy as np
 SR = 48000
-n = int((dur + 1) * SR); mix = np.zeros(n)
+n = int((dur + 1 + cfg.get("outro", 0)) * SR); mix = np.zeros(n)
 rng = np.random.default_rng(3)
 def put(t, x, gain):
     i = int(max(0, t) * SR); x = x[: max(0, n - i)]; mix[i:i + len(x)] += x * gain
@@ -109,7 +109,14 @@ for b in cfg["beats"]:
     if b.get("scene") and b["scene"] != prev["scene"]: put(t - .35, whoosh(), .16); prev["scene"] = b["scene"]
     if set(b.get("labels", [])) - set(prev["labels"]): put(t + .05, chirp(), .07)
     if set(b.get("hot", [])) - set(prev["hot"]): put(t + .1, shimmer(), .06)
+    if b.get("chart") and b["chart"] != prev.get("chart"):
+        put(t - .1, sweep(.9), .08)
+        for k in range(16): put(t + .3 + k * .1, chirp(2200 + 60 * k, 2400 + 60 * k, .04), .035)
+    prev["chart"] = b.get("chart")
     prev["labels"], prev["hot"] = b.get("labels", []), b.get("hot", [])
+if cfg.get("outro"):
+    t_out = lines[-1]["b"] + .35
+    put(t_out - .3, whoosh(.8), .16); put(t_out + .1, shimmer(1.6), .09)
 import wave
 pcm = (np.clip(mix, -1, 1) * 32767).astype("<i2")
 with wave.open(str(HERE / "out" / f"{slug}-sfx.wav"), "wb") as w:

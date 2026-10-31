@@ -21,6 +21,7 @@ await page.goto(`http://127.0.0.1:${server.address().port}/reel.html?${slug}`);
 await page.waitForFunction(() => document.body.dataset.ready, null, { timeout: 60000 });
 const cdp = await page.context().newCDPSession(page);
 const shot = async () => Buffer.from((await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 94, clip: { x: 0, y: 0, width: 540, height: 960, scale: 2 } })).data, 'base64');
+const coverF = Math.round(await page.evaluate(() => reel.coverAt) * FPS);
 const frames = Math.ceil(await page.evaluate(() => reel.duration) * FPS), lead = Math.round(await page.evaluate(() => reel.lead) * 1000);
 
 const si = process.argv.indexOf('--stills');
@@ -43,7 +44,7 @@ const done = new Promise((ok, no) => ff.on('close', c => c ? no(new Error('ffmpe
 for (let f = 0; f < frames; f++) {
   await page.evaluate(t => reel.seek(t), f / FPS);
   const png = await shot();
-  if (f === Math.round(lead / 1000 * FPS * .85)) await writeFile(join(HERE, `out/${slug}-cover.jpg`), png); // the cover card, for the post
+  if (f === coverF) await writeFile(join(HERE, `out/${slug}-cover.jpg`), png); // the cover card, for the post
   if (!ff.stdin.write(png)) await new Promise(r => ff.stdin.once('drain', r));
   if (f % 300 === 0) console.log(`${slug}: frame ${f}/${frames}`);
 }
