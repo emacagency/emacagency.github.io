@@ -1,0 +1,129 @@
+{
+ "name": "الغلوتامات",
+ "latin": "GLUTAMATE",
+ "ion": "صوديوم وكالسيوم",
+ "ionLatin": "Na⁺ · Ca²⁺",
+ "beats": [
+  {
+   "at": 0,
+   "hot": [
+    "cortex"
+   ],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 4,
+   "hot": [
+    "cortex"
+   ],
+   "labels": [
+    "cortex"
+   ],
+   "fact": "الناقل المنشّط <b>الأكثر انتشارًا</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 6,
+   "hot": [],
+   "labels": [
+    "pre",
+    "receptor"
+   ],
+   "fact": "",
+   "hotLabels": [
+    "receptor"
+   ],
+   "scene": "syn",
+   "release": true
+  },
+  {
+   "at": 7,
+   "hot": [],
+   "labels": [
+    "ions",
+    "receptor"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "ionflow": "in"
+  },
+  {
+   "at": 8,
+   "hot": [],
+   "labels": [
+    "post"
+   ],
+   "fact": "الخلية التالية: <b>تنشط</b>",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "ionflow": "in"
+  },
+  {
+   "at": 9,
+   "hot": [
+    "hippocampus"
+   ],
+   "labels": [
+    "hippocampus"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "release": false,
+   "ionflow": false
+  },
+  {
+   "at": 11,
+   "hot": [
+    "hippocampus"
+   ],
+   "labels": [
+    "hippocampus"
+   ],
+   "fact": "التقوية طويلة الأمد <b>LTP</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 13,
+   "hot": [],
+   "labels": [
+    "post"
+   ],
+   "fact": "الزيادة المفرطة <b>تُرهق الخلايا</b>",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "ionflow": "in"
+  },
+  {
+   "at": 14,
+   "hot": [],
+   "labels": [
+    "post"
+   ],
+   "fact": "التوازن: <b>الغلوتامات ⇄ غابا</b>",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "ionflow": "in"
+  },
+  {
+   "at": 15,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "release": false,
+   "ionflow": false
+  }
+ ]
+}

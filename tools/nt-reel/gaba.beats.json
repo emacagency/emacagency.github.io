@@ -1,0 +1,154 @@
+{
+ "name": "غابا",
+ "latin": "GABA",
+ "ion": "أيونات الكلوريد",
+ "ionLatin": "Cl⁻",
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 2,
+   "hot": [
+    "thalamus",
+    "amygdala"
+   ],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 3,
+   "hot": [],
+   "labels": [
+    "pre",
+    "post"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "syn"
+  },
+  {
+   "at": 4,
+   "hot": [],
+   "labels": [
+    "pre",
+    "post"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true
+  },
+  {
+   "at": 5,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "fact": "",
+   "hotLabels": [
+    "receptor"
+   ],
+   "scene": "syn",
+   "release": true
+  },
+  {
+   "at": 6,
+   "hot": [],
+   "labels": [
+    "ions",
+    "receptor"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "ionflow": "in"
+  },
+  {
+   "at": 7,
+   "hot": [],
+   "labels": [
+    "post"
+   ],
+   "fact": "الخلية التالية: <b>أقل استثارة</b>",
+   "hotLabels": [],
+   "scene": "syn",
+   "release": true,
+   "ionflow": "in"
+  },
+  {
+   "at": 8,
+   "hot": [
+    "cortex"
+   ],
+   "labels": [
+    "cortex"
+   ],
+   "fact": "يحمي من <b>فرط الاستثارة</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "release": false,
+   "ionflow": false
+  },
+  {
+   "at": 9,
+   "hot": [
+    "cortex"
+   ],
+   "labels": [
+    "cortex"
+   ],
+   "fact": "غابا <b>يكبح</b> · الغلوتامات <b>ينشّط</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 11,
+   "hot": [
+    "amygdala"
+   ],
+   "labels": [
+    "amygdala"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 13,
+   "hot": [
+    "thalamus"
+   ],
+   "labels": [
+    "thalamus"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 14,
+   "hot": [],
+   "labels": [],
+   "fact": "أدوية القلق والنوم: <b>بوصفة طبية فقط</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 16,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  }
+ ]
+}

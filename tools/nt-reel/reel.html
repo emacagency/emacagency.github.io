@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>reel</title>
+<style>
+/* One 9:16 neurotransmitter reel (540x960 CSS px, rendered at 2x). render.mjs calls reel.seek(t) per frame. */
+@font-face { font-family: Tajawal; font-weight: 800; src: url(fonts/tajawal-800.ttf); }
+@font-face { font-family: Tajawal; font-weight: 500; src: url(fonts/tajawal-500.ttf); }
+html, body { margin: 0; width: 540px; height: 960px; overflow: hidden; background: #050B18; }
+body { position: relative; font-family: Tajawal, sans-serif; color: #fff; direction: rtl; }
+.bg { position: absolute; inset: 0; background: radial-gradient(80% 45% at 50% 42%, #0B2348 0%, #071430 45%, #040A18 100%); }
+.grid { position: absolute; inset: 0; background: linear-gradient(rgba(80,170,255,.07) 1px, transparent 1px) 0 0 / 100% 30px, linear-gradient(90deg, rgba(80,170,255,.07) 1px, transparent 1px) 0 0 / 30px 100%; -webkit-mask-image: radial-gradient(75% 60% at 50% 45%, #000, transparent); }
+canvas { position: absolute; inset: 0; width: 540px; height: 960px; }
+.tag { position: absolute; top: 52px; right: 26px; font-weight: 500; font-size: 15px; color: #9FD4FF; letter-spacing: .02em; }
+.name { position: absolute; top: 74px; right: 26px; font-weight: 800; font-size: 40px; line-height: 1.15; text-shadow: 0 0 18px rgba(80,170,255,.55); }
+.name small { display: block; font: 500 15px Tajawal, sans-serif; color: #FF6B78; direction: ltr; text-align: right; letter-spacing: .12em; margin-top: 2px; }
+.lab { position: absolute; left: 0; top: 0; white-space: nowrap; font-weight: 800; font-size: 19px; color: #fff; text-shadow: 0 0 10px rgba(80,170,255,.9), 0 0 2px #000; opacity: 0; }
+.lab.hot { color: #FF6B78; text-shadow: 0 0 12px rgba(255,59,74,.9), 0 0 2px #000; }
+.lab small { display: block; font: 500 12px Tajawal, sans-serif; color: #BFE3FF; direction: ltr; letter-spacing: .08em; }
+.lab.hot small { color: #FFC2C7; }
+svg.lines { position: absolute; inset: 0; width: 540px; height: 960px; }
+.cap { position: absolute; top: 676px; inset-inline: 22px; text-align: center; font-weight: 800; font-size: 34px; line-height: 1.4; color: #fff; text-shadow: 0 0 14px rgba(70,160,255,.95), 0 0 30px rgba(70,160,255,.5), 0 2px 3px rgba(0,0,0,.6); }
+.cap i { font-style: normal; opacity: .38; }
+.cap i.on { opacity: 1; }
+.cap i.now { opacity: 1; color: #FFE2E5; text-shadow: 0 0 14px rgba(255,59,74,.95), 0 0 30px rgba(255,59,74,.45); }
+.fact { position: absolute; top: 160px; right: 26px; font-weight: 800; font-size: 22px; color: #fff; opacity: 0; text-shadow: 0 0 12px rgba(80,170,255,.8); }
+.fact b { color: #FF6B78; text-shadow: 0 0 12px rgba(255,59,74,.8); }
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="grid"></div>
+<canvas id="c"></canvas>
+<svg class="lines" id="lines"></svg>
+<div id="labs"></div>
+<div class="tag">علم الشعور · النواقل العصبية</div>
+<div class="name" id="name"></div>
+<div class="fact" id="fact"></div>
+<div class="cap" id="cap"></div>
+<script type="module">
+import * as THREE from './three.module.js';
+const slug = location.search.slice(1);
+const R = await (await fetch(`${slug}.json`)).json();
+const $ = id => document.getElementById(id);
+$('name').innerHTML = `${R.name}<small>${R.latin}</small>`;
+
+// deterministic randomness
+let seed = 11; const rnd = (a = 0, b = 1) => a + (b - a) * (((seed = (seed * 16807) % 2147483647) - 1) / 2147483646);
+const BLUE = new THREE.Color('#4FB4FF'), RED = new THREE.Color('#FF3B4A'), WHITE = new THREE.Color('#EAF6FF');
+
+const ren = new THREE.WebGLRenderer({ canvas: $('c'), antialias: true, alpha: true, preserveDrawingBuffer: true });
+ren.setPixelRatio(2); ren.setSize(540, 960, false); ren.setClearColor(0, 0);
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(34, 540 / 960, .05, 60);
+
+// fresnel hologram material: bright rim, faint body, moving scan lines
+function holo(color, alpha = 1) {
+  return new THREE.ShaderMaterial({
+    uniforms: { uC: { value: new THREE.Color(color) }, uA: { value: alpha }, uT: { value: 0 }, uHot: { value: 0 } },
+    vertexShader: `varying vec3 vN; varying vec3 vV; varying vec3 vW;
+      void main(){ vec4 w = modelMatrix * vec4(position,1.); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); vV = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `uniform vec3 uC; uniform float uA, uT, uHot; varying vec3 vN; varying vec3 vV; varying vec3 vW;
+      void main(){ float f = pow(1. - abs(dot(normalize(vN), normalize(vV))), 2.2);
+        float scan = .75 + .25 * sin(vW.y * 90. - uT * 6.);
+        vec3 c = mix(uC, vec3(1.0, .23, .29), uHot);
+        float a = (f * .95 + .07 + uHot * .18) * scan * uA;
+        gl_FragColor = vec4(c * (1.1 + f), a); }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+  });
+}
+// soft round dot for every particle
+const dot = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.45, 'rgba(255,255,255,.85)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
+const pts = (geo, color, size, op = .8) => new THREE.Points(geo, new THREE.PointsMaterial({ color, size: size * 1.6, map: dot, transparent: true, opacity: op, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }));
+const mats = [];
+const track = m => { m.traverse(o => o.material?.uniforms && mats.push(o.material)); return m; };
+
+/* ---------- brain ---------- */
+const brain = new THREE.Group(); scene.add(brain);
+function hemisphere(side) {
+  const g = new THREE.IcosahedronGeometry(1, 40), p = g.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) {
+    v.fromBufferAttribute(p, i);
+    // folds: ridged noise from a few rotated waves
+    const fold = Math.abs(Math.sin(v.x * 13 + v.y * 8 + Math.sin(v.z * 9) * 2.2)) * .5 + Math.abs(Math.sin(v.z * 12 - v.y * 9 + Math.cos(v.x * 8) * 2)) * .5;
+    v.multiplyScalar(1 + .07 * fold);
+    v.x *= .58; v.y *= .7; v.z *= 1.1;
+    if (v.y < 0) v.y *= .78;                         // flatter base
+    if (v.x * side < 0) v.x *= .25;                   // flat medial wall
+    if (v.y < -.15 && v.z > -.2) v.x *= 1 + .12 * Math.min(1, (-.15 - v.y) * 4); // temporal lobes bulge out
+    v.x += side * .5;
+    p.setXYZ(i, v.x, v.y, v.z);
+  }
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, holo(BLUE, .9));
+  const sub = new THREE.BufferGeometry(), arr = [];
+  for (let i = 0; i < p.count; i += 3) arr.push(p.getX(i), p.getY(i), p.getZ(i));
+  sub.setAttribute('position', new THREE.Float32BufferAttribute(arr, 3));
+  m.add(pts(sub, '#7CC8FF', .008, .3));
+  return m;
+}
+const hemis = [hemisphere(1), hemisphere(-1)]; hemis.forEach(h => brain.add(h));
+const cereb = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), holo('#3FA2F0', .8)); cereb.scale.set(.62, .3, .36); cereb.position.set(0, -.5, -.85); brain.add(cereb);
+const stem = new THREE.Mesh(new THREE.CylinderGeometry(.13, .09, .75, 24, 1, true), holo('#3FA2F0', .8)); stem.position.set(0, -.75, -.42); stem.rotation.x = .35; brain.add(stem);
+// regions, shown red when explained
+const regions = {};
+const blob = (sx, sy, sz) => { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), holo(RED, 0)); m.scale.set(sx, sy, sz); return m; };
+function pair(make, pos) { const g = new THREE.Group(); [1, -1].forEach(s => { const m = make(s); m.position.set(pos[0] * s, pos[1], pos[2]); g.add(m); }); return g; }
+regions.amygdala = pair(() => blob(.09, .08, .1), [.4, -.32, .28]);
+regions.thalamus = pair(() => blob(.12, .1, .17), [.13, -.02, -.08]);
+regions.hippocampus = pair(s => { const c = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, .12), new THREE.Vector3(-.03 * s, .05, -.15), new THREE.Vector3(-.1 * s, .25, -.4)]); return new THREE.Mesh(new THREE.TubeGeometry(c, 40, .055, 12), holo(RED, 0)); }, [.4, -.33, .14]);
+regions.forebrain = (() => { const m = blob(.17, .07, .1); m.position.set(0, -.28, .38); return m; })();
+regions.motor = pair(s => { const c = new THREE.EllipseCurve(0, 0, .55, .62, 0, Math.PI / 2); const p3 = c.getPoints(30).map(p => new THREE.Vector3(p.x * s * .95, p.y * 1.0 - .08, 0)); return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(p3), 60, .045, 10), holo(RED, 0)); }, [0, 0, .02]);
+regions.cortex = new THREE.Group(); // handled by tinting the hemispheres
+Object.values(regions).forEach(r => { brain.add(r); track(r); });
+track(brain);
+// projections from the basal forebrain to the cortex
+const projG = new THREE.BufferGeometry(), projP = [];
+for (let i = 0; i < 40; i++) { const a = new THREE.Vector3(rnd(-.1, .1), -.26, .38), b = new THREE.Vector3(rnd(-1, 1), rnd(.1, .65), rnd(-.9, .9)); b.x = Math.sign(b.x) * (.5 + .45 * Math.abs(b.x)); projP.push(a.x, a.y, a.z, b.x, b.y, b.z); }
+projG.setAttribute('position', new THREE.Float32BufferAttribute(projP, 3));
+const proj = new THREE.LineSegments(projG, new THREE.LineBasicMaterial({ color: RED, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+brain.add(proj);
+
+/* ---------- synapse ---------- */
+const syn = new THREE.Group(); scene.add(syn);
+const pre = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 48), holo(BLUE)); pre.scale.set(.95, .8, .95); pre.position.y = .95; syn.add(pre);
+const axon = new THREE.Mesh(new THREE.CylinderGeometry(.22, .3, 1.6, 32, 1, true), holo(BLUE)); axon.position.y = 2.3; syn.add(axon);
+const post = new THREE.Mesh(new THREE.SphereGeometry(4, 96, 48, 0, Math.PI * 2, 0, .42), holo(BLUE)); post.position.y = -4.25; syn.add(post);
+const vesicles = new THREE.Group(); syn.add(vesicles);
+for (let i = 0; i < 26; i++) { const v = new THREE.Mesh(new THREE.SphereGeometry(rnd(.07, .1), 20, 14), holo('#7FD0FF')); v.position.set(rnd(-.55, .55), rnd(.35, 1.1), rnd(-.5, .5)); v.userData.y0 = v.position.y; vesicles.add(v); }
+const receptors = [];
+for (let i = 0; i < 9; i++) { const x = -1.2 + i * .3, r = new THREE.Mesh(new THREE.CylinderGeometry(.06, .06, .16, 16, 1, true), holo('#7FD0FF')); r.position.set(x, -.25 - .012 * x * x, rnd(-.15, .15)); syn.add(r); receptors.push(r); }
+// neurotransmitter molecules (red) and ions (white) crossing the cleft
+const NT = 260, ntPos = new Float32Array(NT * 3), ntSeed = Array.from({ length: NT }, () => ({ x: rnd(-.45, .45), z: rnd(-.35, .35), d: rnd(0, 1), r: Math.floor(rnd(0, 9)), j: rnd(0, 6.28) }));
+const ntGeo = new THREE.BufferGeometry(); ntGeo.setAttribute('position', new THREE.BufferAttribute(ntPos, 3));
+const nt = pts(ntGeo, '#FF3B4A', .075, 1); nt.frustumCulled = false; syn.add(nt);
+const ION = 140, ionPos = new Float32Array(ION * 3), ionSeed = Array.from({ length: ION }, () => ({ r: Math.floor(rnd(0, 9)), d: rnd(0, 1), j: rnd(0, 6.28) }));
+const ionGeo = new THREE.BufferGeometry(); ionGeo.setAttribute('position', new THREE.BufferAttribute(ionPos, 3));
+const ions = pts(ionGeo, '#FFFFFF', .05, .9); ions.frustumCulled = false; syn.add(ions);
+track(syn);
+
+/* ---------- muscle (acetylcholine) ---------- */
+const mus = new THREE.Group(); scene.add(mus);
+const fiberMat = new THREE.ShaderMaterial({
+  uniforms: { uS: { value: 1 }, uT: { value: 0 } },
+  vertexShader: `varying vec3 vN; varying vec3 vV; varying vec3 vP; void main(){ vP = position; vec4 w = modelMatrix * vec4(position,1.); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix * viewMatrix * w; }`,
+  fragmentShader: `uniform float uS, uT; varying vec3 vN; varying vec3 vV; varying vec3 vP;
+    void main(){ float f = pow(1. - abs(dot(normalize(vN), normalize(vV))), 2.); float band = smoothstep(.55, 1., sin(vP.y * 22. / uS) * .5 + .5);
+      vec3 c = mix(vec3(.31,.7,1.), vec3(1.,.25,.3), (1. - uS) * 4.); gl_FragColor = vec4(c * 1.3, (f * .9 + band * .28 + .05)); }`,
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
+const fiber = new THREE.Mesh(new THREE.CylinderGeometry(.55, .55, 4.2, 64, 1, true), fiberMat); fiber.rotation.z = Math.PI / 2; fiber.position.y = -.9; mus.add(fiber);
+const nerve = new THREE.Mesh(new THREE.CylinderGeometry(.1, .14, 2.2, 24, 1, true), holo(BLUE)); nerve.position.set(0, 1.25, 0); mus.add(nerve);
+const term = new THREE.Mesh(new THREE.SphereGeometry(.38, 40, 30), holo(BLUE)); term.scale.y = .7; term.position.set(0, .05, 0); mus.add(term);
+const MA = 120, maPos = new Float32Array(MA * 3), maSeed = Array.from({ length: MA }, () => ({ x: rnd(-.3, .3), z: rnd(-.3, .3), d: rnd(0, 1) }));
+const maGeo = new THREE.BufferGeometry(); maGeo.setAttribute('position', new THREE.BufferAttribute(maPos, 3));
+const ach = pts(maGeo, '#FF3B4A', .06, 1); ach.frustumCulled = false; mus.add(ach);
+track(mus);
+
+/* ---------- labels ---------- */
+const labs = {}, lineEls = {};
+function label(id, ar, la, anchor, dx, dy) {
+  const el = document.createElement('div'); el.className = 'lab'; el.innerHTML = `${ar}${la ? `<small>${la}</small>` : ''}`; $('labs').append(el);
+  const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line'); ln.setAttribute('stroke', '#9FD4FF'); ln.setAttribute('stroke-width', '1'); $('lines').append(ln);
+  labs[id] = { el, ln, anchor, dx, dy };
+}
+const v3 = new THREE.Vector3();
+function placeLabels(on, hot) {
+  for (const [id, L] of Object.entries(labs)) {
+    const a = on[id] || 0; L.el.style.opacity = a; L.ln.style.opacity = a * .7;
+    L.el.classList.toggle('hot', !!hot[id]); L.ln.setAttribute('stroke', hot[id] ? '#FF6B78' : '#9FD4FF');
+    if (!a) continue;
+    L.anchor.getWorldPosition(v3); v3.project(cam);
+    const x = (v3.x * .5 + .5) * 540, y = (-v3.y * .5 + .5) * 960, lx = x + L.dx, ly = y + L.dy;
+    const w = L.el.offsetWidth, h = L.el.offsetHeight, left = Math.max(14, Math.min(526 - w, lx - w / 2));
+    L.el.style.transform = `translate(${left}px, ${ly - h / 2}px)`;
+    L.ln.setAttribute('x1', x); L.ln.setAttribute('y1', y); L.ln.setAttribute('x2', lx); L.ln.setAttribute('y2', ly + (L.dy > 0 ? -h / 2 : h / 2));
+  }
+}
+const anchorAt = (parent, x, y, z) => { const o = new THREE.Object3D(); o.position.set(x, y, z); parent.add(o); return o; };
+label('amygdala', 'اللوزة الدماغية', 'AMYGDALA', anchorAt(brain, .4, -.32, .28), 70, 95);
+label('thalamus', 'المهاد', 'THALAMUS', anchorAt(brain, -.13, -.02, -.08), -80, -110);
+label('hippocampus', 'الحُصين', 'HIPPOCAMPUS', anchorAt(brain, -.42, -.25, -.1), -60, 105);
+label('forebrain', 'قاعدة الدماغ الأمامي', 'BASAL FOREBRAIN', anchorAt(brain, 0, -.28, .38), 0, 110);
+label('cortex', 'القشرة الدماغية', 'CORTEX', anchorAt(brain, .75, .45, .1), 30, -70);
+label('motor', 'القشرة الحركية', 'MOTOR CORTEX', anchorAt(brain, -.45, .55, .02), -30, -70);
+label('pre', 'الخلية المُرسِلة', 'PRESYNAPTIC', anchorAt(syn, .9, 1.2, 0), 40, -60);
+label('post', 'الخلية المستقبِلة', 'POSTSYNAPTIC', anchorAt(syn, -.9, -.32, 0), -40, 70);
+label('receptor', 'المستقبِلات', 'RECEPTORS', anchorAt(syn, .9, -.25, 0), 50, 60);
+label('ions', R.ion || '', R.ionLatin || '', anchorAt(syn, -.3, -.45, 0), -70, 110);
+label('nerve', 'العصب الحركي', 'MOTOR NEURON', anchorAt(mus, 0, .7, 0), 110, 70);
+label('muscle', 'الليف العضلي', 'MUSCLE FIBER', anchorAt(mus, 1.4, -1.3, 0), 0, 80);
+label('enzyme', 'إنزيم التفكيك', 'ACETYLCHOLINESTERASE', anchorAt(mus, -.4, -.35, 0), -40, 120);
+
+/* ---------- captions ---------- */
+const chunks = [];
+R.lines.forEach(l => { const n = Math.ceil(l.words.length / 5), k = Math.ceil(l.words.length / n);
+  for (let i = 0; i < l.words.length; i += k) { const w = l.words.slice(i, i + k), next = l.words[i + k];
+    chunks.push({ a: w[0].t, b: next ? next.t : l.b + .2, words: w }); } });
+
+/* ---------- timeline ---------- */
+const ease = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+const T = b => (b.at !== undefined ? R.lines[b.at].a : b.t) + (b.dt || 0) - .2;
+const beats = R.beats.map(b => ({ ...b, t0: T(b) }));
+const stateAt = t => { const s = { scene: 'brain', hot: [], labels: [], cortex: 0, proj: 0, fact: '' }; let since = 99, sceneSince = 99;
+  for (const b of beats) if (b.t0 <= t) { if (b.scene && b.scene !== s.scene) sceneSince = t - b.t0; Object.assign(s, b); since = t - b.t0; }
+  return { ...s, since, sceneSince }; };
+let lastScene = 'brain', fade = { brain: 1, syn: 0, mus: 0 };
+
+window.reel = { duration: R.duration + .6, seek(t) {
+  const s = stateAt(t);
+  // scene crossfade
+  const k = ease(s.sceneSince / .7);
+  for (const n of ['brain', 'syn', 'mus']) fade[n] = n === s.scene ? k : Math.min(fade[n], 1 - k);
+  brain.visible = fade.brain > .01; syn.visible = fade.syn > .01; mus.visible = fade.mus > .01;
+  // brain: slow turn, gentle push-in, regions in red
+  brain.rotation.y = 1.15 + .45 * Math.sin(t * .16); brain.rotation.x = .1;
+  const hotSet = new Set(s.hot);
+  for (const [k2, r] of Object.entries(regions)) r.traverse(o => { if (o.material?.uniforms) { const u = o.material.uniforms; const target = hotSet.has(k2) ? 1 : 0; u.uA.value += (target * (.75 + .25 * Math.sin(t * 5)) - u.uA.value) * .25; u.uHot.value = 1; } });
+  hemis.forEach(h => { h.material.uniforms.uHot.value += ((hotSet.has('cortex') || hotSet.has('motor') && false ? .8 : 0) - h.material.uniforms.uHot.value) * .15; });
+  proj.material.opacity += ((s.proj ? .55 : 0) - proj.material.opacity) * .15;
+  // synapse: release, cross, bind; ions flow when bound
+  const rel = s.release ? ease((t - s.releaseT0) / 1) : 0;
+  const ph = t * .45;
+  for (let i = 0; i < NT; i++) { const q = ntSeed[i], r = receptors[q.r].position, p = (ph + q.d) % 1, on = rel * (p < .85 ? 1 : 0);
+    const y = .25 - p * .55, x = q.x + (r.x - q.x) * ease(p * 1.25) + .03 * Math.sin(t * 3 + q.j), z = q.z + (r.z - q.z) * ease(p * 1.25);
+    ntPos.set(on ? [x, y, z] : [0, -50, 0], i * 3); }
+  ntGeo.attributes.position.needsUpdate = true;
+  const ionOn = s.ionflow ? ease((t - s.ionT0) / 1) : 0;
+  for (let i = 0; i < ION; i++) { const q = ionSeed[i], r = receptors[q.r].position, p = (t * .5 + q.d) % 1, dir = s.ionflow === 'out' ? -1 : 1;
+    ionPos.set(ionOn ? [r.x + .05 * Math.sin(q.j + t * 4), r.y + .35 - dir * 0 - p * .9, r.z + .05 * Math.cos(q.j + t * 4)] : [0, -50, 0], i * 3); }
+  ionGeo.attributes.position.needsUpdate = true;
+  receptors.forEach(r => { r.material.uniforms.uHot.value += ((rel > .5 ? 1 : 0) - r.material.uniforms.uHot.value) * .2; });
+  vesicles.children.forEach((v, i) => { v.position.y = v.userData.y0 + .03 * Math.sin(t * 2 + i); });
+  syn.rotation.y = Math.sin(t * .25) * .35; syn.rotation.x = .12;
+  // muscle: ACh crosses, fiber contracts, enzyme clears, fiber relaxes
+  const mT = s.scene === 'mus' ? s.sceneSince : 0, cyc = (mT % 4.5) / 4.5;
+  const cross = cyc < .45 ? cyc / .45 : 1, clear = cyc > .6 ? Math.min(1, (cyc - .6) / .25) : 0;
+  for (let i = 0; i < MA; i++) { const q = maSeed[i], p = (cross + q.d * .25) % 1; maPos.set(cyc < .85 && (1 - clear) > q.d ? [q.x, -.15 - Math.min(1, cross + q.d * .2) * .2, q.z] : [0, -50, 0], i * 3); }
+  maGeo.attributes.position.needsUpdate = true;
+  const contr = cyc > .35 && cyc < .7 ? ease((cyc - .35) / .1) * (1 - ease((cyc - .6) / .1)) : 0;
+  fiber.scale.y = 1 - .12 * contr; fiberMat.uniforms.uS.value = 1 - .12 * contr;
+  mus.rotation.y = -.35 + Math.sin(t * .2) * .15;
+  // fades
+  const setA = (g, a) => g.traverse(o => { if (o.material) { if (o.material.uniforms?.uA && g !== brain) o.material.uniforms.uA.value = (o.userData.a0 ??= o.material.uniforms.uA.value) * a; else if (o.material.uniforms?.uA) {} else { o.material.opacity = (o.userData.o0 ??= o.material.opacity) * a; } } });
+  setA(syn, fade.syn); setA(mus, fade.mus);
+  hemis.concat([cereb, stem]).forEach(m => m.material.uniforms.uA.value = .9 * fade.brain);
+  hemis.forEach(h => h.children[0].material.opacity = .3 * fade.brain);
+  // camera
+  const z = { brain: 7.4 - .8 * ease(s.since / 5) * (s.hot.length ? 1 : 0), syn: 8.6, mus: 8.8 }[s.scene];
+  cam.position.lerp(new THREE.Vector3(0, s.scene === 'brain' ? .35 : .2, z), t < .05 ? 1 : .08);
+  cam.lookAt(0, s.scene === 'brain' ? -.75 : s.scene === 'mus' ? -.75 : -.25, 0);
+  mats.forEach(m => m.uniforms.uT && (m.uniforms.uT.value = t));
+  fiberMat.uniforms.uT.value = t;
+  ren.render(scene, cam);
+  // labels
+  const on = {}, hot = {}; const la = ease(s.since / .4);
+  (s.labels || []).forEach(id => { on[id] = la * Math.max(fade[s.scene], 0); });
+  (s.hot || []).forEach(id => hot[id] = 1); (s.hotLabels || []).forEach(id => hot[id] = 1);
+  placeLabels(on, hot);
+  // fact line
+  $('fact').innerHTML = s.fact || ''; $('fact').style.opacity = s.fact ? ease(s.since / .4) : 0;
+  // captions
+  const c = chunks.find(c => t >= c.a - .05 && t < c.b);
+  $('cap').innerHTML = c ? c.words.map(w => `<i class="${t >= w.t - .04 ? (w === c.words.findLast(x => t >= x.t - .04) ? 'now' : 'on') : ''}">${w.w}</i>`).join(' ') : '';
+} };
+// release/ion start times from beats
+for (const b of beats) { if (b.release) b.releaseT0 = b.t0; if (b.ionflow) b.ionT0 = b.t0; }
+for (let i = 1; i < beats.length; i++) { const p = beats[i - 1], b = beats[i];
+  if (b.release && p.release && b.scene === undefined) b.releaseT0 = p.releaseT0; if (b.ionflow && p.ionflow) b.ionT0 = p.ionT0; }
+window.reel.seek(0);
+await document.fonts.ready;
+document.body.dataset.ready = 1;
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+{
+ "name": "الأسيتيل كولين",
+ "latin": "ACETYLCHOLINE",
+ "fix": {},
+ "beats": [
+  {
+   "at": 0,
+   "hot": [
+    "motor"
+   ],
+   "labels": [
+    "motor"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 2,
+   "hot": [],
+   "labels": [
+    "nerve",
+    "muscle"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "mus"
+  },
+  {
+   "at": 3,
+   "hot": [],
+   "labels": [
+    "nerve",
+    "muscle"
+   ],
+   "fact": "أول ناقل عصبي اكتُشف: <b>1921</b>",
+   "hotLabels": [],
+   "scene": "mus"
+  },
+  {
+   "at": 5,
+   "hot": [],
+   "labels": [
+    "nerve",
+    "muscle"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "mus"
+  },
+  {
+   "at": 8,
+   "hot": [],
+   "labels": [
+    "enzyme"
+   ],
+   "fact": "",
+   "hotLabels": [
+    "enzyme"
+   ],
+   "scene": "mus"
+  },
+  {
+   "at": 10,
+   "hot": [
+    "forebrain"
+   ],
+   "labels": [
+    "forebrain"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 11,
+   "hot": [
+    "forebrain",
+    "hippocampus",
+    "cortex"
+   ],
+   "labels": [
+    "forebrain",
+    "hippocampus",
+    "cortex"
+   ],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": true
+  },
+  {
+   "at": 12,
+   "hot": [
+    "forebrain",
+    "cortex"
+   ],
+   "labels": [
+    "cortex"
+   ],
+   "fact": "يرفع <b>الانتباه والتعلّم</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": true
+  },
+  {
+   "at": 13,
+   "hot": [
+    "forebrain"
+   ],
+   "labels": [
+    "forebrain"
+   ],
+   "fact": "ألزهايمر: <b>تراجع هذه الخلايا</b>",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": false
+  },
+  {
+   "at": 15,
+   "hot": [
+    "forebrain"
+   ],
+   "labels": [
+    "forebrain"
+   ],
+   "fact": "بعض أدويته: <b>تُبطئ تفكيك الأسيتيل كولين</b>",
+   "hotLabels": [],
+   "scene": "brain"
+  },
+  {
+   "at": 16,
+   "hot": [],
+   "labels": [],
+   "fact": "",
+   "hotLabels": [],
+   "scene": "brain",
+   "proj": false
+  }
+ ]
+}
