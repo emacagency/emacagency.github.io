@@ -1,0 +1,71 @@
+name: Instagram
+
+# Direct Instagram management (no Metricool). Run by hand or by the account
+# agent from the Actions tab; insights run daily and the token refreshes weekly.
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "account | publish | insights | comments | reply | refresh"
+        required: true
+        default: account
+      video_url:
+        description: "publish: public URL of the .mp4"
+        required: false
+      caption:
+        description: "publish: caption"
+        required: false
+      cover_ms:
+        description: "publish: cover frame in milliseconds"
+        required: false
+      trial:
+        description: "publish: true for a trial reel"
+        required: false
+        default: "false"
+      comment_id:
+        description: "reply: comment id"
+        required: false
+      message:
+        description: "reply: text"
+        required: false
+  schedule:
+    - cron: "23 16 * * *"   # 20:23 Dubai: daily insights
+    - cron: "41 5 * * 1"    # Monday: refresh the long-lived token
+
+permissions:
+  contents: read
+
+concurrency:
+  group: instagram
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pick command
+        id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_CMD: ${{ inputs.command }}
+        run: |
+          if [ "$EVENT" = "schedule" ]; then
+            if [ "$SCHEDULE" = "41 5 * * 1" ]; then cmd=refresh; else cmd=insights; fi
+          else
+            cmd="$INPUT_CMD"
+          fi
+          case "$cmd" in account|publish|insights|comments|reply|refresh) ;; *) echo "unknown command"; exit 1;; esac
+          echo "cmd=$cmd" >> "$GITHUB_OUTPUT"
+      - name: Instagram ${{ steps.pick.outputs.cmd }}
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          VIDEO_URL: ${{ inputs.video_url }}
+          CAPTION: ${{ inputs.caption }}
+          COVER_MS: ${{ inputs.cover_ms }}
+          TRIAL: ${{ inputs.trial }}
+          COMMENT_ID: ${{ inputs.comment_id }}
+          MESSAGE: ${{ inputs.message }}
+        run: python3 tools/instagram/ig.py "${{ steps.pick.outputs.cmd }}"
