@@ -132,6 +132,9 @@ if any("hr" in b for b in cfg["beats"]):
         hr += (b.get("hr", 70) - hr) * .06; p0 = ph; ph += hr / 60 / 30
         for q, g in ((.08, .5), (.26, .3)):
             if int(p0 - q) != int(ph - q) or (p0 - q) // 1 != (ph - q) // 1: put(t, thump(), g)
+if cfg.get("ask"):  # the comment card slides in and types itself
+    a0 = lines[cfg["ask"]["at"]]["a"] - .1; put(a0 - .2, whoosh(.5), .1)
+    for k in range(0, len(cfg["ask"]["text"]), 3): put(a0 + k / 28, chirp(3000, 2800, .02), .03)
 if cfg.get("outro"):
     t_out = lines[-1]["b"] + .35
     put(t_out - .3, whoosh(.8), .16); put(t_out + .1, shimmer(1.6), .09)

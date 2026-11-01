@@ -1,0 +1,219 @@
+{
+ "name": "المادة P",
+ "latin": "SUBSTANCE P",
+ "coverHot": [
+  "cord"
+ ],
+ "fix": {
+  "«بي»": "P"
+ },
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 1,
+   "hot": [
+    "cord"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "hotLabels": [],
+   "fact": "الكابسايسين يخدع <b>أعصاب الحرارة</b>",
+   "scene": "brain",
+   "chart": "scov",
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 2,
+   "hot": [],
+   "labels": [
+    "pre",
+    "receptor"
+   ],
+   "hotLabels": [
+    "receptor"
+   ],
+   "fact": "<b>المادة P</b>",
+   "scene": "syn",
+   "chart": null,
+   "release": true,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 3,
+   "hot": [
+    "cord",
+    "thalamus"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "hotLabels": [],
+   "fact": "رسالة <b>كاذبة</b> ← الدماغ",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 4,
+   "hot": [
+    "cord",
+    "thalamus"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "«فمك <b>يحترق</b>!»",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 5,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "لماذا <b>يعتادون عليه؟</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 6,
+   "hot": [],
+   "labels": [
+    "pre"
+   ],
+   "hotLabels": [
+    "pre"
+   ],
+   "fact": "التكرار <b>يُفرغ المادة P</b>",
+   "scene": "syn",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 7,
+   "hot": [],
+   "labels": [
+    "receptor"
+   ],
+   "hotLabels": [],
+   "fact": "رسالة <b>أضعف</b>",
+   "scene": "syn",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 8,
+   "hot": [
+    "cord"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": "patch",
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 9,
+   "hot": [
+    "cord"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  }
+ ],
+ "outro": 2.6,
+ "hookRed": [
+  1,
+  6
+ ],
+ "charts": {
+  "scov": {
+   "type": "bars",
+   "title": "حرارة الفلفل (مقياس سكوفيل)",
+   "sub": "كلما زاد الكابسايسين زادت الحرقة",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": 350000,
+    "comma": true,
+    "suf": "وحدة"
+   },
+   "bars": [
+    {
+     "label": "فلفل حلو",
+     "v": 0.01
+    },
+    {
+     "label": "هالابينو",
+     "v": 0.023
+    },
+    {
+     "label": "هابانيرو",
+     "v": 1,
+     "hot": true
+    }
+   ]
+  },
+  "patch": {
+   "type": "bars",
+   "title": "تركيز الكابسايسين في العلاج",
+   "sub": "كريمات الصيدلية مقابل اللصقة الطبية",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": 8,
+    "suf": "%"
+   },
+   "bars": [
+    {
+     "label": "كريم 0.075%",
+     "v": 0.02
+    },
+    {
+     "label": "لصقة طبية 8%",
+     "v": 1,
+     "hot": true
+    }
+   ]
+  }
+ },
+ "ask": {
+  "at": 9,
+  "text": "من 1 إلى 10: كم تتحمّل الأكل الحار؟"
+ }
+}

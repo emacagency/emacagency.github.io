@@ -1,0 +1,212 @@
+{
+ "name": "الأوركسين",
+ "latin": "OREXIN",
+ "coverHot": [
+  "hypothalamus"
+ ],
+ "projFrom": [
+  0,
+  -0.25,
+  0.1
+ ],
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 1,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [
+    "hypothalamus"
+   ],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 2,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": "cells",
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 3,
+   "hot": [
+    "hypothalamus",
+    "cortex"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "الأوركسين ← <b>مراكز اليقظة</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": true
+  },
+  {
+   "at": 4,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "وجبة <b>غنية بالسكر</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 5,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [
+    "hypothalamus"
+   ],
+   "hotLabels": [],
+   "fact": "السكر <b>يُهدّئ</b> خلايا الأوركسين",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 6,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "<b>نعاس</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 7,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "ماذا لو <b>فُقدت؟</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 8,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": "loss",
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 10,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "نعاس <b>مفاجئ</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 11,
+   "hot": [
+    "hypothalamus"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  }
+ ],
+ "outro": 2.6,
+ "hookLines": 1,
+ "hookRed": [
+  2,
+  4
+ ],
+ "charts": {
+  "cells": {
+   "type": "count",
+   "title": "خلايا الأوركسين في دماغك",
+   "dur": 2.4,
+   "from": 0,
+   "to": 70000,
+   "comma": true,
+   "unit": "خلية تقريبًا",
+   "note": "من بين نحو 86 مليار خلية عصبية"
+  },
+  "loss": {
+   "type": "bars",
+   "title": "خلايا الأوركسين",
+   "sub": "في أدمغة المصابين بالنوم القهري",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": -90,
+    "suf": "%"
+   },
+   "bars": [
+    {
+     "label": "شخص سليم",
+     "v": 0.9
+    },
+    {
+     "label": "النوم القهري",
+     "v": 0.9,
+     "to": 0.09,
+     "hot": true
+    }
+   ]
+  }
+ },
+ "ask": {
+  "at": 11,
+  "text": "في أي ساعة يغلبك النعاس؟"
+ }
+}

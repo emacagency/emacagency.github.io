@@ -1,0 +1,244 @@
+{
+ "name": "الأناندامايد",
+ "latin": "ANANDAMIDE",
+ "coverHot": [
+  "amygdala"
+ ],
+ "beats": [
+  {
+   "at": 0,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 1,
+   "hot": [
+    "cortex"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "جزيء <b>السعادة</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 2,
+   "hot": [
+    "cortex"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "<b>الأناندامايد</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 3,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": "run",
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 4,
+   "hot": [
+    "amygdala"
+   ],
+   "labels": [
+    "amygdala"
+   ],
+   "hotLabels": [],
+   "fact": "مركز الخوف <b>يهدأ</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 6,
+   "hot": [
+    "cord"
+   ],
+   "labels": [
+    "cord"
+   ],
+   "hotLabels": [],
+   "fact": "ألم <b>أقل</b>",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  },
+  {
+   "at": 7,
+   "hot": [],
+   "labels": [
+    "post",
+    "pre"
+   ],
+   "hotLabels": [],
+   "fact": "رسالة <b>بالعكس</b>",
+   "scene": "syn",
+   "chart": null,
+   "release": true,
+   "reverse": true,
+   "proj": false
+  },
+  {
+   "at": 8,
+   "hot": [],
+   "labels": [
+    "post",
+    "pre"
+   ],
+   "hotLabels": [],
+   "fact": "كيف <b>تهدّئ الدماغ؟</b>",
+   "scene": "syn",
+   "chart": null,
+   "release": true,
+   "reverse": true,
+   "proj": false
+  },
+  {
+   "at": 9,
+   "hot": [],
+   "labels": [
+    "post"
+   ],
+   "hotLabels": [
+    "post"
+   ],
+   "fact": "تصنعها <b>المستقبِلة</b>",
+   "scene": "syn",
+   "chart": null,
+   "release": true,
+   "reverse": true,
+   "proj": false
+  },
+  {
+   "at": 10,
+   "hot": [],
+   "labels": [
+    "pre"
+   ],
+   "hotLabels": [
+    "pre"
+   ],
+   "fact": "وترسلها إلى <b>المرسِلة</b>",
+   "scene": "syn",
+   "chart": null,
+   "release": true,
+   "reverse": true,
+   "proj": false
+  },
+  {
+   "at": 11,
+   "hot": [],
+   "labels": [
+    "pre"
+   ],
+   "hotLabels": [
+    "pre"
+   ],
+   "fact": "إشارات <b>أقل</b>",
+   "scene": "syn",
+   "chart": null,
+   "release": true,
+   "reverse": true,
+   "proj": false
+  },
+  {
+   "at": 12,
+   "hot": [],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "«اهدئي <b>قليلًا</b>»",
+   "scene": "syn",
+   "chart": null,
+   "release": true,
+   "reverse": true,
+   "proj": false
+  },
+  {
+   "at": 14,
+   "hot": [
+    "amygdala"
+   ],
+   "labels": [],
+   "hotLabels": [],
+   "fact": "",
+   "scene": "brain",
+   "chart": null,
+   "release": false,
+   "reverse": false,
+   "proj": false
+  }
+ ],
+ "outro": 2.6,
+ "hookRed": [
+  1,
+  3
+ ],
+ "charts": {
+  "year": {
+   "type": "count",
+   "title": "اكتُشف في الدماغ عام",
+   "dur": 2.4,
+   "from": 1900,
+   "to": 1992,
+   "unit": "",
+   "note": "اسمه من كلمة سنسكريتية تعني «النعيم»"
+  },
+  "run": {
+   "type": "bars",
+   "title": "الأناندامايد بعد 30 دقيقة",
+   "sub": "يرتفع مع الجري المعتدل فقط",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": 30,
+    "suf": "دقيقة"
+   },
+   "bars": [
+    {
+     "label": "مشي",
+     "v": 0.35
+    },
+    {
+     "label": "جري معتدل",
+     "v": 0.35,
+     "to": 0.72,
+     "hot": true
+    },
+    {
+     "label": "جري شديد",
+     "v": 0.35
+    }
+   ]
+  }
+ },
+ "ask": {
+  "at": 14,
+  "text": "«نعم» إذا جرّبت هذا الشعور بعد الرياضة"
+ }
+}

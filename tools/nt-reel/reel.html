@@ -32,6 +32,10 @@ svg.lines { position: absolute; inset: 0; width: 540px; height: 960px; }
 .hook i.red { color: #FFE2E5; text-shadow: 0 0 18px rgba(255,59,74,.95), 0 0 44px rgba(255,59,74,.55), 0 3px 4px rgba(0,0,0,.6); }
 .ring { position: absolute; left: 270px; top: 660px; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%; border: 2px solid rgba(120,200,255,.9); box-shadow: 0 0 24px rgba(80,170,255,.8), inset 0 0 24px rgba(80,170,255,.5); opacity: 0; }
 .ring.r2 { border-color: rgba(255,90,105,.9); box-shadow: 0 0 24px rgba(255,59,74,.8), inset 0 0 24px rgba(255,59,74,.5); }
+.ask { position: absolute; top: 126px; left: 26px; right: 26px; padding: 18px 22px 18px 74px; border-radius: 22px; direction: rtl; opacity: 0; background: linear-gradient(160deg, rgba(10,30,64,.88), rgba(4,12,28,.84)); border: 1.5px solid rgba(255,90,104,.7); box-shadow: 0 0 34px rgba(255,59,74,.35); }
+.ask small { display: block; font-weight: 700; font-size: 16px; color: #FF8A94; margin-bottom: 6px; }
+.ask div { font-weight: 800; font-size: 27px; line-height: 1.35; color: #fff; min-height: 36px; }
+.ask svg { position: absolute; left: 18px; top: 50%; width: 42px; height: 42px; margin-top: -21px; }
 .chart { position: absolute; top: 118px; left: 26px; width: 488px; height: 300px; opacity: 0; }
 .chart .panel { position: absolute; inset: 0; border-radius: 18px; background: linear-gradient(160deg, rgba(10,30,64,.82), rgba(4,12,28,.78)); border: 1px solid rgba(110,190,255,.35); box-shadow: 0 0 30px rgba(60,150,255,.25), inset 0 0 30px rgba(60,150,255,.08); }
 .chart h3 { position: absolute; top: 14px; right: 20px; margin: 0; font-weight: 800; font-size: 20px; color: #CFE9FF; }
@@ -51,7 +55,7 @@ svg.lines { position: absolute; inset: 0; width: 540px; height: 960px; }
 <div class="tag">علم الشعور · النواقل العصبية</div>
 <div class="fact" id="fact"></div>
 <div class="cap" id="cap"></div>
-<div class="chart" id="chart"><div class="panel"></div><svg id="chsvg"></svg><h3 id="chtitle"></h3><div class="big" id="chbig"></div><div class="sub" id="chsub"></div></div>
+<div class="ask" id="ask"><small>اكتب في التعليقات</small><div id="asktx"></div><svg viewBox="0 0 24 24"><path d="M4 4h16v11H9l-5 4z" fill="none" stroke="#FF5A68" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="9.5" r="1.2" fill="#fff"/><circle cx="12" cy="9.5" r="1.2" fill="#fff"/><circle cx="15" cy="9.5" r="1.2" fill="#fff"/></svg></div><div class="chart" id="chart"><div class="panel"></div><svg id="chsvg"></svg><h3 id="chtitle"></h3><div class="big" id="chbig"></div><div class="sub" id="chsub"></div></div>
 <div class="ring" id="ring1"></div><div class="ring r2" id="ring2"></div>
 <div class="hook" id="hook"></div>
 <div class="cover" id="cover"><h1 id="cv-name"></h1><p id="cv-latin"></p><span>علم الشعور · النواقل العصبية</span></div>
@@ -167,18 +171,36 @@ const stemProfile = [[.15, .12], [.15, 0], [.2, -.16], [.21, -.28], [.15, -.42],
 const makeStem = (mat, k = 1) => { const g = new THREE.Group();
   const a = new THREE.Mesh(new THREE.LatheGeometry(stemProfile.map(v => new THREE.Vector2(v.x * k, v.y)), 32), mat()); a.scale.z = .85; g.add(a);
   const c = new THREE.Mesh(new THREE.CylinderGeometry(.095 * k, .085 * k, .8, 20, 1, true), mat()); c.position.set(0, -1.1, -.06); c.rotation.x = .16; g.add(c);
+  // ventral pons bulge, medullary olives and pyramids, cerebral peduncles
+  const pons = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 28), mat()); pons.scale.set(.17 * k, .1, .09 * k); pons.position.set(0, -.22, .06); g.add(pons); // ventral pons bulge
+  [1, -1].forEach(sd => { const ol = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 18), mat()); ol.scale.set(.03 * k, .065, .03 * k); ol.position.set(.07 * sd * k, -.5, .04); g.add(ol); }); // medullary olives
   g.position.set(0, -.26, -.3); g.rotation.x = .32; return g; };
 const stem = makeStem(() => holo('#3FA2F0', .8)); brain.add(stem);
 // regions, shown red when explained
 const regions = {};
 const blob = (sx, sy, sz) => { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), holo(RED, 0)); m.scale.set(sx, sy, sz); return m; };
 function pair(make, pos) { const g = new THREE.Group(); [1, -1].forEach(s => { const m = make(s); m.position.set(pos[0] * s, pos[1], pos[2]); g.add(m); }); return g; }
-regions.amygdala = pair(() => blob(.09, .08, .1), [.4, -.32, .28]);
+const almond = () => { const g = new THREE.SphereGeometry(1, 40, 30), p = g.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const t = 1 - .35 * Math.max(0, v.z); p.setXYZ(i, v.x * .075 * t, v.y * .065 * t, v.z * .115); }
+  g.computeVertexNormals(); return new THREE.Mesh(g, holo(RED, 0)); };
+regions.amygdala = pair(s => { const g = new THREE.Group(); g.add(almond());
+  const bl = blob(.04, .035, .055); bl.position.set(.025 * s, -.01, -.01); g.add(bl);   // basolateral nucleus
+  const ce = blob(.025, .022, .035); ce.position.set(-.03 * s, .02, .0); g.add(ce);     // central nucleus (fear output)
+  const tail = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, -.08), new THREE.Vector3(-.02 * s, .02, -.2), new THREE.Vector3(-.05 * s, .06, -.32)]), 20, .022, 10), holo(RED, 0)); g.add(tail); // hippocampal head behind
+  g.rotation.y = -.25 * s; return g; }, [.4, -.32, .28]);
 regions.thalamus = pair(() => blob(.12, .1, .17), [.13, -.02, -.08]);
 regions.hippocampus = pair(s => { const c = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, .12), new THREE.Vector3(-.03 * s, .05, -.15), new THREE.Vector3(-.1 * s, .25, -.4)]); return new THREE.Mesh(new THREE.TubeGeometry(c, 40, .055, 12), holo(RED, 0)); }, [.4, -.33, .14]);
 regions.forebrain = (() => { const m = blob(.17, .07, .1); m.position.set(0, -.28, .38); return m; })();
 regions.motor = pair(s => { const c = new THREE.EllipseCurve(0, 0, .55, .62, 0, Math.PI / 2); const p3 = c.getPoints(30).map(p => new THREE.Vector3(p.x * s * .95, p.y * 1.0 - .08, 0)); return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(p3), 60, .045, 10), holo(RED, 0)); }, [0, 0, .02]);
-regions.hypothalamus = (() => { const m = blob(.1, .07, .09); m.position.set(0, -.25, .1); return m; })();
+regions.hypothalamus = (() => { const g = new THREE.Group();
+  const body = blob(.09, .06, .11); body.position.set(0, -.25, .1); g.add(body);                         // floor and walls of the third ventricle
+  [1, -1].forEach(sd => { const mb = blob(.026, .026, .026); mb.position.set(.03 * sd, -.32, .0); g.add(mb);  // mammillary bodies
+    const lh = blob(.035, .03, .07); lh.position.set(.075 * sd, -.24, .07); g.add(lh);                          // lateral area: the orexin neurons
+    const pv = blob(.016, .02, .02); pv.position.set(.018 * sd, -.2, .14); g.add(pv); });                       // paraventricular nuclei
+  const arc = blob(.022, .015, .025); arc.position.set(0, -.31, .12); g.add(arc);                              // arcuate nucleus (appetite)
+  const tc = new THREE.Mesh(new THREE.ConeGeometry(.04, .08, 18, 1, true), holo(RED, 0)); tc.position.set(0, -.33, .16); tc.rotation.x = Math.PI; g.add(tc); // tuber cinereum to the stalk
+  [1, -1].forEach(sd => g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(.1 * sd, -.35, .34), new THREE.Vector3(0, -.36, .26), new THREE.Vector3(-.1 * sd, -.36, .18)]), 16, .012, 8), holo(RED, 0)))); // optic chiasm
+  return g; })();
 regions.pituitary = (() => { const g = new THREE.Group(), b = blob(.06, .05, .06); b.position.set(0, -.45, .2); g.add(b);
   const st = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, .16, 8, 1, true), holo(RED, 0)); st.position.set(0, -.36, .16); g.add(st); return g; })();
 regions.pineal = (() => { const m = blob(.045, .04, .055); m.position.set(0, -.08, -.34); return m; })();
@@ -323,7 +345,7 @@ function placeLabels(on, hot) {
   }
 }
 const anchorAt = (parent, x, y, z) => { const o = new THREE.Object3D(); o.position.set(x, y, z); parent.add(o); return o; };
-label('amygdala', 'اللوزة الدماغية', 'AMYGDALA', anchorAt(brain, .4, -.32, .28), 70, 95);
+label('amygdala', 'اللوزة الدماغية', 'AMYGDALA', anchorAt(brain, .4, -.32, .28), 70, 160);
 label('thalamus', 'المهاد', 'THALAMUS', anchorAt(brain, -.13, -.02, -.08), -80, -110);
 label('hippocampus', 'الحُصين', 'HIPPOCAMPUS', anchorAt(brain, -.42, -.25, -.1), -60, 105);
 label('forebrain', 'قاعدة الدماغ الأمامي', 'BASAL FOREBRAIN', anchorAt(brain, 0, -.28, .38), 0, 110);
@@ -430,7 +452,7 @@ const stateAt = t => { const s = { scene: 'brain', hot: [], labels: [], cortex: 
 let lastScene = 'brain', fade = { brain: 1, syn: 0, mus: 0, kid: 0 };
 
 // close in on small parts, less on wide ones (cord, several parts at once)
-const k2dist = parts => parts.includes('cord') ? 6.9 : parts.includes('optic') ? 6.8 : parts.length > 1 ? 6.2 : ['pineal', 'scn'].includes(parts[0]) ? 6.0 : 5.3;
+const k2dist = parts => parts.includes('cord') ? 6.2 : parts.includes('optic') ? 6.8 : parts.length > 1 ? 6.0 : ['amygdala', 'hypothalamus', 'pituitary', 'thalamus', 'hippocampus'].includes(parts[0]) ? 4.2 : ['pineal', 'scn'].includes(parts[0]) ? 6.0 : 5.3;
 const view = new THREE.Vector3(0, .2, 1).normalize(), camT = new THREE.Vector3(0, -.1, 0), wp = new THREE.Vector3();
 let camD = OUT ? 15 : 10;
 // hook: the opening question flies in word by word
@@ -482,8 +504,7 @@ window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + 
   const setA = (g, a) => g.traverse(o => { if (o.material) { if (o.material.uniforms?.uA && g !== brain) o.material.uniforms.uA.value = (o.userData.a0 ??= o.material.uniforms.uA.value) * a; else if (o.material.uniforms?.uA) {} else { o.material.opacity = (o.userData.o0 ??= o.material.opacity) * a; } } });
   setA(syn, fade.syn); setA(mus, fade.mus); setA(kid, fade.kid);
   if (kid.visible) flowKid(t, s);
-  hemis.concat([cereb]).forEach(m => m.material.uniforms.uA.value = .9 * fade.brain); callosum.material.uniforms.uA.value = .55 * fade.brain; stem.children.forEach(m => m.material.uniforms.uA.value = .8 * fade.brain);
-  hemis.forEach(h => h.children[0].material.opacity = .22 * fade.brain);
+  const ghost = Math.max(0, Math.min(1, (5.6 - camD) / 1.2)); hemis.forEach(m => m.material.uniforms.uA.value = .9 * fade.brain * (1 - .6 * ghost)); cereb.material.uniforms.uA.value = .8 * fade.brain * (1 - .4 * ghost); hemis.forEach(h => h.children[0] && (h.children[0].material.opacity = .22 * fade.brain * (1 - .7 * ghost))); callosum.material.uniforms.uA.value = .55 * fade.brain; stem.children.forEach(m => m.material.uniforms.uA.value = .8 * fade.brain);
   // camera
   // camera: wide on the cover, then into the brain toward the part in red
   let tgt = new THREE.Vector3(0, -.15, 0), dist = 8.4;
@@ -518,6 +539,10 @@ window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + 
   // fact line
   drawChart(s, t);
   $('fact').innerHTML = s.fact || ''; $('fact').style.opacity = s.fact && !s.chart ? ease(s.since / .4) : 0;
+  // on-screen comment prompt: types itself in when the voice asks, stays to the last frame
+  if (R.ask) { const a0 = R.lines[R.ask.at].a - .1, k = ease((t - a0) / .4), n = Math.max(0, Math.min(R.ask.text.length, Math.floor((t - a0) * 28)));
+    $('ask').style.opacity = k; $('ask').style.transform = `translateY(${(1 - k) * -20}px) scale(${1 + .03 * Math.sin(Math.max(0, t - a0) * 5) * (t > a0 + 1 ? 1 : 0)})`;
+    $('asktx').textContent = R.ask.text.slice(0, n) + (n < R.ask.text.length && t > a0 ? '|' : ''); if (k > 0) $('fact').style.opacity = 0; }
   // captions
   const c = (OUT && t < hookEnd) || inOut ? null : chunks.find(c => t >= c.a - .05 && t < c.b);
   $('cap').innerHTML = c ? c.words.map(w => `<i class="${t >= w.t - .04 ? (w === c.words.findLast(x => t >= x.t - .04) ? 'now' : 'on') : ''}">${w.w}</i>`).join(' ') : '';
