@@ -1,8 +1,12 @@
-"""Direct Instagram management through the Instagram API (Instagram Login).
+"""Direct Instagram management through Meta's official Instagram API.
 
-Needs the IG_ACCESS_TOKEN secret: a long-lived token for the professional
-account, with instagram_business_basic, instagram_business_content_publish,
-instagram_business_manage_insights and instagram_business_manage_comments.
+Needs the IG_ACCESS_TOKEN secret. Two kinds of token work:
+- Instagram Login token (starts with "IG"): graph.instagram.com, scopes
+  instagram_business_basic / _content_publish / _manage_insights / _manage_comments.
+- Facebook Login token (starts with "EAA"): graph.facebook.com, the Instagram
+  account must be linked to a Facebook Page; scopes instagram_basic,
+  instagram_content_publish, instagram_manage_insights, instagram_manage_comments,
+  pages_show_list, pages_read_engagement.
 
 Commands (first argument):
   account                 account info, token check
@@ -18,8 +22,10 @@ The token is never printed.
 """
 import json, os, sys, time, urllib.error, urllib.parse, urllib.request
 
-API = "https://graph.instagram.com/v23.0"
 TOKEN = os.environ.get("IG_ACCESS_TOKEN", "").strip()
+FB = TOKEN.startswith("EAA")
+API = "https://graph.facebook.com/v23.0" if FB else "https://graph.instagram.com/v23.0"
+_UID = None
 
 
 def call(path, params=None, method="GET"):
@@ -49,8 +55,29 @@ def out(title, obj):
             f.write(f"### {title}\n```json\n{text}\n```\n")
 
 
+def ig_user_id():
+    """Instagram professional account id for either token kind."""
+    global _UID
+    if _UID:
+        return _UID
+    if os.environ.get("IG_USER_ID"):
+        _UID = os.environ["IG_USER_ID"]
+    elif FB:
+        pages = call("me/accounts", {"fields": "name,instagram_business_account"}).get("data", [])
+        linked = [p["instagram_business_account"]["id"] for p in pages if p.get("instagram_business_account")]
+        if not linked:
+            raise SystemExit("No Instagram account is linked to a Facebook Page this token can see")
+        _UID = linked[0]
+    else:
+        _UID = call("me", {"fields": "user_id"})["user_id"]
+    return _UID
+
+
 def me():
-    return call("me", {"fields": "user_id,username,account_type,followers_count,follows_count,media_count"})
+    uid = ig_user_id()
+    info = call(uid, {"fields": "username,followers_count,follows_count,media_count"})
+    info["user_id"] = uid
+    return info
 
 
 def account():
@@ -60,7 +87,7 @@ def account():
 def publish():
     video = os.environ["VIDEO_URL"]
     caption = os.environ.get("CAPTION", "")
-    uid = me()["user_id"]
+    uid = ig_user_id()
     params = {
         "media_type": "REELS",
         "video_url": video,
@@ -90,7 +117,7 @@ REEL_METRICS = "views,reach,likes,comments,saved,shares,total_interactions,ig_re
 
 
 def latest_media(limit):
-    uid = me()["user_id"]
+    uid = ig_user_id()
     return call(f"{uid}/media", {
         "fields": "id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count",
         "limit": limit,
@@ -135,6 +162,13 @@ def reply():
 
 
 def refresh():
+    if FB:
+        # Facebook tokens are checked, not refreshed: extend them in the Access Token Debugger.
+        res = call("debug_token", {"input_token": TOKEN}).get("data", {})
+        exp = res.get("expires_at") or 0
+        days = "never" if exp == 0 else round((exp - time.time()) / 86400)
+        out("token", {"valid": res.get("is_valid"), "days_left": days})
+        return
     res = call("https://graph.instagram.com/refresh_access_token", {"grant_type": "ig_refresh_token"})
     out("token", {"refreshed": True, "days_left": round(res.get("expires_in", 0) / 86400)})
 
