@@ -397,6 +397,16 @@ for (const [id, c] of Object.entries(R.charts || {})) {
         el.textContent = `${up ? '▲' : '▼'} ${cl.w}`; cells.push({ el, t: cl.t ?? 0, x: CX[j + 1], y: RY[i + 1] }); }); });
     CH[id] = { g, draw(p, since) { cells.forEach(q => { const k = ease((since - q.t) / .3), sc = k < 1 ? .4 + .6 * k + .25 * Math.sin(Math.PI * k) : 1;
       q.el.setAttribute('opacity', k); q.el.setAttribute('transform', `translate(${q.x} ${q.y}) scale(${sc}) translate(${-q.x} ${-q.y})`); }); return 1; } };
+  } else if (c.type === 'count') {
+    // one big number that counts up inside a filling ring
+    const cx = 244, cy = 178, r = 78, C = 2 * Math.PI * r;
+    svgEl('circle', { cx, cy, r, fill: 'none', stroke: 'rgba(110,190,255,.16)', 'stroke-width': 10 }, g);
+    const arc = svgEl('circle', { cx, cy, r, fill: 'none', stroke: '#FF5A68', 'stroke-width': 10, 'stroke-linecap': 'round', 'stroke-dasharray': C, transform: `rotate(-90 ${cx} ${cy})`, filter: 'drop-shadow(0 0 8px #FF3B4A)' }, g);
+    const num = svgEl('text', { x: cx, y: cy + 14, 'text-anchor': 'middle', direction: 'ltr', style: 'font-size:46px;font-weight:800;fill:#fff;filter:drop-shadow(0 0 10px rgba(255,59,74,.9))' }, g);
+    const unit = svgEl('text', { x: cx, y: cy + 42, 'text-anchor': 'middle', style: 'font-size:15px;font-weight:700;fill:#FFB8BE' }, g); unit.textContent = c.unit || '';
+    if (c.note) { const nt = svgEl('text', { x: cx, y: 286, 'text-anchor': 'middle', style: 'font-size:14px;font-weight:500;fill:#9FD4FF' }, g); nt.textContent = c.note; }
+    CH[id] = { g, draw(p) { arc.setAttribute('stroke-dashoffset', C * (1 - p * (c.ring ?? 1))); const v = c.from + (c.to - c.from) * p;
+      num.textContent = (c.pre || '') + (c.comma ? Math.round(v).toLocaleString('en-US') : Math.round(v)) + (c.suf || ''); return p; } };
   }
 }
 let chartOp = 0;
@@ -407,7 +417,7 @@ function drawChart(s, t) {
   if (!c) return;
   const p = ease(since / (c.dur || 2.4)), v = CH[s.chart].draw(p, since), k = c.type === 'curve' ? v / Math.max(...c.pts.map(q => q[1])) : v;
   $('chtitle').textContent = c.title; $('chsub').textContent = c.sub || '';
-  const n = c.big; if (!n) $('chbig').innerHTML = ''; if (n) { const val = n.from + (n.to - n.from) * k; $('chbig').innerHTML = `<bdi dir="ltr">${(n.pre || '') + (val < -.5 ? '−' + Math.round(-val) : Math.round(val))}</bdi>${n.suf ? `<small style="font-size:24px"> ${n.suf}</small>` : ''}`; $('chbig').className = 'big' + (n.to < n.from ? ' down' : ''); }
+  const n = c.big; if (!n) $('chbig').innerHTML = ''; if (n) { const val = n.from + (n.to - n.from) * k; $('chbig').innerHTML = `<bdi dir="ltr">${(n.pre || '') + (val < -.5 ? '−' + Math.round(-val) : n.comma ? Math.round(val).toLocaleString('en-US') : Math.round(val))}</bdi>${n.suf ? `<small style="font-size:24px"> ${n.suf}</small>` : ''}`; $('chbig').className = 'big' + (n.to < n.from ? ' down' : ''); }
 }
 
 /* ---------- timeline ---------- */
@@ -424,7 +434,7 @@ const k2dist = parts => parts.includes('cord') ? 6.9 : parts.includes('optic') ?
 const view = new THREE.Vector3(0, .2, 1).normalize(), camT = new THREE.Vector3(0, -.1, 0), wp = new THREE.Vector3();
 let camD = OUT ? 15 : 10;
 // hook: the opening question flies in word by word
-const hookWords = OUT ? R.lines[0].words : [], hookEnd = OUT ? R.lines[1].a - .1 : -1;
+const HL = R.hookLines || 1, hookWords = OUT ? R.lines.slice(0, HL).flatMap(l => l.words) : [], hookEnd = OUT ? R.lines[HL].a - .1 : -1;
 if (OUT) $('hook').innerHTML = hookWords.map((w, i) => `<i class="${(R.hookRed || []).includes(i) ? 'red' : ''}">${w.w}${i === hookWords.length - 1 ? '؟' : ''}</i>`).join(' ');
 const hookEls = [...$('hook').children];
 cam.setViewOffset(540, 960, 0, 110, 540, 960); // keep the subject above the captions

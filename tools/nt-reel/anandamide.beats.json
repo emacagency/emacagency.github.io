@@ -12,7 +12,8 @@
    "labels": [],
    "fact": "",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   },
   {
    "at": 1,
@@ -22,7 +23,8 @@
    "labels": [],
    "fact": "الأناندامايد: <b>جزيء السعادة</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": "year"
   },
   {
    "at": 3,
@@ -35,7 +37,8 @@
    "hotLabels": [],
    "scene": "syn",
    "release": true,
-   "reverse": true
+   "reverse": true,
+   "chart": null
   },
   {
    "at": 4,
@@ -49,7 +52,8 @@
    ],
    "scene": "syn",
    "release": true,
-   "reverse": true
+   "reverse": true,
+   "chart": null
   },
   {
    "at": 5,
@@ -63,7 +67,8 @@
    ],
    "scene": "syn",
    "release": true,
-   "reverse": true
+   "reverse": true,
+   "chart": null
   },
   {
    "at": 6,
@@ -73,7 +78,8 @@
    "hotLabels": [],
    "scene": "brain",
    "release": false,
-   "reverse": false
+   "reverse": false,
+   "chart": null
   },
   {
    "at": 7,
@@ -85,7 +91,8 @@
    ],
    "fact": "تهدئة <b>الخوف</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": "run"
   },
   {
    "at": 8,
@@ -97,7 +104,8 @@
    ],
    "fact": "تنسيق <b>الحركة</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": "run"
   },
   {
    "at": 9,
@@ -110,7 +118,8 @@
    ],
    "fact": "الشهية <b>والإحساس بالألم</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   },
   {
    "at": 10,
@@ -118,7 +127,51 @@
    "labels": [],
    "fact": "",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   }
- ]
+ ],
+ "outro": 2.6,
+ "hookRed": [
+  3,
+  8
+ ],
+ "charts": {
+  "year": {
+   "type": "count",
+   "title": "اكتُشف في الدماغ عام",
+   "dur": 2.4,
+   "from": 1900,
+   "to": 1992,
+   "unit": "",
+   "note": "اسمه من كلمة سنسكريتية تعني «النعيم»"
+  },
+  "run": {
+   "type": "bars",
+   "title": "الأناندامايد بعد 30 دقيقة",
+   "sub": "يرتفع مع الجري المعتدل فقط",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": 30,
+    "suf": "دقيقة"
+   },
+   "bars": [
+    {
+     "label": "مشي",
+     "v": 0.35
+    },
+    {
+     "label": "جري معتدل",
+     "v": 0.35,
+     "to": 0.72,
+     "hot": true
+    },
+    {
+     "label": "جري شديد",
+     "v": 0.35
+    }
+   ]
+  }
+ }
 }
