@@ -16,7 +16,8 @@
    "labels": [],
    "fact": "",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   },
   {
    "at": 2,
@@ -26,7 +27,8 @@
    "labels": [],
    "fact": "",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   },
   {
    "at": 4,
@@ -38,7 +40,8 @@
    ],
    "fact": "",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": "cells"
   },
   {
    "at": 5,
@@ -50,7 +53,8 @@
    "fact": "الأوركسين ← <b>مراكز اليقظة</b>",
    "hotLabels": [],
    "scene": "brain",
-   "proj": true
+   "proj": true,
+   "chart": null
   },
   {
    "at": 7,
@@ -62,7 +66,8 @@
    "fact": "يثبّت <b>الصحو</b>",
    "hotLabels": [],
    "scene": "brain",
-   "proj": true
+   "proj": true,
+   "chart": null
   },
   {
    "at": 8,
@@ -75,7 +80,8 @@
    "fact": "ماذا لو <b>فُقدت هذه الخلايا؟</b>",
    "hotLabels": [],
    "scene": "brain",
-   "proj": false
+   "proj": false,
+   "chart": null
   },
   {
    "at": 9,
@@ -85,7 +91,8 @@
    "labels": [],
    "fact": "النوم القهري: <b>نعاس مفاجئ</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": "loss"
   },
   {
    "at": 12,
@@ -98,7 +105,8 @@
     "receptor"
    ],
    "scene": "syn",
-   "release": false
+   "release": false,
+   "chart": null
   },
   {
    "at": 14,
@@ -106,9 +114,51 @@
    "labels": [],
    "fact": "",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   }
  ],
+ "outro": 2.6,
+ "hookLines": 2,
+ "hookRed": [
+  6,
+  7
+ ],
+ "charts": {
+  "cells": {
+   "type": "count",
+   "title": "خلايا الأوركسين في دماغك",
+   "dur": 2.4,
+   "from": 0,
+   "to": 70000,
+   "comma": true,
+   "unit": "خلية تقريبًا",
+   "note": "من بين نحو 86 مليار خلية عصبية"
+  },
+  "loss": {
+   "type": "bars",
+   "title": "خلايا الأوركسين",
+   "sub": "في أدمغة المصابين بالنوم القهري",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": -90,
+    "suf": "%"
+   },
+   "bars": [
+    {
+     "label": "شخص سليم",
+     "v": 0.9
+    },
+    {
+     "label": "النوم القهري",
+     "v": 0.9,
+     "to": 0.09,
+     "hot": true
+    }
+   ]
+  }
+ },
  "duration": 36.849,
  "lines": [
   {

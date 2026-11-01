@@ -504,7 +504,7 @@ window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + 
   const setA = (g, a) => g.traverse(o => { if (o.material) { if (o.material.uniforms?.uA && g !== brain) o.material.uniforms.uA.value = (o.userData.a0 ??= o.material.uniforms.uA.value) * a; else if (o.material.uniforms?.uA) {} else { o.material.opacity = (o.userData.o0 ??= o.material.opacity) * a; } } });
   setA(syn, fade.syn); setA(mus, fade.mus); setA(kid, fade.kid);
   if (kid.visible) flowKid(t, s);
-  const ghost = Math.max(0, Math.min(1, (5.6 - camD) / 1.2)); hemis.forEach(m => m.material.uniforms.uA.value = .9 * fade.brain * (1 - .6 * ghost)); cereb.material.uniforms.uA.value = .8 * fade.brain * (1 - .4 * ghost); hemis.forEach(h => h.children[0] && (h.children[0].material.opacity = .22 * fade.brain * (1 - .7 * ghost))); callosum.material.uniforms.uA.value = .55 * fade.brain; stem.children.forEach(m => m.material.uniforms.uA.value = .8 * fade.brain);
+  const ghost = Math.max(0, Math.min(1, (5.6 - camD) / 1.2)); hemis.forEach(m => m.material.uniforms.uA.value = .9 * fade.brain * (1 - .6 * ghost)); cereb.material.uniforms.uA.value = .8 * fade.brain * (1 - .75 * ghost); hemis.forEach(h => h.children[0] && (h.children[0].material.opacity = .22 * fade.brain * (1 - .7 * ghost))); callosum.material.uniforms.uA.value = .55 * fade.brain; stem.children.forEach(m => m.material.uniforms.uA.value = .8 * fade.brain * (1 - .75 * ghost));
   // camera
   // camera: wide on the cover, then into the brain toward the part in red
   let tgt = new THREE.Vector3(0, -.15, 0), dist = 8.4;

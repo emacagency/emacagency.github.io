@@ -14,7 +14,8 @@
    "labels": [],
    "fact": "",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   },
   {
    "at": 1,
@@ -26,7 +27,8 @@
    ],
    "fact": "الكابسايسين <b>ينشّط أعصاب الألم</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": "scov"
   },
   {
    "at": 2,
@@ -40,7 +42,8 @@
     "receptor"
    ],
    "scene": "syn",
-   "release": true
+   "release": true,
+   "chart": "scov"
   },
   {
    "at": 3,
@@ -54,7 +57,8 @@
    "fact": "رسالة الألم ← <b>الدماغ</b>",
    "hotLabels": [],
    "scene": "brain",
-   "release": false
+   "release": false,
+   "chart": null
   },
   {
    "at": 4,
@@ -65,7 +69,8 @@
    "labels": [],
    "fact": "النتيجة: <b>حرقة</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   },
   {
    "at": 5,
@@ -73,7 +78,8 @@
    "labels": [],
    "fact": "لماذا <b>نعتاد على الحار؟</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   },
   {
    "at": 6,
@@ -86,7 +92,8 @@
     "pre"
    ],
    "scene": "syn",
-   "release": false
+   "release": false,
+   "chart": null
   },
   {
    "at": 7,
@@ -96,7 +103,8 @@
    ],
    "fact": "رسالة الألم: <b>أضعف</b>",
    "hotLabels": [],
-   "scene": "syn"
+   "scene": "syn",
+   "chart": null
   },
   {
    "at": 9,
@@ -106,7 +114,8 @@
    "labels": [],
    "fact": "كريمات الكابسايسين: <b>تسكين موضعي</b>",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": "patch"
   },
   {
    "at": 10,
@@ -114,9 +123,66 @@
    "labels": [],
    "fact": "",
    "hotLabels": [],
-   "scene": "brain"
+   "scene": "brain",
+   "chart": null
   }
  ],
+ "outro": 2.6,
+ "hookRed": [
+  1,
+  3
+ ],
+ "charts": {
+  "scov": {
+   "type": "bars",
+   "title": "حرارة الفلفل (مقياس سكوفيل)",
+   "sub": "كلما زاد الكابسايسين زادت الحرقة",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": 350000,
+    "comma": true,
+    "suf": "وحدة"
+   },
+   "bars": [
+    {
+     "label": "فلفل حلو",
+     "v": 0.01
+    },
+    {
+     "label": "هالابينو",
+     "v": 0.023
+    },
+    {
+     "label": "هابانيرو",
+     "v": 1,
+     "hot": true
+    }
+   ]
+  },
+  "patch": {
+   "type": "bars",
+   "title": "تركيز الكابسايسين في العلاج",
+   "sub": "كريمات الصيدلية مقابل اللصقة الطبية",
+   "dur": 2.2,
+   "big": {
+    "from": 0,
+    "to": 8,
+    "suf": "%"
+   },
+   "bars": [
+    {
+     "label": "كريم 0.075%",
+     "v": 0.02
+    },
+    {
+     "label": "لصقة طبية 8%",
+     "v": 1,
+     "hot": true
+    }
+   ]
+  }
+ },
  "duration": 31.553,
  "lines": [
   {
