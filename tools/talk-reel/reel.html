@@ -132,7 +132,7 @@ function lineChart(t){
     for(let i=0;i<12;i++){const an=i/12*6.28,r1=34+50*eo((t-tPk+.1)/.6),r2=r1+28;
       x.beginPath();x.moveTo(pk[0]+Math.cos(an)*r1,pk[1]+Math.sin(an)*r1);x.lineTo(pk[0]+Math.cos(an)*r2,pk[1]+Math.sin(an)*r2);x.stroke()}
     x.restore();
-    txt('نجاح',pk[0]-60,pk[1]+90,52,AMBER,{a:a*b*(1-ramp(t,wt(15),.3))});
+    txt('نجاح',pk[0]-70,pk[1]+190,52,AMBER,{a:a*b*(1-ramp(t,wt(15),.3))});
   }
   // the die lands on the peak at "مجرّد مصادفة"
   if(t>wt(15)-.2){const pk=toXY(P[8]);const d=eo((t-wt(15)+.2)/.55);const y=lerp(pk[1]-260,pk[1]-70,d)+Math.sin(d*Math.PI)*-40;
