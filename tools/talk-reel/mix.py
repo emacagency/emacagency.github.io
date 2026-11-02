@@ -48,17 +48,17 @@ def crack(at,g=.4):
 fx=np.zeros(N)
 # hook
 sub(L[0]['s'],52,1.6,.55); piano(L[0]['s'],220,.2,4)
-whoosh(wt(7),.4,.25)                 # the dip
+whoosh(wt(6),.4,.25)                 # the dip
 whoosh(L[1]['s'],.5,.3); piano(wt(9),329.6,.2); piano(wt(9)+.18,440,.16)  # success rises
 click(wt(15)+.35,.4,900); click(wt(15)+.42,.25,1300)                       # the die lands
-whoosh(L[2]['s'],.55,.3); boom(wt(21),.85)
-whoosh(L[3]['s'],.5,.3); click(wt(30),.2,700); click(wt(31),.25,500); sub(wt(33),70,.8,.35)
-whoosh(L[4]['s'],.5,.28); riser(wt(42),wt(48)+.2,.22)
+whoosh(L[2]['s'],.55,.3); boom(wt(20),.85)
+whoosh(L[3]['s'],.5,.3); click(wt(26),.2,700); click(wt(27),.25,500); sub(wt(29),70,.8,.35)
+whoosh(L[4]['s'],.5,.28); riser(wt(37),wt(41)+.2,.22)
 piano(L[5]['s'],110,.14,5)
 whoosh(L[6]['s'],.6,.3); piano(L[6]['s'],261.6,.2); piano(L[6]['s']+.2,329.6,.17); piano(L[6]['s']+.4,392,.15)
-chime(wt(69),.12); crack(wt(77),.35)
+chime(wt(61),.12); crack(wt(69),.35)
 click(L[8]['s']+.05,.3,1100); whoosh(L[8]['s'],.45,.22)
-for k in range(8): click(wt(92)+k*.09,.09,2600+k*220)
+for k in range(8): click(wt(86)+k*.09,.09,2600+k*220)
 boom(L[8]['e']+.45,.6); piano(L[8]['e']+.45,220,.2,3); piano(L[8]['e']+.45,329.6,.14,3)
 # music bed: soft pad, mood by section
 def pad(freqs,a,b,g):

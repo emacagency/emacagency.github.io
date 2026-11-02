@@ -98,8 +98,8 @@ function lineChart(t){
   const L0=T.lines[0],L1=T.lines[1];
   // reveal: up to dip by "يفشل", then rise to the peak by "ينجح"
   let k=0;
-  if(t<wt(7))k=lerp(0,.45,eo((t-L0.s)/(wt(7)-L0.s)));
-  else if(t<wt(9))k=lerp(.45,.52,eo((t-wt(7))/.5));
+  if(t<wt(6))k=lerp(0,.45,eo((t-L0.s)/(wt(6)-L0.s)));
+  else if(t<wt(9))k=lerp(.45,.52,eo((t-wt(6))/.5));
   else k=lerp(.52,1,eo((t-wt(9))/.9));
   const a=ramp(t,L0.s-.2,.5)*(1-ramp(t,L1.e+.1,.35));
   if(a<=0)return;
@@ -119,7 +119,7 @@ function lineChart(t){
   x.restore();
   // labels
   const dip=toXY(P[4]);
-  txt('فشل',dip[0],dip[1]+80,52,RED,{a:a*ramp(t,wt(7),.3)*(1-ramp(t,wt(9),.4))});
+  txt('فشل',dip[0],dip[1]+80,52,RED,{a:a*ramp(t,wt(6),.3)*(1-ramp(t,wt(9),.4))});
   if(t>wt(9)){const pk=toXY(P[8]);const b=ramp(t,wt(9)+.7,.35);
     // burst at the peak
     x.save();x.globalAlpha=a*b*(1-ramp(t,wt(9)+1.6,.6));x.strokeStyle=AMBER;x.lineWidth=4;
@@ -131,7 +131,7 @@ function lineChart(t){
   // the die lands on the peak at "مجرّد حظّ"
   if(t>wt(15)-.2){const pk=toXY(P[8]);const d=eo((t-wt(15)+.2)/.55);const y=lerp(pk[1]-520,pk[1]-70,d)+Math.sin(d*Math.PI)*-40;
     dieAt(pk[0]-90,y,(1-d)*4+.15*Math.sin(t*2),a*ramp(t,wt(15)-.2,.2));
-    txt('«يمكن كنت محظوظ»',W/2,1420,60,MUTED,{w:400,a:a*ramp(t,wt(16),.35),blur:lerp(6,0,ramp(t,wt(16),.4))});
+    txt('«ربما كنتُ محظوظًا»',W/2,1420,60,MUTED,{w:400,a:a*ramp(t,wt(16),.35),blur:lerp(6,0,ramp(t,wt(16),.4))});
   }
 }
 function dieAt(X,Y,rot,a){x.save();x.globalAlpha=a;x.translate(X,Y);x.rotate(rot);const s=110;
@@ -166,22 +166,22 @@ function titleCard(t,t0,Y=620,showMask=true){
 
 function bars(t){
   const L=T.lines[3];const a=ramp(t,L.s-.1,.3)*(1-ramp(t,L.e+.15,.3));if(a<=0)return;
-  txt('والغريب؟',W/2,560,118,WHITE,{a:a*eo(ramp(t,wt(25),.35)),glow:10});
-  txt('مين بتصيب؟',W/2,700,58,MUTED,{w:400,a:a*ramp(t,wt(26),.4)});
+  txt('والغريب؟',W/2,560,118,WHITE,{a:a*eo(ramp(t,wt(22),.35)),glow:10});
+  txt('مَن تُصيب؟',W/2,700,58,MUTED,{w:400,a:a*ramp(t,wt(23),.4)});
   const base=1330;x.save();x.globalAlpha=a;x.strokeStyle='rgba(242,242,242,.25)';x.lineWidth=3;x.beginPath();x.moveTo(170,base);x.lineTo(910,base);x.stroke();x.restore();
   // right bar: الكسلان (short, grey)
-  const h1=lerp(0,120,back(ramp(t,wt(30),.5)));
+  const h1=lerp(0,120,back(ramp(t,wt(26),.5)));
   x.save();x.globalAlpha=a;x.fillStyle='rgba(242,242,242,.28)';x.beginPath();x.roundRect(640,base-h1,190,h1,[16,16,0,0]);x.fill();x.restore();
-  txt('الكسلان',735,base+60,50,MUTED,{a:a*ramp(t,wt(30),.3)});
+  txt('الكسول',735,base+60,50,MUTED,{a:a*ramp(t,wt(26),.3)});
   // cross over the lazy bar
-  if(t>wt(31)){x.save();x.globalAlpha=a*ramp(t,wt(31),.3);x.strokeStyle=RED;x.lineWidth=8;x.lineCap='round';const k=eo(ramp(t,wt(31),.3));
+  if(t>wt(27)){x.save();x.globalAlpha=a*ramp(t,wt(27),.3);x.strokeStyle=RED;x.lineWidth=8;x.lineCap='round';const k=eo(ramp(t,wt(27),.3));
     x.beginPath();x.moveTo(660,base-140);x.lineTo(lerp(660,810,k),lerp(base-140,base+10,k));x.stroke();x.restore()}
   // left bar: الطموحين (tall, amber)
-  const h2=lerp(0,470,back(ramp(t,wt(33),.8)));
+  const h2=lerp(0,470,back(ramp(t,wt(29),.8)));
   x.save();x.globalAlpha=a;const g=x.createLinearGradient(0,base-470,0,base);g.addColorStop(0,AMBER);g.addColorStop(1,'rgba(232,176,75,.35)');
   x.fillStyle=g;x.shadowColor=AMBER;x.shadowBlur=30;x.beginPath();x.roundRect(250,base-h2,190,h2,[16,16,0,0]);x.fill();x.restore();
-  txt('الطموحين',345,base+60,50,AMBER,{a:a*ramp(t,wt(33),.3)});
-  txt('والمجتهدين',345,base+122,50,AMBER,{a:a*ramp(t,wt(34),.3)});
+  txt('الطموحين',345,base+60,50,AMBER,{a:a*ramp(t,wt(29),.3)});
+  txt('والمجتهدين',345,base+122,50,AMBER,{a:a*ramp(t,wt(30),.3)});
 }
 
 function gapChart(t){
@@ -189,53 +189,53 @@ function gapChart(t){
   const ox=150,oy=1320,w=780,h=620;
   x.save();x.globalAlpha=a;x.strokeStyle='rgba(242,242,242,.3)';x.lineWidth=3;x.beginPath();x.moveTo(ox,oy-h-20);x.lineTo(ox,oy);x.lineTo(ox+w+10,oy);x.stroke();x.restore();
   txt('الوقت والخبرة',ox+w-90,oy+50,40,MUTED,{w:400,a});
-  const k1=eo(ramp(t,wt(38),2.6)), k2=eo(ramp(t,wt(42),1.6));
+  const k1=eo(ramp(t,wt(33),2.6)), k2=eo(ramp(t,wt(37),1.6));
   const f1=u=>oy-h*.42*Math.pow(u,1.1), f2=u=>oy-h*Math.pow(u,1.5)*.98;
   const draw=(f,k,col,dash)=>{x.save();x.globalAlpha=a;x.strokeStyle=col;x.lineWidth=8;x.lineCap='round';if(dash)x.setLineDash([22,16]);
     x.shadowColor=col;x.shadowBlur=14;x.beginPath();for(let i=0;i<=100*k;i++){const u=i/100;const X=ox+u*w,Y=f(u);i?x.lineTo(X,Y):x.moveTo(X,Y)}x.stroke();x.restore()};
   // gap area
-  const ga=ramp(t,wt(46),.6);
+  const ga=ramp(t,wt(39),.6);
   if(ga>0){x.save();x.globalAlpha=a*ga*.9;const g=x.createLinearGradient(0,oy-h,0,oy);g.addColorStop(0,'rgba(229,72,77,.38)');g.addColorStop(1,'rgba(229,72,77,.05)');
     x.fillStyle=g;x.beginPath();for(let i=0;i<=100;i++){const u=i/100;x.lineTo(ox+u*w,f2(u))}for(let i=100;i>=0;i--){const u=i/100;x.lineTo(ox+u*w,f1(u))}x.fill();x.restore()}
   draw(f1,k1,WHITE,false);draw(f2,k2,AMBER,true);
-  txt('اللي تعلّمته',ox+w*.3,f1(.3)+70,44,WHITE,{a:a*ramp(t,wt(39),.4)});
-  txt('اللي صرت تشوفه قدّامك',ox+w-260,f2(1)-10,44,AMBER,{a:a*ramp(t,wt(44),.4)});
+  txt('ما تعلّمته',ox+w*.3,f1(.3)+70,44,WHITE,{a:a*ramp(t,wt(34),.4)});
+  txt('ما تراه أمامك',ox+w-260,f2(1)-10,44,AMBER,{a:a*ramp(t,wt(38),.4)});
   // gap bracket + label
   if(ga>0){const X=ox+w*.7;x.save();x.globalAlpha=a*ga;x.strokeStyle=RED;x.lineWidth=4;x.beginPath();x.moveTo(X,f2(.7)+8);x.lineTo(X,f1(.7)-8);x.stroke();
     [f2(.7)+8,f1(.7)-8].forEach(Y=>{x.beginPath();x.moveTo(X-16,Y);x.lineTo(X+16,Y);x.stroke()});x.restore();
-    const gl=ramp(t,wt(52),.4);
+    const gl=ramp(t,wt(45),.4);
     txt('الفجوة',ox+w*.89,(f1(.9)+f2(.9))/2+20,54,RED,{a:a*Math.max(ga*.6,gl),glow:gl*20});}
   // "you are here" dot riding the learning curve
-  const u=k1;txt('أنت هنا',ox+u*w,f1(u)-56,36,MUTED,{w:400,a:a*ramp(t,wt(38),.4)*(1-ramp(t,wt(46),.3))});
+  const u=k1;txt('أنت هنا',ox+u*w,f1(u)-56,36,MUTED,{w:400,a:a*ramp(t,wt(33),.4)*(1-ramp(t,wt(39),.3))});
   x.save();x.globalAlpha=a;x.fillStyle=WHITE;x.shadowColor=WHITE;x.shadowBlur=20;x.beginPath();x.arc(ox+u*w,f1(u),12,0,6.28);x.fill();x.restore();
 }
 
-const whispers=['أنا مو جاهز','يمكن كنت محظوظ','ما بستحق','رح يكتشفوا','مو قدّها'];
+const whispers=['لستُ جاهزًا','ربما كنتُ محظوظًا','لا أستحق','سيكتشفون أمري','لستُ أهلًا'];
 function innerVoice(t){
-  const L=T.lines[5];const a=ramp(t,wt(54),.4)*(1-ramp(t,T.lines[6].s-.15,.3));if(a<=0)return;
+  const L=T.lines[5];const a=ramp(t,wt(46),.4)*(1-ramp(t,T.lines[6].s-.15,.3));if(a<=0)return;
   // drifting faint whispers in the back
   whispers.forEach((s,i)=>{const yy=420+i*250+Math.sin(t*.7+i)*18, xx=W/2+Math.sin(t*.35+i*1.7)*230;
     txt(s,xx,yy,44+i%2*10,'rgba(242,242,242,.10)',{w:400,a,blur:3})});
-  const k1=ramp(t,wt(55),.5);const off1=1-ramp(t,wt(58)+.1,.35);
-  txt('«أنا مو جاهز»',W/2,860,110,WHITE,{a:a*k1*off1,blur:lerp(14,0,eo(k1)),glow:12});
-  const k2=ramp(t,wt(59),.5);
-  txt('يمكن ما بستحق',W/2,820,92,WHITE,{a:a*k2,blur:lerp(14,0,eo(k2))});
-  txt('اللي وصلتلُه',W/2,950,92,WHITE,{a:a*ramp(t,wt(62),.5),blur:lerp(14,0,eo(ramp(t,wt(62),.5)))});
+  const k1=ramp(t,wt(47),.5);const off1=1-ramp(t,wt(49)+.1,.35);
+  txt('«لستُ جاهزًا»',W/2,860,110,WHITE,{a:a*k1*off1,blur:lerp(14,0,eo(k1)),glow:12});
+  const k2=ramp(t,wt(50),.5);
+  txt('ربما لا أستحق',W/2,820,92,WHITE,{a:a*k2,blur:lerp(14,0,eo(k2))});
+  txt('ما وصلتُ إليه',W/2,950,92,WHITE,{a:a*ramp(t,wt(53),.5),blur:lerp(14,0,eo(ramp(t,wt(53),.5)))});
 }
 
 function doubtCard(t){
   const L=T.lines[6];const a=ramp(t,L.s,.3)*(1-ramp(t,L.e+.05,.25));if(a<=0)return;
   const Y=640;
-  txt('الشك',W/2+280,Y,130,WHITE,{a:a*eo(ramp(t,wt(65),.35)),glow:10});
-  txt('الفشل',W/2-280,Y,130,WHITE,{a:a*eo(ramp(t,wt(68),.35)),glow:10});
+  txt('الشك',W/2+280,Y,130,WHITE,{a:a*eo(ramp(t,wt(57),.35)),glow:10});
+  txt('الفشل',W/2-280,Y,130,WHITE,{a:a*eo(ramp(t,wt(60),.35)),glow:10});
   // ≠ drawn as strokes
-  const k=eo(ramp(t,wt(69),.45));
+  const k=eo(ramp(t,wt(61),.45));
   x.save();x.globalAlpha=a;x.strokeStyle=AMBER;x.lineWidth=14;x.lineCap='round';x.shadowColor=AMBER;x.shadowBlur=26;
   [[-25],[25]].forEach(([dy])=>{x.beginPath();x.moveTo(W/2-60,Y+dy);x.lineTo(W/2-60+120*k,Y+dy);x.stroke()});
-  const k2=eo(ramp(t,wt(69)+.25,.35));x.beginPath();x.moveTo(W/2+40,Y-75);x.lineTo(W/2+40-80*k2,Y-75+150*k2);x.stroke();x.restore();
+  const k2=eo(ramp(t,wt(61)+.25,.35));x.beginPath();x.moveTo(W/2+40,Y-75);x.lineTo(W/2+40-80*k2,Y-75+150*k2);x.stroke();x.restore();
   // growing beyond a boundary
-  const C=[W/2,1130];const R=200;const gk=eo(ramp(t,wt(73),1.6));const br=ramp(t,wt(77),.6);
-  x.save();x.globalAlpha=a*ramp(t,wt(70),.4);
+  const C=[W/2,1130];const R=200;const gk=eo(ramp(t,wt(66),1.6));const br=ramp(t,wt(69),.6);
+  x.save();x.globalAlpha=a*ramp(t,wt(62),.4);
   if(br<=0){x.setLineDash([14,14]);x.strokeStyle='rgba(242,242,242,.55)';x.lineWidth=5;x.beginPath();x.arc(...C,R,0,6.28);x.stroke();x.setLineDash([])}
   else{ // the ring breaks into arcs that fly out
     for(let i=0;i<10;i++){const a0=i/10*6.28,d=R+eo(br)*170;x.strokeStyle=`rgba(242,242,242,${.55*(1-br)})`;x.lineWidth=5;
@@ -243,7 +243,7 @@ function doubtCard(t){
   const rr=lerp(60,R*1.15,gk)+(br>0?eo(br)*40:0);
   const g=x.createRadialGradient(...C,0,...C,rr);g.addColorStop(0,'rgba(255,214,140,.95)');g.addColorStop(.6,'rgba(232,176,75,.55)');g.addColorStop(1,'rgba(232,176,75,0)');
   x.fillStyle=g;x.beginPath();x.arc(...C,rr,0,6.28);x.fill();x.restore();
-  txt('تتجاوز حدودك',W/2,1430,62,AMBER,{a:a*ramp(t,wt(76),.4)});
+  txt('تتجاوز حدودك',W/2,1430,62,AMBER,{a:a*ramp(t,wt(68),.4)});
 }
 
 function cta(t){
@@ -254,19 +254,19 @@ function cta(t){
   x.beginPath();x.moveTo(110,80);x.lineTo(170,150);x.lineTo(40,88);x.fill();
   for(let i=0;i<3;i++){x.fillStyle='#0b0f17';x.globalAlpha=a*(.35+.65*Math.max(0,Math.sin(t*7-i*.9)));x.beginPath();x.arc(-80+i*80,-10,22,0,6.28);x.fill()}
   x.restore();
-  txt('اكتبها بالتعليقات',W/2,900,82,WHITE,{a:a*ramp(t,wt(88),.35)});
+  txt('اكتبها في التعليقات',W/2,900,82,WHITE,{a:a*ramp(t,wt(82),.35)});
   // bouncing arrow
-  const ay=1010+Math.abs(Math.sin(t*4))*24;x.save();x.globalAlpha=a*ramp(t,wt(88),.35);x.strokeStyle=AMBER;x.lineWidth=9;x.lineCap='round';x.lineJoin='round';
+  const ay=1010+Math.abs(Math.sin(t*4))*24;x.save();x.globalAlpha=a*ramp(t,wt(82),.35);x.strokeStyle=AMBER;x.lineWidth=9;x.lineCap='round';x.lineJoin='round';
   x.beginPath();x.moveTo(W/2,ay);x.lineTo(W/2,ay+70);x.moveTo(W/2-30,ay+42);x.lineTo(W/2,ay+72);x.lineTo(W/2+30,ay+42);x.stroke();x.restore();
   // you are not the only one: many lights around one
-  const nk=ramp(t,wt(92),.9);const C=[W/2,1240];
+  const nk=ramp(t,wt(86),.9);const C=[W/2,1240];
   x.save();x.globalAlpha=a;x.fillStyle=AMBER;x.shadowColor=AMBER;x.shadowBlur=20;x.beginPath();x.arc(...C,14,0,6.28);x.fill();
   for(let i=0;i<46;i++){const an=i*2.39996,r=60+Math.sqrt(i)*48,on=cl(nk*1.4-i/46);if(on<=0)continue;
     const px=C[0]+Math.cos(an)*r*1.5,py=C[1]+Math.sin(an)*r*.55;x.globalAlpha=a*on;x.fillStyle=WHITE;x.shadowColor=WHITE;
     x.beginPath();x.arc(px,py,6+i%3*2,0,6.28);x.fill();
     if(i<14){x.strokeStyle=`rgba(242,242,242,${.18*on})`;x.lineWidth=2;x.beginPath();x.moveTo(...C);x.lineTo(px,py);x.stroke()}}
   x.restore();
-  txt('مو الوحيد',W/2,1430,64,AMBER,{a:a*ramp(t,wt(93),.4),glow:16});
+  txt('لستَ وحدك',W/2,1430,64,AMBER,{a:a*ramp(t,wt(87),.4),glow:16});
 }
 
 // ---------- main ----------
@@ -281,26 +281,26 @@ function draw(t){
   if(t<L[1].s)z=lerp(1,1.06,eio((t-L[0].s)/(L[1].s-L[0].s)));
   else if(t<L[2].s)z=t>wt(15)?lerp(1.0,1.05,eo((t-wt(15))/1)):1;
   else if(t>=L[5].s&&t<L[6].s)z=lerp(1,1.12,(t-L[5].s)/(L[6].s-L[5].s));
-  else if(t>=L[6].s&&t<L[7].s)z=lerp(1,1.03,ramp(t,wt(76),1));
+  else if(t>=L[6].s&&t<L[7].s)z=lerp(1,1.03,ramp(t,wt(68),1));
   else if(t>=L[8].s)z=lerp(1.06,1,eo((t-L[8].s)/2.5));
   // tiny shake on the title hit
-  const sh=t>wt(21)&&t<wt(21)+.35?(1-(t-wt(21))/.35)*3:0;
+  const sh=t>wt(20)&&t<wt(20)+.35?(1-(t-wt(20))/.35)*3:0;
   x.save();x.fillStyle='#000';x.fillRect(0,0,W,H);
   x.translate(W/2+Math.sin(t*90)*sh,H/2+Math.cos(t*77)*sh);x.scale(z,z);x.translate(-W/2,-H/2);
   background(t,cl(warm),cl(dark));
 
   // S0/S1 hook
   const hk=ramp(t,0,.15)*(1-ramp(t,L[1].e+.1,.3));
-  if(hk>0){const l1='نجحت…', l2='بس ما بتصدّق إنّك تستحق؟';
+  if(hk>0){const l1='نجحتَ…', l2='لكنّك لا تصدّق أنّك تستحق؟';
     txt(l1,W/2,400,104,WHITE,{a:hk*ramp(t,0,.25),glow:8});
     txt(l2,W/2,540,76,AMBER,{a:hk*ramp(t,.3,.35),blur:lerp(8,0,ramp(t,.3,.4))});
   }
   lineChart(t);
   // S2 title + mask
   {const a=ramp(t,L[2].s-.1,.3)*(1-ramp(t,L[3].s-.2,.3));
-   if(a>0){mask(W/2,1250,1.05,a*ramp(t,wt(18),.5),eo(ramp(t,wt(22),.8))*.9);
-     if(t<wt(21))txt('هاد الشعور إلُه اسم…',W/2,700,72,MUTED,{w:400,a:a*ramp(t,wt(17),.4)});
-     else{x.save();x.globalAlpha=a;titleCard(t,wt(21)-.05,520);x.restore()}}}
+   if(a>0){mask(W/2,1250,1.05,a*ramp(t,wt(18),.5),eo(ramp(t,wt(21),.8))*.9);
+     if(t<wt(20))txt('لهذا الشعور اسم…',W/2,700,72,MUTED,{w:400,a:a*ramp(t,wt(17),.4)});
+     else{x.save();x.globalAlpha=a;titleCard(t,wt(20)-.05,520);x.restore()}}}
   bars(t);
   gapChart(t);
   innerVoice(t);
@@ -309,8 +309,8 @@ function draw(t){
   {const a=ramp(t,L[7].s-.05,.3)*(1-ramp(t,L[8].s-.15,.25));
    if(a>0){x.save();x.globalAlpha=a;
      // two-line big question
-     const lines=[[78,79,80],[81,82,83,84,85,86]];
-     lines.forEach((ids,li)=>{const sz=li?72:120;const Y=li?1000:840;const ws=ids.map(i=>T.words[i].w);const sp=sz*.3;
+     const lines=[[70,71,72],[73,74,75,76,77,78,79]];
+     lines.forEach((ids,li)=>{const sz=li?60:120;const Y=li?1000:840;const ws=ids.map(i=>T.words[i].w);const sp=sz*.3;
        const widths=ws.map(w=>tw(w,sz));const total=widths.reduce((p,q)=>p+q,0)+sp*(ws.length-1);let X=W/2+total/2;
        ids.forEach((i,k)=>{const w=T.words[i];const on=t>=w.t-.03;txt(w.w,X-widths[k]/2,Y,sz,on?(li?WHITE:AMBER):'rgba(242,242,242,.2)',{a:1,glow:on?10:0});X-=widths[k]+sp})});
      x.restore()}}
@@ -325,7 +325,7 @@ function draw(t){
 function drawCover(){ // cover still: brain-free (talking theme): mask + name, bold
   const t=99;x.save();background(1,0,0);x.restore();
   mask(W/2,1250,1.15,1,.6);
-  txt('نجحت… بس حاسس إنّك ما بتستحق؟',W/2,330,58,WHITE,{glow:8});
+  txt('نجحتَ… لكنّك تشعر أنّك لا تستحق؟',W/2,330,58,WHITE,{glow:8});
   x.save();
   txt('IMPOSTER',W/2,560,230,WHITE,{fam:'Bebas',w:400,ls:10,glow:20});
   txt('SYNDROME',W/2,760,230,AMBER,{fam:'Bebas',w:400,ls:10,glow:24});
