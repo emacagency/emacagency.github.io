@@ -37,9 +37,28 @@ def elevenlabs(text, mp3):
         mp3.write_bytes(r.read())
 
 
-def edge(text, mp3):
+def edge(text, mp3, v=None, rate="+6%", pitch="+3Hz"):
+    """Voice text and keep word timings next to the mp3 (<slug>.words.json)."""
     import edge_tts
-    asyncio.run(edge_tts.Communicate(text, voice, rate="+6%", pitch="+3Hz").save(str(mp3)))
+
+    async def run():
+        words = []
+        with open(mp3, "wb") as f:
+            async for c in edge_tts.Communicate(text, v or voice, rate=rate, pitch=pitch,
+                                                boundary="WordBoundary").stream():
+                if c["type"] == "audio":
+                    f.write(c["data"])
+                elif c["type"] == "WordBoundary":
+                    words.append({"t": c["offset"] / 1e7, "d": c["duration"] / 1e7, "w": c["text"]})
+        mp3.with_suffix(".words.json").write_text(json.dumps(words, ensure_ascii=False, indent=1) + "\n")
+
+    asyncio.run(run())
+
+
+def override(txt):
+    """Optional <slug>.voice next to the text: "<voice> [rate] [pitch]" for that file only."""
+    f = txt.with_suffix(".voice")
+    return f.read_text().split() if f.exists() else []
 
 
 OUT.mkdir(parents=True, exist_ok=True)
@@ -48,12 +67,16 @@ force = os.environ.get("FORCE") == "true"
 
 for txt in sorted(SRC.glob("*.txt")):
     text = txt.read_text(encoding="utf-8").strip()
-    digest = hashlib.sha256((engine + voice + text).encode()).hexdigest()
+    over = override(txt) if engine == "edge" else []
+    digest = hashlib.sha256((engine + voice + " ".join(over) + text).encode()).hexdigest()
     mp3 = OUT / (txt.stem + ".mp3")
     if not force and done.get(txt.stem) == digest and mp3.exists():
         print("unchanged:", txt.stem)
         continue
-    (elevenlabs if engine == "elevenlabs" else edge)(text, mp3)
+    if engine == "elevenlabs":
+        elevenlabs(text, mp3)
+    else:
+        edge(text, mp3, *over)
     done[txt.stem] = digest
     print("voiced:", txt.stem, mp3.stat().st_size, "bytes")
 
