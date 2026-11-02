@@ -18,12 +18,15 @@
    "hot": [],
    "labels": [],
    "bars": true,
-   "dt": 0.25
+   "dt": 0.25,
+   "scene": "story",
+   "story": "threat"
   },
   {
    "at": 1,
    "bars": false,
-   "fact": "لماذا يفعل <b>عقلك</b> ذلك؟"
+   "fact": "لماذا يفعل <b>عقلك</b> ذلك؟",
+   "scene": "brain"
   },
   {
    "at": 2,
@@ -34,13 +37,17 @@
   {
    "at": 4,
    "title": false,
-   "chart": "days"
+   "chart": null,
+   "scene": "story",
+   "story": "bank"
   },
   {
    "at": 6,
    "chart": null,
    "fact": "دافعوا عن <b>خاطفيهم!</b>",
-   "flash": true
+   "flash": true,
+   "scene": "story",
+   "story": "defend"
   },
   {
    "at": 7,
@@ -54,7 +61,8 @@
    "labels": [
     "amygdala"
    ],
-   "fact": ""
+   "fact": "",
+   "scene": "brain"
   },
   {
    "at": 9,
@@ -73,8 +81,17 @@
   },
   {
    "at": 12,
+   "chart": null,
+   "fact": "لطف <b>صغير</b>…",
+   "scene": "story",
+   "story": "water"
+  },
+  {
+   "at": 14,
+   "scene": "brain",
    "chart": "turn",
-   "fact": ""
+   "fact": "",
+   "dt": 0.9
   },
   {
    "at": 15,
@@ -89,13 +106,16 @@
    "chart": null,
    "fact": "مصدر الأمان = <b>مصدر الأذى</b>",
    "bars": true,
-   "dt": 1.6
+   "dt": 1.4,
+   "scene": "story",
+   "story": "bond"
   },
   {
    "at": 25,
    "chart": "rare",
    "fact": "",
-   "bars": false
+   "bars": false,
+   "scene": "brain"
   },
   {
    "at": 27,
@@ -108,19 +128,10 @@
   }
  ],
  "charts": {
-  "days": {
-   "type": "count",
-   "title": "ستوكهولم · 1973",
-   "dur": 2.6,
-   "from": 0,
-   "to": 6,
-   "unit": "أيام احتجاز",
-   "note": "4 موظفين رهائن داخل بنك"
-  },
   "turn": {
    "type": "dual",
    "title": "ماذا يحدث داخل العقل؟",
-   "dur": 5.6,
+   "dur": 2.6,
    "mark": {
     "x": 0.45,
     "label": "لطف صغير"

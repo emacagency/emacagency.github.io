@@ -47,6 +47,8 @@ svg.lines { position: absolute; inset: 0; width: 540px; height: 960px; }
 .bars { position: absolute; inset: 0; pointer-events: none; }
 .bars i { position: absolute; top: 0; width: 14px; height: 960px; margin-left: -7px; border-radius: 7px; background: linear-gradient(90deg, rgba(40,80,140,.55), rgba(190,225,255,.75) 45%, rgba(40,80,140,.55)); box-shadow: 0 0 18px rgba(80,170,255,.55); }
 .bars b { position: absolute; left: 0; right: 0; height: 14px; border-radius: 7px; background: linear-gradient(rgba(40,80,140,.55), rgba(190,225,255,.75) 45%, rgba(40,80,140,.55)); box-shadow: 0 0 18px rgba(80,170,255,.55); }
+.story { position: absolute; inset: 0; width: 540px; height: 960px; overflow: visible; pointer-events: none; }
+.story text { font-family: Tajawal; font-weight: 800; }
 .flash { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 45%, rgba(255,80,95,.55), transparent 70%); opacity: 0; pointer-events: none; }
 .fact b { color: #FF6B78; text-shadow: 0 0 12px rgba(255,59,74,.8); }
 </style>
@@ -60,7 +62,7 @@ svg.lines { position: absolute; inset: 0; width: 540px; height: 960px; }
 <div class="fact" id="fact"></div>
 <div class="cap" id="cap"></div>
 <div class="ask" id="ask"><small>اكتب في التعليقات</small><div id="asktx"></div><svg viewBox="0 0 24 24"><path d="M4 4h16v11H9l-5 4z" fill="none" stroke="#FF5A68" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="9.5" r="1.2" fill="#fff"/><circle cx="12" cy="9.5" r="1.2" fill="#fff"/><circle cx="15" cy="9.5" r="1.2" fill="#fff"/></svg></div><div class="chart" id="chart"><div class="panel"></div><svg id="chsvg"></svg><h3 id="chtitle"></h3><div class="big" id="chbig"></div><div class="sub" id="chsub"></div></div>
-<div class="bars" id="bars"></div><div class="flash" id="flash"></div><div class="ring" id="ring1"></div><div class="ring r2" id="ring2"></div>
+<svg class="story" id="story" viewBox="0 0 540 960"></svg><div class="bars" id="bars"></div><div class="flash" id="flash"></div><div class="ring" id="ring1"></div><div class="ring r2" id="ring2"></div>
 <div class="hook" id="hook"></div>
 <div class="cover" id="cover"><h1 id="cv-name"></h1><p id="cv-latin"></p><span>علم الشعور · النواقل العصبية</span></div>
 <script type="module">
@@ -500,6 +502,84 @@ const level = (key, t, tIn, tOut) => { let on = false, t0 = -99, base = 0;
   for (const b of beats) { if (b.t0 > t) break; if (b[key] === undefined || !!b[key] === on) continue; base = val(b.t0); on = !!b[key]; t0 = b.t0; }
   return val(t); };
 
+/* ---------- story scenes: pictogram people that act out the narration ---------- */
+const POSE = {
+  stand:  { aL: [[-17, -145], [-24, -112], [-26, -80]], aR: [[17, -145], [24, -112], [26, -80]], lL: [[-9, -82], [-11, -40], [-12, 0]], lR: [[9, -82], [11, -40], [12, 0]] },
+  up:     { aL: [[-17, -145], [-38, -160], [-36, -198]], aR: [[17, -145], [38, -160], [36, -198]], lL: [[-9, -82], [-14, -40], [-16, 0]], lR: [[9, -82], [14, -40], [16, 0]] },
+  sitUp:  { aL: [[-17, -145], [-38, -160], [-36, -198]], aR: [[17, -145], [38, -160], [36, -198]], lL: [[-9, -82], [30, -80], [30, -18]], lR: [[9, -82], [44, -80], [44, -18]] },
+  sitTake:{ aL: [[-17, -145], [-24, -112], [-26, -84]], aR: [[17, -145], [45, -128], [74, -132]], lL: [[-9, -82], [30, -80], [30, -18]], lR: [[9, -82], [44, -80], [44, -18]] },
+  point:  { aL: [[-17, -145], [-24, -112], [-26, -80]], aR: [[17, -145], [52, -152], [86, -160]], lL: [[-9, -82], [-20, -40], [-26, 0]], lR: [[9, -82], [18, -40], [24, 0]] },
+  offer:  { aL: [[-17, -145], [-24, -112], [-26, -80]], aR: [[17, -145], [48, -128], [80, -128]], lL: [[-9, -82], [-16, -40], [-20, 0]], lR: [[9, -82], [16, -40], [20, 0]] },
+  guard:  { aL: [[-17, -145], [-52, -142], [-86, -140]], aR: [[17, -145], [52, -142], [86, -140]], lL: [[-9, -82], [-20, -40], [-26, 0]], lR: [[9, -82], [20, -40], [26, 0]] },
+  hold:   { aL: [[-17, -145], [-26, -112], [-30, -84]], aR: [[17, -145], [42, -120], [70, -112]], lL: [[-9, -82], [-12, -40], [-14, 0]], lR: [[9, -82], [12, -40], [14, 0]] },
+};
+const lerpPose = (A, B, k) => { const o = {}; for (const l in A) o[l] = A[l].map((p, i) => [p[0] + (B[l][i][0] - p[0]) * k, p[1] + (B[l][i][1] - p[1]) * k]); return o; };
+const mixCol = (a, b, k) => { const h = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16)), A = h(a), B = h(b); return `rgb(${A.map((v, i) => Math.round(v + (B[i] - v) * k)).join(',')})`; };
+function person({ x, y, sc = 1, face = 1, pose, col, op = 1, sit = false }) {
+  const P = typeof pose === 'string' ? POSE[pose] : pose, ln = pts => pts.map(p => p.join(',')).join(' ');
+  return `<g transform="translate(${x} ${y + (sit ? 18 * sc : 0)}) scale(${sc * face} ${sc})" opacity="${op}" style="filter:drop-shadow(0 0 7px ${col}) drop-shadow(0 0 2px ${col})">
+    ${sit ? `<path d="M-30,-70 L60,-70 M50,-70 L50,-18 M-22,-70 L-22,-18 M-30,-70 L-34,-150" stroke="${col}" stroke-opacity=".45" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}
+    <line x1="0" y1="-150" x2="0" y2="-88" stroke="${col}" stroke-width="34" stroke-linecap="round" opacity=".88"/>
+    ${['lL', 'lR', 'aL', 'aR'].map(l => `<polyline points="${ln(P[l])}" stroke="${col}" stroke-width="${l[0] === 'l' ? 15 : 12}" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>`).join('')}
+    <circle cx="0" cy="-182" r="19" fill="${col}" opacity=".95"/></g>`;
+}
+const RED_C = '#FF4B5A', BLUE_C = '#7FD0FF';
+const floor = (y, w = 420) => `<ellipse cx="270" cy="${y}" rx="${w / 2}" ry="16" fill="none" stroke="rgba(110,190,255,.45)" stroke-width="2"/><ellipse cx="270" cy="${y}" rx="${w / 2 - 40}" ry="9" fill="rgba(80,170,255,.08)"/>`;
+const STORY = {
+  // the captor towers over a seated hostage, then turns blue and a shield closes around her: "becomes your protector"
+  threat(t, k) { const flip = ease((t - wordT([0, 'حاميك']) + .2) / .6);
+    return `<polygon points="290,60 160,560 520,560" fill="url(#spot)" opacity="${.5 * (1 - flip)}"/>` + floor(560) +
+      person({ x: 360, y: 560, sc: 1.45, face: -1, pose: lerpPose(POSE.point, POSE.guard, flip), col: mixCol(RED_C, BLUE_C, flip) }) +
+      person({ x: 170, y: 560, sc: 1.05, pose: 'sitUp', col: BLUE_C, sit: true }) +
+      `<path d="M70,560 A110,150 0 0 1 290,560" fill="none" stroke="${BLUE_C}" stroke-width="4" stroke-dasharray="${690 * flip} 999" style="filter:drop-shadow(0 0 10px ${BLUE_C})"/>`; },
+  // the bank in Stockholm, four staff inside, the days ticking by
+  bank(t, k, since) { const day = Math.min(6, 1 + Math.floor(Math.max(0, since - .4) / 1.05)), ph = (Math.max(0, since - .4) / 1.05) % 1;
+    const sx = 90 + 360 * ph, sy = 150 - 70 * Math.sin(Math.PI * ph), night = day % 2 === 0;
+    let o = `<circle cx="${sx}" cy="${sy}" r="${night ? 14 : 18}" fill="${night ? '#CFE9FF' : '#FFD27A'}" style="filter:drop-shadow(0 0 14px ${night ? '#7FD0FF' : '#FFB347'})"/>`;
+    o += `<g stroke="${BLUE_C}" stroke-width="3" fill="rgba(40,120,220,.08)" style="filter:drop-shadow(0 0 6px ${BLUE_C})"><path d="M70,245 L270,175 L470,245 Z"/><rect x="80" y="245" width="380" height="18"/>
+      ${[0, 1, 2, 3, 4].map(i => `<rect x="${100 + i * 78}" y="263" width="24" height="230" fill="rgba(40,120,220,.12)"/>`).join('')}<rect x="66" y="493" width="408" height="16"/></g>
+      <text x="270" y="232" text-anchor="middle" style="font-size:22px;fill:#fff">بنك · ستوكهولم</text>`;
+    [140, 218, 296, 374].forEach((x, i) => o += person({ x: x + 12, y: 485, sc: .5, pose: 'up', col: BLUE_C, op: ease((since - .2 - i * .15) / .3) }));
+    o += person({ x: 150 + 240 * (.5 + .5 * Math.sin(since * 1.6)), y: 488, sc: .6, face: Math.cos(since * 1.6) > 0 ? 1 : -1, pose: 'point', col: RED_C });
+    o += `<text x="270" y="90" text-anchor="middle" style="font-size:20px;fill:#9FD4FF">1973</text>
+      <text x="270" y="580" text-anchor="middle" style="font-size:44px;fill:#fff;filter:drop-shadow(0 0 10px ${RED_C})">اليوم ${day}</text>
+      <g>${[1, 2, 3, 4, 5, 6].map(i => `<rect x="${126 + (i - 1) * 50}" y="${600}" width="38" height="8" rx="4" fill="${i <= day ? RED_C : 'rgba(110,190,255,.25)'}"/>`).join('')}</g>`;
+    return o; },
+  // freed hostages stand between the police lights and their captor
+  defend(t, k, since) { const blink = Math.floor(since * 6) % 2;
+    let o = floor(560, 460) + `<circle cx="40" cy="300" r="${70}" fill="${blink ? 'rgba(255,59,74,.35)' : 'rgba(80,140,255,.35)'}" style="filter:blur(18px)"/><circle cx="40" cy="420" r="60" fill="${blink ? 'rgba(80,140,255,.3)' : 'rgba(255,59,74,.3)'}" style="filter:blur(18px)"/>`;
+    o += person({ x: 420, y: 545, sc: 1.05, face: -1, pose: 'stand', col: RED_C, op: .8 });
+    [[300, 1.2, .1], [200, 1.15, .3]].forEach(([x, sc, d]) => o += person({ x, y: 560, sc, face: -1, pose: lerpPose(POSE.stand, POSE.guard, ease((since - d) / .4)), col: BLUE_C }));
+    return o; },
+  // a sip of water from the captor: fear drains, relief floods in
+  water(t, k, since) { const g = ease((since - 3.3) / 1.1), got = ease((since - 4.4) / .5), gx = 352 - 120 * g, gy = 425 - 10 * Math.sin(Math.PI * g);
+    let o = floor(560) + person({ x: 400, y: 560, sc: 1.3, face: -1, pose: lerpPose(POSE.stand, POSE.offer, ease((since - 2.6) / .5)), col: mixCol(RED_C, '#FF9AA4', got) });
+    o += person({ x: 150, y: 560, sc: 1.05, pose: lerpPose(POSE.sitUp, POSE.sitTake, ease((since - 4.0) / .5)), col: BLUE_C, sit: true });
+    o += `<g transform="translate(${gx} ${gy})" opacity="${ease((since - 2.6) / .3)}" style="filter:drop-shadow(0 0 8px #BFE6FF)"><path d="M-13,-26 L13,-26 L9,14 L-9,14 Z" fill="rgba(160,220,255,.25)" stroke="#E8F6FF" stroke-width="2.5"/><path d="M-11,-8 L11,-8 L9,14 L-9,14 Z" fill="rgba(110,200,255,.6)"/></g>`;
+    o += `<circle cx="230" cy="420" r="${30 + 120 * got}" fill="none" stroke="#BFE6FF" stroke-width="3" opacity="${got * (1 - got) * 3}"/>`;
+    // fear meter above the hostage
+    o += `<text x="150" y="250" text-anchor="middle" style="font-size:18px;fill:#FFB8BE">الخوف</text><rect x="90" y="262" width="120" height="12" rx="6" fill="rgba(255,255,255,.12)"/>
+      <rect x="90" y="262" width="${120 * (.95 - .65 * got)}" height="12" rx="6" fill="${RED_C}" style="filter:drop-shadow(0 0 6px ${RED_C})"/>`;
+    return o; },
+  // the hostage holds on to the only safety she has, which is also the source of harm
+  bond(t, k, since) { const p = ease((since - .2) / .7);
+    const gid = 'hb'; let o = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="0"><stop offset=".5" stop-color="${BLUE_C}"/><stop offset=".5" stop-color="${RED_C}"/></linearGradient></defs>` + floor(560);
+    o += person({ x: 370, y: 560, sc: 1.35, face: -1, pose: 'stand', col: '#C59BFF' });
+    o += person({ x: 170, y: 560, sc: 1.05, pose: 'hold', col: BLUE_C });
+    o += `<path d="M244,442 Q290,${470 + 18 * Math.sin(since * 3)} 330,${410}" fill="none" stroke="#FFE2E5" stroke-width="4" stroke-dasharray="${150 * p} 999" style="filter:drop-shadow(0 0 8px ${RED_C})"/>`;
+    o += `<text x="370" y="300" text-anchor="middle" style="font-size:18px;fill:#9FD4FF" opacity="${p}">أمان</text><text x="370" y="324" text-anchor="middle" style="font-size:18px;fill:#FF8A94" opacity="${p}">+ أذى</text>`;
+    return o; },
+};
+$('story').innerHTML = `<defs><linearGradient id="spot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF3B4A" stop-opacity=".0"/><stop offset="1" stop-color="#FF3B4A" stop-opacity=".35"/></linearGradient></defs><g id="storyg"></g>`;
+let storyOp = 0, storyId = null, storyT0 = 0;
+function drawStory(s, t) {
+  const want = s.scene === 'story' ? s.story : null;
+  if (want && want !== storyId) { storyId = want; storyT0 = beats.filter(b => b.t0 <= t && b.story === want).reduce((m, b) => b.t0, 0); }
+  storyOp += ((want ? 1 : 0) - storyOp) * .25; $('story').style.opacity = storyOp;
+  if (storyOp < .01) { storyId = null; $('storyg').innerHTML = ''; return; }
+  $('storyg').innerHTML = STORY[storyId](t, storyOp, t - storyT0);
+}
+
 /* ---------- timeline ---------- */
 const ease = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
 const T = b => (b.at !== undefined ? R.lines[b.at].a : b.t) + (b.dt || 0) - .2;
@@ -600,7 +680,7 @@ window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + 
   (s.hot || []).forEach(id => hot[id] = 1); (s.hotLabels || []).forEach(id => hot[id] = 1);
   placeLabels(on, hot);
   // fact line
-  drawChart(s, t);
+  drawChart(s, t); drawStory(s, t);
   $('fact').innerHTML = s.fact || ''; $('fact').style.opacity = s.fact && !s.chart ? ease(s.since / .4) : 0;
   // on-screen comment prompt: types itself in when the voice asks, stays to the last frame
   if (R.ask) { const a0 = R.lines[R.ask.at].a - .1, k = ease((t - a0) / .4), n = Math.max(0, Math.min(R.ask.text.length, Math.floor((t - a0) * 28)));

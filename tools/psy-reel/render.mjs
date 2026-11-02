@@ -27,6 +27,8 @@ const frames = Math.ceil(await page.evaluate(() => reel.duration) * FPS), lead =
 const si = process.argv.indexOf('--stills');
 if (si > 0) {
   const want = process.argv[si + 1].split(',').map(Number);
+  if (process.argv.includes('--quick')) { for (const w of want) { for (let f = Math.max(0, Math.round((w - 2) * FPS)); f <= w * FPS; f++) await page.evaluate(t => reel.seek(t), f / FPS);
+    await writeFile(join(HERE, `out/${slug}-${w}s.jpg`), await shot()); } await browser.close(); server.close(); process.exit(0); }
   for (let f = 0; f <= Math.max(...want) * FPS; f++) {
     await page.evaluate(t => reel.seek(t), f / FPS);
     if (want.includes(f / FPS)) await writeFile(join(HERE, `out/${slug}-${f / FPS}s.jpg`), await shot());
