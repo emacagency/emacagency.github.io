@@ -18,7 +18,7 @@ if (process.argv[2] === 'stills') {
   }
   fs.writeFileSync(dir + 'cover.jpg', b64(await page.evaluate(() => window.cover())));
 } else {
-  const FPS = 30, dur = timing.lines[8].e + 2.4, n = Math.ceil(dur * FPS);
+  const FPS = 30, dur = timing.lines[8].e + 1.7, n = Math.ceil(dur * FPS);
   const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-preset', 'slow', '-crf', '19', '-r', String(FPS), dir + 'video.mp4'], { stdio: ['pipe', 'inherit', 'inherit'] });
   for (let i = 0; i < n; i++) {

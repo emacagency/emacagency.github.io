@@ -13,11 +13,11 @@ while i<n:
         runs.append((i*0.01,j*0.01)); i=j
     else: i+=1
 # long pause after these word indices (end of line / emphasis)
-long_after={6:.55,16:.65,21:.45,22:.5,26:.4,30:.45,41:.45,46:.3,48:.55,49:.3,55:.5,61:.5,69:.45,79:1.0,82:.4}
+long_after={6:.4,16:.45,21:.35,22:.35,26:.3,30:.35,41:.35,46:.22,48:.4,49:.22,55:.4,61:.4,69:.35,79:.7,83:.3}
 def pause_for(t0):
     # find last word ending before t0
     k=max([i for i,x in enumerate(words) if x['t']<=t0] or [0])
-    return long_after.get(k,0.26)
+    return long_after.get(k,0.18)
 segs=[];cur=0.0;mapping=[]  # (orig_start, orig_end, new_start)
 out=[];newt=0.0
 for s,e in runs:

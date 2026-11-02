@@ -19,7 +19,7 @@ const eo=k=>1-Math.pow(1-cl(k),3);            // ease out
 const eio=k=>{k=cl(k);return k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2};
 const back=k=>{k=cl(k);const s=1.7;return 1+(s+1)*Math.pow(k-1,3)+s*Math.pow(k-1,2)};
 const wt=i=>T.words[i].t;                        // word start
-const ramp=(t,t0,d=.4)=>cl((t-t0)/d);
+const SP=.6; const ramp=(t,t0,d=.4)=>cl((t-t0)/(d*SP));
 
 // ---------- film grain ----------
 const grains=[];
@@ -198,7 +198,7 @@ function gapChart(t){
   if(ga>0){x.save();x.globalAlpha=a*ga*.9;const g=x.createLinearGradient(0,oy-h,0,oy);g.addColorStop(0,'rgba(229,72,77,.38)');g.addColorStop(1,'rgba(229,72,77,.05)');
     x.fillStyle=g;x.beginPath();for(let i=0;i<=100;i++){const u=i/100;x.lineTo(ox+u*w,f2(u))}for(let i=100;i>=0;i--){const u=i/100;x.lineTo(ox+u*w,f1(u))}x.fill();x.restore()}
   draw(f1,k1,WHITE,false);draw(f2,k2,AMBER,true);
-  txt('ما تعلّمته',ox+w*.3,f1(.3)+70,44,WHITE,{a:a*ramp(t,wt(34),.4)});
+  txt('ما تعلّمتَه',ox+w*.3,f1(.3)+70,44,WHITE,{a:a*ramp(t,wt(34),.4)});
   txt('ما تراه أمامك',ox+w-260,f2(1)-10,44,AMBER,{a:a*ramp(t,wt(38),.4)});
   // gap bracket + label
   if(ga>0){const X=ox+w*.7;x.save();x.globalAlpha=a*ga;x.strokeStyle=RED;x.lineWidth=4;x.beginPath();x.moveTo(X,f2(.7)+8);x.lineTo(X,f1(.7)-8);x.stroke();
@@ -232,7 +232,7 @@ function doubtCard(t){
   const k=eo(ramp(t,wt(61),.45));
   x.save();x.globalAlpha=a;x.strokeStyle=AMBER;x.lineWidth=14;x.lineCap='round';x.shadowColor=AMBER;x.shadowBlur=26;
   [[-25],[25]].forEach(([dy])=>{x.beginPath();x.moveTo(W/2-60,Y+dy);x.lineTo(W/2-60+120*k,Y+dy);x.stroke()});
-  const k2=eo(ramp(t,wt(61)+.25,.35));x.beginPath();x.moveTo(W/2+40,Y-75);x.lineTo(W/2+40-80*k2,Y-75+150*k2);x.stroke();x.restore();
+  const k2=k;x.beginPath();x.moveTo(W/2+40,Y-75);x.lineTo(W/2+40-80*k2,Y-75+150*k2);x.stroke();x.restore();
   // growing beyond a boundary
   const C=[W/2,1130];const R=200;const gk=eo(ramp(t,wt(66),1.6));const br=ramp(t,wt(69),.6);
   x.save();x.globalAlpha=a*ramp(t,wt(62),.4);
@@ -254,19 +254,19 @@ function cta(t){
   x.beginPath();x.moveTo(110,80);x.lineTo(170,150);x.lineTo(40,88);x.fill();
   for(let i=0;i<3;i++){x.fillStyle='#0b0f17';x.globalAlpha=a*(.35+.65*Math.max(0,Math.sin(t*7-i*.9)));x.beginPath();x.arc(-80+i*80,-10,22,0,6.28);x.fill()}
   x.restore();
-  txt('اكتبها في التعليقات',W/2,900,82,WHITE,{a:a*ramp(t,wt(82),.35)});
+  txt('شاركنا تجربتك في التعليقات',W/2,900,82,WHITE,{a:a*ramp(t,wt(83),.35)});
   // bouncing arrow
-  const ay=1010+Math.abs(Math.sin(t*4))*24;x.save();x.globalAlpha=a*ramp(t,wt(82),.35);x.strokeStyle=AMBER;x.lineWidth=9;x.lineCap='round';x.lineJoin='round';
+  const ay=1010+Math.abs(Math.sin(t*4))*24;x.save();x.globalAlpha=a*ramp(t,wt(83),.35);x.strokeStyle=AMBER;x.lineWidth=9;x.lineCap='round';x.lineJoin='round';
   x.beginPath();x.moveTo(W/2,ay);x.lineTo(W/2,ay+70);x.moveTo(W/2-30,ay+42);x.lineTo(W/2,ay+72);x.lineTo(W/2+30,ay+42);x.stroke();x.restore();
   // you are not the only one: many lights around one
-  const nk=ramp(t,wt(86),.9);const C=[W/2,1240];
+  const nk=ramp(t,wt(87),.9);const C=[W/2,1240];
   x.save();x.globalAlpha=a;x.fillStyle=AMBER;x.shadowColor=AMBER;x.shadowBlur=20;x.beginPath();x.arc(...C,14,0,6.28);x.fill();
   for(let i=0;i<46;i++){const an=i*2.39996,r=60+Math.sqrt(i)*48,on=cl(nk*1.4-i/46);if(on<=0)continue;
     const px=C[0]+Math.cos(an)*r*1.5,py=C[1]+Math.sin(an)*r*.55;x.globalAlpha=a*on;x.fillStyle=WHITE;x.shadowColor=WHITE;
     x.beginPath();x.arc(px,py,6+i%3*2,0,6.28);x.fill();
     if(i<14){x.strokeStyle=`rgba(242,242,242,${.18*on})`;x.lineWidth=2;x.beginPath();x.moveTo(...C);x.lineTo(px,py);x.stroke()}}
   x.restore();
-  txt('لستَ وحدك',W/2,1430,64,AMBER,{a:a*ramp(t,wt(87),.4),glow:16});
+  txt('لستَ وحدك',W/2,1430,64,AMBER,{a:a*ramp(t,wt(88),.4),glow:16});
 }
 
 // ---------- main ----------
@@ -283,10 +283,12 @@ function draw(t){
   else if(t>=L[5].s&&t<L[6].s)z=lerp(1,1.12,(t-L[5].s)/(L[6].s-L[5].s));
   else if(t>=L[6].s&&t<L[7].s)z=lerp(1,1.03,ramp(t,wt(68),1));
   else if(t>=L[8].s)z=lerp(1.06,1,eo((t-L[8].s)/2.5));
+  // punch-in at each new line, so no frame sits still
+  for(const ln of L){const u=(t-ln.s)/.32;if(u>=0&&u<1)z+=.045*(1-eo(u))}
   // tiny shake on the title hit
   const sh=t>wt(20)&&t<wt(20)+.35?(1-(t-wt(20))/.35)*3:0;
   x.save();x.fillStyle='#000';x.fillRect(0,0,W,H);
-  x.translate(W/2+Math.sin(t*90)*sh,H/2+Math.cos(t*77)*sh);x.scale(z,z);x.translate(-W/2,-H/2);
+  x.translate(W/2+Math.sin(t*90)*sh+Math.sin(t*.9)*10,H/2+Math.cos(t*77)*sh+Math.cos(t*.7)*12);x.rotate(Math.sin(t*.5)*.006);x.scale(z,z);x.translate(-W/2,-H/2);
   background(t,cl(warm),cl(dark));
 
   // S0/S1 hook
@@ -316,8 +318,8 @@ function draw(t){
      x.restore()}}
   cta(t);
   // end card: the name at the end
-  {const a=ramp(t,last+.45,.4);
-   if(a>0){x.save();x.globalAlpha=a;x.fillStyle='rgba(5,7,11,.85)';x.fillRect(0,0,W,H);mask(W/2,1330,.95,a,.55);titleCard(t,last+.45,560);x.restore()}}
+  {const a=ramp(t,last+.25,.3);
+   if(a>0){x.save();x.globalAlpha=a;x.fillStyle='rgba(5,7,11,.85)';x.fillRect(0,0,W,H);mask(W/2,1330,.95,a,.55);titleCard(t,last+.25,560);x.restore()}}
   x.restore();
   if(t<L[7].s-.1||t>L[7].e+.3)caption(t);
   post(t,.55+.25*cl(dark));

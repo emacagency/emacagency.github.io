@@ -2,7 +2,7 @@ import json, numpy as np, wave
 sr=48000
 T=json.load(open('timing.json'));W=T['words'];L=T['lines']
 wt=lambda i:W[i]['t']
-dur=L[8]['e']+2.4; N=int(dur*sr)
+dur=L[8]['e']+1.7; N=int(dur*sr)
 w=wave.open('voice_tight.wav');v=np.frombuffer(w.readframes(w.getnframes()),np.int16).astype(np.float32)/32768
 voice=np.zeros(N,np.float32);voice[:min(N,len(v))]=v[:N]
 rng=np.random.default_rng(7)
@@ -58,8 +58,8 @@ piano(L[5]['s'],110,.14,5)
 whoosh(L[6]['s'],.6,.3); piano(L[6]['s'],261.6,.2); piano(L[6]['s']+.2,329.6,.17); piano(L[6]['s']+.4,392,.15)
 chime(wt(61),.12); crack(wt(69),.35)
 click(L[8]['s']+.05,.3,1100); whoosh(L[8]['s'],.45,.22)
-for k in range(8): click(wt(86)+k*.09,.09,2600+k*220)
-boom(L[8]['e']+.45,.6); piano(L[8]['e']+.45,220,.2,3); piano(L[8]['e']+.45,329.6,.14,3)
+for k in range(8): click(wt(87)+k*.09,.09,2600+k*220)
+boom(L[8]['e']+.25,.6); piano(L[8]['e']+.25,220,.2,3); piano(L[8]['e']+.25,329.6,.14,3)
 # music bed: soft pad, mood by section
 def pad(freqs,a,b,g):
     n=int((b-a)*sr);tt=np.arange(n)/sr;s=np.zeros(n)
