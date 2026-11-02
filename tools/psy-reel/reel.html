@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>reel</title>
+<style>
+/* One 9:16 neurotransmitter reel (540x960 CSS px, rendered at 2x). render.mjs calls reel.seek(t) per frame. */
+@font-face { font-family: Tajawal; font-weight: 800; src: url(fonts/tajawal-800.ttf); }
+@font-face { font-family: Tajawal; font-weight: 500; src: url(fonts/tajawal-500.ttf); }
+html, body { margin: 0; width: 540px; height: 960px; overflow: hidden; background: #050B18; }
+body { position: relative; font-family: Tajawal, sans-serif; color: #fff; direction: rtl; }
+.bg { position: absolute; inset: 0; background: radial-gradient(80% 45% at 50% 42%, #0B2348 0%, #071430 45%, #040A18 100%); }
+.grid { position: absolute; inset: 0; background: linear-gradient(rgba(80,170,255,.07) 1px, transparent 1px) 0 0 / 100% 30px, linear-gradient(90deg, rgba(80,170,255,.07) 1px, transparent 1px) 0 0 / 30px 100%; -webkit-mask-image: radial-gradient(75% 60% at 50% 45%, #000, transparent); }
+canvas { position: absolute; inset: 0; width: 540px; height: 960px; }
+.tag { position: absolute; top: 52px; right: 26px; font-weight: 500; font-size: 15px; color: #9FD4FF; letter-spacing: .02em; }
+.cover { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 170px; text-align: center; background: linear-gradient(transparent 45%, rgba(4,10,24,.85) 75%); }
+.cover h1 { margin: 0; font-weight: 800; font-size: 78px; line-height: 1.05; color: #fff; text-shadow: 0 0 24px rgba(255,59,74,.85), 0 0 60px rgba(255,59,74,.45), 0 3px 4px rgba(0,0,0,.6); }
+.cover p { margin: 10px 0 0; font: 800 20px Tajawal, sans-serif; color: #FF8A94; letter-spacing: .3em; direction: ltr; }
+.cover span { margin-top: 18px; font-weight: 500; font-size: 18px; color: #BFE3FF; }
+.lab { position: absolute; left: 0; top: 0; white-space: nowrap; font-weight: 800; font-size: 19px; color: #fff; text-shadow: 0 0 10px rgba(80,170,255,.9), 0 0 2px #000; opacity: 0; }
+.lab.hot { color: #FF6B78; text-shadow: 0 0 12px rgba(255,59,74,.9), 0 0 2px #000; }
+.lab small { display: block; font: 500 12px Tajawal, sans-serif; color: #BFE3FF; direction: ltr; letter-spacing: .08em; }
+.lab.hot small { color: #FFC2C7; }
+svg.lines { position: absolute; inset: 0; width: 540px; height: 960px; }
+.cap { position: absolute; top: 676px; inset-inline: 22px; text-align: center; font-weight: 800; font-size: 34px; line-height: 1.4; color: #fff; text-shadow: 0 0 14px rgba(70,160,255,.95), 0 0 30px rgba(70,160,255,.5), 0 2px 3px rgba(0,0,0,.6); }
+.cap i { font-style: normal; opacity: .38; }
+.cap i.on { opacity: 1; }
+.cap i.now { opacity: 1; color: #FFE2E5; text-shadow: 0 0 14px rgba(255,59,74,.95), 0 0 30px rgba(255,59,74,.45); }
+.fact { position: absolute; top: 160px; right: 26px; font-weight: 800; font-size: 22px; color: #fff; opacity: 0; text-shadow: 0 0 12px rgba(80,170,255,.8); }
+.hook { position: absolute; top: 600px; inset-inline: 18px; text-align: center; font-weight: 800; font-size: 50px; line-height: 1.25; color: #fff; }
+.hook i { display: inline-block; font-style: normal; margin: 0 6px; opacity: 0; text-shadow: 0 0 18px rgba(70,160,255,.95), 0 0 44px rgba(70,160,255,.5), 0 3px 4px rgba(0,0,0,.6); will-change: transform, filter; }
+.hook i.red { color: #FFE2E5; text-shadow: 0 0 18px rgba(255,59,74,.95), 0 0 44px rgba(255,59,74,.55), 0 3px 4px rgba(0,0,0,.6); }
+.ring { position: absolute; left: 270px; top: 660px; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%; border: 2px solid rgba(120,200,255,.9); box-shadow: 0 0 24px rgba(80,170,255,.8), inset 0 0 24px rgba(80,170,255,.5); opacity: 0; }
+.ring.r2 { border-color: rgba(255,90,105,.9); box-shadow: 0 0 24px rgba(255,59,74,.8), inset 0 0 24px rgba(255,59,74,.5); }
+.ask { position: absolute; top: 126px; left: 26px; right: 26px; padding: 18px 22px 18px 74px; border-radius: 22px; direction: rtl; opacity: 0; background: linear-gradient(160deg, rgba(10,30,64,.88), rgba(4,12,28,.84)); border: 1.5px solid rgba(255,90,104,.7); box-shadow: 0 0 34px rgba(255,59,74,.35); }
+.ask small { display: block; font-weight: 700; font-size: 16px; color: #FF8A94; margin-bottom: 6px; }
+.ask div { font-weight: 800; font-size: 27px; line-height: 1.35; color: #fff; min-height: 36px; }
+.ask svg { position: absolute; left: 18px; top: 50%; width: 42px; height: 42px; margin-top: -21px; }
+.chart { position: absolute; top: 118px; left: 26px; width: 488px; height: 300px; opacity: 0; }
+.chart .panel { position: absolute; inset: 0; border-radius: 18px; background: linear-gradient(160deg, rgba(10,30,64,.82), rgba(4,12,28,.78)); border: 1px solid rgba(110,190,255,.35); box-shadow: 0 0 30px rgba(60,150,255,.25), inset 0 0 30px rgba(60,150,255,.08); }
+.chart h3 { position: absolute; top: 14px; right: 20px; margin: 0; font-weight: 800; font-size: 20px; color: #CFE9FF; }
+.chart .big { position: absolute; top: 8px; left: 20px; direction: rtl; font-weight: 800; font-size: 46px; color: #fff; direction: ltr; text-shadow: 0 0 16px rgba(255,59,74,.9), 0 0 36px rgba(255,59,74,.5); }
+.chart .big.down { text-shadow: 0 0 16px rgba(80,170,255,.95), 0 0 36px rgba(80,170,255,.5); }
+.chart .sub { position: absolute; top: 62px; left: 22px; font-weight: 500; font-size: 14px; color: #FFB8BE; }
+.chart svg { position: absolute; inset: 0; width: 488px; height: 300px; overflow: visible; }
+.chart text { font-family: Tajawal; fill: #9FD4FF; font-size: 13px; font-weight: 500; }
+.bars { position: absolute; inset: 0; pointer-events: none; }
+.bars i { position: absolute; top: 0; width: 14px; height: 960px; margin-left: -7px; border-radius: 7px; background: linear-gradient(90deg, rgba(40,80,140,.55), rgba(190,225,255,.75) 45%, rgba(40,80,140,.55)); box-shadow: 0 0 18px rgba(80,170,255,.55); }
+.bars b { position: absolute; left: 0; right: 0; height: 14px; border-radius: 7px; background: linear-gradient(rgba(40,80,140,.55), rgba(190,225,255,.75) 45%, rgba(40,80,140,.55)); box-shadow: 0 0 18px rgba(80,170,255,.55); }
+.flash { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 45%, rgba(255,80,95,.55), transparent 70%); opacity: 0; pointer-events: none; }
+.fact b { color: #FF6B78; text-shadow: 0 0 12px rgba(255,59,74,.8); }
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="grid"></div>
+<canvas id="c"></canvas>
+<svg class="lines" id="lines"></svg>
+<div id="labs"></div>
+<div class="tag">علم الشعور · النواقل العصبية</div>
+<div class="fact" id="fact"></div>
+<div class="cap" id="cap"></div>
+<div class="ask" id="ask"><small>اكتب في التعليقات</small><div id="asktx"></div><svg viewBox="0 0 24 24"><path d="M4 4h16v11H9l-5 4z" fill="none" stroke="#FF5A68" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="9.5" r="1.2" fill="#fff"/><circle cx="12" cy="9.5" r="1.2" fill="#fff"/><circle cx="15" cy="9.5" r="1.2" fill="#fff"/></svg></div><div class="chart" id="chart"><div class="panel"></div><svg id="chsvg"></svg><h3 id="chtitle"></h3><div class="big" id="chbig"></div><div class="sub" id="chsub"></div></div>
+<div class="bars" id="bars"></div><div class="flash" id="flash"></div><div class="ring" id="ring1"></div><div class="ring r2" id="ring2"></div>
+<div class="hook" id="hook"></div>
+<div class="cover" id="cover"><h1 id="cv-name"></h1><p id="cv-latin"></p><span>علم الشعور · النواقل العصبية</span></div>
+<script type="module">
+import * as THREE from './three.module.js';
+const slug = location.search.slice(1);
+const R = await (await fetch(`${slug}.json`)).json();
+const $ = id => document.getElementById(id);
+$('cv-name').textContent = R.name; if (R.name.length > 14) $('cv-name').style.fontSize = '60px'; if (R.series) document.querySelectorAll('.tag, .cover span').forEach(e => e.textContent = R.series); $('cv-latin').textContent = R.latin;
+const OUT = R.outro || 0;                     // seconds of name card after the narration (new layout)
+const LEAD = R.lead ?? (OUT ? .15 : 1.4);     // seconds of cover before the narration starts (old layout)
+const lastB = R.lines[R.lines.length - 1].b, outStart = lastB + .35;
+
+// deterministic randomness
+let seed = 11; const rnd = (a = 0, b = 1) => a + (b - a) * (((seed = (seed * 16807) % 2147483647) - 1) / 2147483646);
+const BLUE = new THREE.Color('#4FB4FF'), RED = new THREE.Color('#FF3B4A'), WHITE = new THREE.Color('#EAF6FF');
+
+const ren = new THREE.WebGLRenderer({ canvas: $('c'), antialias: true, alpha: true, preserveDrawingBuffer: true });
+ren.setPixelRatio(2); ren.setSize(540, 960, false); ren.setClearColor(0, 0);
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(34, 540 / 960, .05, 60);
+
+// fresnel hologram material: bright rim, faint body, moving scan lines
+function holo(color, alpha = 1) {
+  return new THREE.ShaderMaterial({
+    uniforms: { uC: { value: new THREE.Color(color) }, uA: { value: alpha }, uT: { value: 0 }, uHot: { value: 0 } },
+    vertexShader: `varying vec3 vN; varying vec3 vV; varying vec3 vW;
+      void main(){ vec4 w = modelMatrix * vec4(position,1.); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); vV = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `uniform vec3 uC; uniform float uA, uT, uHot; varying vec3 vN; varying vec3 vV; varying vec3 vW;
+      void main(){ float f = pow(1. - abs(dot(normalize(vN), normalize(vV))), 2.2);
+        float scan = .75 + .25 * sin(vW.y * 90. - uT * 6.);
+        vec3 c = mix(uC, vec3(1.0, .23, .29), uHot);
+        float a = (f * .95 + .07 + uHot * .18) * scan * uA;
+        gl_FragColor = vec4(c * (1.1 + f), a); }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+  });
+}
+// soft round dot for every particle
+const dot = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.45, 'rgba(255,255,255,.85)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
+const pts = (geo, color, size, op = .8) => new THREE.Points(geo, new THREE.PointsMaterial({ color, size: size * 1.6, map: dot, transparent: true, opacity: op, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }));
+const mats = [];
+const track = m => { m.traverse(o => o.material?.uniforms && mats.push(o.material)); return m; };
+
+/* ---------- brain ---------- */
+const brain = new THREE.Group(); scene.add(brain);
+// smooth 3D value noise, used for the gyri and sulci
+const hash = (x, y, z) => { const h = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return h - Math.floor(h); };
+function vnoise(x, y, z) {
+  const X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z), u = x - X, v = y - Y, w = z - Z;
+  const f = q => q * q * (3 - 2 * q), a = f(u), b = f(v), c = f(w), L = (p, q, k) => p + (q - p) * k;
+  return L(L(L(hash(X, Y, Z), hash(X + 1, Y, Z), a), L(hash(X, Y + 1, Z), hash(X + 1, Y + 1, Z), a), b),
+           L(L(hash(X, Y, Z + 1), hash(X + 1, Y, Z + 1), a), L(hash(X, Y + 1, Z + 1), hash(X + 1, Y + 1, Z + 1), a), b), c);
+}
+// narrow grooves where the noise crosses its middle: wide rounded gyri, thin sulci
+// gyri follow the real layout: front-to-back in the frontal and temporal lobes, upright beside the central sulcus
+const sulci = (x, y, z) => {
+  const zc = .04 - .3 * (y - .55), nearC = Math.exp(-(((z - zc) / .32) ** 2)) * (y > -.05 ? 1 : 0);
+  const front = Math.max(0, Math.min(1, (z - zc - .2) * 3)) * (1 - nearC), temp = y < -.14 ? Math.min(1, (-.14 - y) * 6) : 0;
+  const sz = 1 - .55 * Math.max(front, temp), sy = 1 - .5 * nearC;
+  const wx = .18 * (vnoise(x * 2.3 + 9, y * 2.3, z * 2.3) - .5), wy = .18 * (vnoise(x * 2.3, y * 2.3 + 5, z * 2.3) - .5);
+  let g = 0, amp = 1, fr = 5.4;
+  for (let o = 0; o < 2; o++) { const n = vnoise((x + wx) * fr + o * 7, (y + wy) * fr * sy, z * fr * sz); g += amp * Math.pow(1 - Math.abs(n * 2 - 1), 7); amp *= .42; fr *= 2.1; }
+  return g; };
+const groove = (d, w) => Math.exp(-((d / w) ** 2));
+// a hemisphere is the union of four lobes (local x points away from the midline)
+const LOBES = [[0, .1, -.02, .8, .55, 1.0], [0, .04, .42, .74, .5, .62], [0, .0, -.58, .64, .46, .5], [.1, -.28, .16, .66, .27, .56]];
+function rayR(d) { let best = 0;
+  for (const [cx, cy, cz, rx, ry, rz] of LOBES) { const ax = d.x / rx, ay = d.y / ry, az = d.z / rz, bx = cx / rx, by = cy / ry, bz = cz / rz;
+    const A = ax * ax + ay * ay + az * az, B = -2 * (ax * bx + ay * by + az * bz), C = bx * bx + by * by + bz * bz - 1, D = B * B - 4 * A * C;
+    if (D >= 0) best = Math.max(best, (-B + Math.sqrt(D)) / (2 * A)); }
+  return best; }
+function hemisphere(side) {
+  const g = new THREE.IcosahedronGeometry(1, 72), p = g.attributes.position, d = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) {
+    d.fromBufferAttribute(p, i).normalize();
+    let r = rayR(d), x = d.x * r, y = d.y * r, z = d.z * r;
+    // lateral (Sylvian) fissure between the temporal lobe and the lobes above, and the central sulcus
+    const ys = -.1 + .2 * (.45 - z), lat = Math.max(0, Math.min(1, (x - .15) * 4)) * (z > -.45 && z < .55 ? 1 : 0);
+    let dent = .07 * lat * Math.exp(-(((y - ys) / .045) ** 2));
+    const zc = .04 - .3 * (y - .55), up = y > -.02 ? 1 : 0, side = Math.max(0, Math.min(1, (x - .05) * 5));
+    dent += .05 * up * groove(z - zc, .03);                                   // central sulcus
+    dent += .028 * up * side * (groove(z - zc - .15, .026) + groove(z - zc + .15, .026)); // pre- and postcentral sulci
+    const fz = z > zc + .2 ? Math.min(1, (z - zc - .2) * 6) : 0;
+    dent += .03 * side * fz * (groove(y - .36, .025) + groove(y - .1, .025));   // superior and inferior frontal sulci
+    dent += .032 * side * (y < -.05 && z > -.6 ? 1 : 0) * groove(y - (ys - .14), .025); // superior temporal sulcus
+    dent += .022 * side * (z < -.35 ? 1 : 0) * groove(y - .28 + .3 * (z + .35), .028);   // intraparietal toward the occipital pole
+    dent += .03 * sulci(x, y, z);
+    const k = 1 - dent / Math.max(r, .3); x *= k; y *= k; z *= k;
+    if (x < 0) x *= .12;                    // flat medial wall along the longitudinal fissure
+    if (y < -.42) y = -.42 + (y + .42) * .45; // flatter base
+    p.setXYZ(i, side * (x + .1), y, z);
+  }
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, holo(BLUE, .9));
+  const sub = new THREE.BufferGeometry(), arr = [];
+  for (let i = 0; i < p.count; i += 5) arr.push(p.getX(i), p.getY(i), p.getZ(i));
+  sub.setAttribute('position', new THREE.Float32BufferAttribute(arr, 3));
+  m.add(pts(sub, '#7CC8FF', .006, .22));
+  return m;
+}
+const hemis = [hemisphere(1), hemisphere(-1)]; hemis.forEach(h => brain.add(h));
+const callosum = (() => { const c = new THREE.CatmullRomCurve3([[0, -.04, .44], [0, .1, .5], [0, .2, .3], [0, .23, 0], [0, .2, -.3], [0, .08, -.5], [0, -.04, -.44]].map(a => new THREE.Vector3(...a)));
+  const m = new THREE.Mesh(new THREE.TubeGeometry(c, 80, .055, 14), holo('#6CC4FF', .7)); m.scale.x = 2.4; return m; })();
+brain.add(callosum);
+// cerebellum with fine horizontal folia and a central vermis
+const cereb = (() => { const g = new THREE.SphereGeometry(1, 96, 64), p = g.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const ph = Math.atan2(v.y, -v.z);
+    const k = (1 + .018 * Math.sin(ph * 64)) * (1 - .1 * Math.exp(-((v.x / .07) ** 2)) * (v.z < 0 ? 1 : .3)); v.multiplyScalar(k); p.setXYZ(i, v.x, v.y, v.z); }
+  g.computeVertexNormals(); const m = new THREE.Mesh(g, holo('#3FA2F0', .8)); m.scale.set(.66, .3, .36); m.position.set(0, -.46, -.8); return m; })();
+brain.add(cereb);
+// brainstem (midbrain, pons, medulla) and the spinal cord below it
+const stemProfile = [[.15, .12], [.15, 0], [.2, -.16], [.21, -.28], [.15, -.42], [.12, -.6], [.1, -.72]].map(([r, y]) => new THREE.Vector2(r, y));
+const makeStem = (mat, k = 1) => { const g = new THREE.Group();
+  const a = new THREE.Mesh(new THREE.LatheGeometry(stemProfile.map(v => new THREE.Vector2(v.x * k, v.y)), 32), mat()); a.scale.z = .85; g.add(a);
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(.095 * k, .085 * k, .8, 20, 1, true), mat()); c.position.set(0, -1.1, -.06); c.rotation.x = .16; g.add(c);
+  // ventral pons bulge, medullary olives and pyramids, cerebral peduncles
+  const pons = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 28), mat()); pons.scale.set(.17 * k, .1, .09 * k); pons.position.set(0, -.22, .06); g.add(pons); // ventral pons bulge
+  [1, -1].forEach(sd => { const ol = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 18), mat()); ol.scale.set(.03 * k, .065, .03 * k); ol.position.set(.07 * sd * k, -.5, .04); g.add(ol); }); // medullary olives
+  g.position.set(0, -.26, -.3); g.rotation.x = .32; return g; };
+const stem = makeStem(() => holo('#3FA2F0', .8)); brain.add(stem);
+// regions, shown red when explained
+const regions = {};
+const blob = (sx, sy, sz) => { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), holo(RED, 0)); m.scale.set(sx, sy, sz); return m; };
+function pair(make, pos) { const g = new THREE.Group(); [1, -1].forEach(s => { const m = make(s); m.position.set(pos[0] * s, pos[1], pos[2]); g.add(m); }); return g; }
+const almond = () => { const g = new THREE.SphereGeometry(1, 40, 30), p = g.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const t = 1 - .35 * Math.max(0, v.z); p.setXYZ(i, v.x * .075 * t, v.y * .065 * t, v.z * .115); }
+  g.computeVertexNormals(); return new THREE.Mesh(g, holo(RED, 0)); };
+regions.amygdala = pair(s => { const g = new THREE.Group(); g.add(almond());
+  const bl = blob(.04, .035, .055); bl.position.set(.025 * s, -.01, -.01); g.add(bl);   // basolateral nucleus
+  const ce = blob(.025, .022, .035); ce.position.set(-.03 * s, .02, .0); g.add(ce);     // central nucleus (fear output)
+  const tail = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, -.08), new THREE.Vector3(-.02 * s, .02, -.2), new THREE.Vector3(-.05 * s, .06, -.32)]), 20, .022, 10), holo(RED, 0)); g.add(tail); // hippocampal head behind
+  g.rotation.y = -.25 * s; return g; }, [.4, -.32, .28]);
+regions.thalamus = pair(() => blob(.12, .1, .17), [.13, -.02, -.08]);
+regions.hippocampus = pair(s => { const c = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, .12), new THREE.Vector3(-.03 * s, .05, -.15), new THREE.Vector3(-.1 * s, .25, -.4)]); return new THREE.Mesh(new THREE.TubeGeometry(c, 40, .055, 12), holo(RED, 0)); }, [.4, -.33, .14]);
+regions.forebrain = (() => { const m = blob(.17, .07, .1); m.position.set(0, -.28, .38); return m; })();
+regions.motor = pair(s => { const c = new THREE.EllipseCurve(0, 0, .55, .62, 0, Math.PI / 2); const p3 = c.getPoints(30).map(p => new THREE.Vector3(p.x * s * .95, p.y * 1.0 - .08, 0)); return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(p3), 60, .045, 10), holo(RED, 0)); }, [0, 0, .02]);
+regions.hypothalamus = (() => { const g = new THREE.Group();
+  const body = blob(.09, .06, .11); body.position.set(0, -.25, .1); g.add(body);                         // floor and walls of the third ventricle
+  [1, -1].forEach(sd => { const mb = blob(.026, .026, .026); mb.position.set(.03 * sd, -.32, .0); g.add(mb);  // mammillary bodies
+    const lh = blob(.035, .03, .07); lh.position.set(.075 * sd, -.24, .07); g.add(lh);                          // lateral area: the orexin neurons
+    const pv = blob(.016, .02, .02); pv.position.set(.018 * sd, -.2, .14); g.add(pv); });                       // paraventricular nuclei
+  const arc = blob(.022, .015, .025); arc.position.set(0, -.31, .12); g.add(arc);                              // arcuate nucleus (appetite)
+  const tc = new THREE.Mesh(new THREE.ConeGeometry(.04, .08, 18, 1, true), holo(RED, 0)); tc.position.set(0, -.33, .16); tc.rotation.x = Math.PI; g.add(tc); // tuber cinereum to the stalk
+  [1, -1].forEach(sd => g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(.1 * sd, -.35, .34), new THREE.Vector3(0, -.36, .26), new THREE.Vector3(-.1 * sd, -.36, .18)]), 16, .012, 8), holo(RED, 0)))); // optic chiasm
+  return g; })();
+regions.pituitary = (() => { const g = new THREE.Group(), b = blob(.06, .05, .06); b.position.set(0, -.45, .2); g.add(b);
+  const st = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, .16, 8, 1, true), holo(RED, 0)); st.position.set(0, -.36, .16); g.add(st); return g; })();
+regions.pineal = (() => { const m = blob(.045, .04, .055); m.position.set(0, -.08, -.34); return m; })();
+regions.scn = (() => { const m = blob(.05, .035, .05); m.position.set(0, -.33, .24); return m; })();
+regions.optic = (() => { const g = new THREE.Group();
+  [1, -1].forEach(s => { const c = new THREE.CatmullRomCurve3([new THREE.Vector3(.3 * s, -.36, 1.12), new THREE.Vector3(.18 * s, -.38, .75), new THREE.Vector3(.04 * s, -.37, .3), new THREE.Vector3(0, -.36, .26)]);
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(c, 40, .028, 10), holo(RED, 0)));
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(.13, 32, 24), holo(RED, 0)); eye.position.set(.32 * s, -.36, 1.2); g.add(eye); });
+  return g; })();
+regions.cord = makeStem(() => holo(RED, 0), 1.06);
+regions.cerebellum = (() => { const m = new THREE.Mesh(cereb.geometry, holo(RED, 0)); m.scale.copy(cereb.scale).multiplyScalar(1.03); m.position.copy(cereb.position); return m; })();
+regions.cortex = new THREE.Group(); // handled by tinting the hemispheres
+// a soft red glow at the centre of every region, lit with it
+const glows = {};
+for (const [k, r] of Object.entries(regions)) {
+  const box = new THREE.Box3().setFromObject(r); if (box.isEmpty()) continue;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: RED, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+  const size = box.getSize(new THREE.Vector3()); sp.position.copy(box.getCenter(new THREE.Vector3())); sp.scale.setScalar(Math.min(.9, Math.max(.35, Math.max(size.x, size.y) * 1.6)));
+  brain.add(sp); glows[k] = sp; r.userData.center = sp.position.clone();
+}
+Object.values(regions).forEach(r => { brain.add(r); track(r); });
+track(brain);
+// projections from the basal forebrain to the cortex
+const projG = new THREE.BufferGeometry(), projP = [];
+const pf = R.projFrom || [0, -.26, .38];
+for (let i = 0; i < 40; i++) { const a = new THREE.Vector3(pf[0] + rnd(-.1, .1), pf[1], pf[2]), b = new THREE.Vector3(rnd(-1, 1), rnd(.1, .65), rnd(-.9, .9)); b.x = Math.sign(b.x) * (.5 + .45 * Math.abs(b.x)); projP.push(a.x, a.y, a.z, b.x, b.y, b.z); }
+projG.setAttribute('position', new THREE.Float32BufferAttribute(projP, 3));
+const proj = new THREE.LineSegments(projG, new THREE.LineBasicMaterial({ color: RED, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+brain.add(proj);
+
+/* ---------- synapse ---------- */
+const syn = new THREE.Group(); scene.add(syn);
+const pre = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 48), holo(BLUE)); pre.scale.set(.95, .8, .95); pre.position.y = .95; syn.add(pre);
+const axon = new THREE.Mesh(new THREE.CylinderGeometry(.22, .3, 1.6, 32, 1, true), holo(BLUE)); axon.position.y = 2.3; syn.add(axon);
+const post = new THREE.Mesh(new THREE.SphereGeometry(4, 96, 48, 0, Math.PI * 2, 0, .42), holo(BLUE)); post.position.y = -4.25; syn.add(post);
+const vesicles = new THREE.Group(); syn.add(vesicles);
+for (let i = 0; i < 26; i++) { const v = new THREE.Mesh(new THREE.SphereGeometry(rnd(.07, .1), 20, 14), holo('#7FD0FF')); v.position.set(rnd(-.55, .55), rnd(.35, 1.1), rnd(-.5, .5)); v.userData.y0 = v.position.y; vesicles.add(v); }
+const receptors = [];
+for (let i = 0; i < 9; i++) { const x = -1.2 + i * .3, r = new THREE.Mesh(new THREE.CylinderGeometry(.06, .06, .16, 16, 1, true), holo('#7FD0FF')); r.position.set(x, -.25 - .012 * x * x, rnd(-.15, .15)); syn.add(r); receptors.push(r); }
+// neurotransmitter molecules (red) and ions (white) crossing the cleft
+const NT = 260, ntPos = new Float32Array(NT * 3), ntSeed = Array.from({ length: NT }, () => ({ x: rnd(-.45, .45), z: rnd(-.35, .35), d: rnd(0, 1), r: Math.floor(rnd(0, 9)), j: rnd(0, 6.28) }));
+const ntGeo = new THREE.BufferGeometry(); ntGeo.setAttribute('position', new THREE.BufferAttribute(ntPos, 3));
+const nt = pts(ntGeo, '#FF3B4A', .075, 1); nt.frustumCulled = false; syn.add(nt);
+const ION = 140, ionPos = new Float32Array(ION * 3), ionSeed = Array.from({ length: ION }, () => ({ r: Math.floor(rnd(0, 9)), d: rnd(0, 1), j: rnd(0, 6.28) }));
+const ionGeo = new THREE.BufferGeometry(); ionGeo.setAttribute('position', new THREE.BufferAttribute(ionPos, 3));
+const ions = pts(ionGeo, '#FFFFFF', .05, .9); ions.frustumCulled = false; syn.add(ions);
+track(syn);
+
+/* ---------- muscle (acetylcholine) ---------- */
+const mus = new THREE.Group(); scene.add(mus);
+const fiberMat = new THREE.ShaderMaterial({
+  uniforms: { uS: { value: 1 }, uT: { value: 0 } },
+  vertexShader: `varying vec3 vN; varying vec3 vV; varying vec3 vP; void main(){ vP = position; vec4 w = modelMatrix * vec4(position,1.); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix * viewMatrix * w; }`,
+  fragmentShader: `uniform float uS, uT; varying vec3 vN; varying vec3 vV; varying vec3 vP;
+    void main(){ float f = pow(1. - abs(dot(normalize(vN), normalize(vV))), 2.); float band = smoothstep(.55, 1., sin(vP.y * 22. / uS) * .5 + .5);
+      vec3 c = mix(vec3(.31,.7,1.), vec3(1.,.25,.3), (1. - uS) * 4.); gl_FragColor = vec4(c * 1.3, (f * .9 + band * .28 + .05)); }`,
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
+const fiber = new THREE.Mesh(new THREE.CylinderGeometry(.55, .55, 4.2, 64, 1, true), fiberMat); fiber.rotation.z = Math.PI / 2; fiber.position.y = -.9; mus.add(fiber);
+const nerve = new THREE.Mesh(new THREE.CylinderGeometry(.1, .14, 2.2, 24, 1, true), holo(BLUE)); nerve.position.set(0, 1.25, 0); mus.add(nerve);
+const term = new THREE.Mesh(new THREE.SphereGeometry(.38, 40, 30), holo(BLUE)); term.scale.y = .7; term.position.set(0, .05, 0); mus.add(term);
+const MA = 120, maPos = new Float32Array(MA * 3), maSeed = Array.from({ length: MA }, () => ({ x: rnd(-.3, .3), z: rnd(-.3, .3), d: rnd(0, 1) }));
+const maGeo = new THREE.BufferGeometry(); maGeo.setAttribute('position', new THREE.BufferAttribute(maPos, 3));
+const ach = pts(maGeo, '#FF3B4A', .06, 1); ach.frustumCulled = false; mus.add(ach);
+track(mus);
+
+
+/* ---------- body: heart, airways, gut, adrenals (adrenaline vs acetylcholine) ---------- */
+const kid = new THREE.Group(); scene.add(kid);
+const Yax = new THREE.Vector3(0, 1, 0), organs = {};
+const organ = (id, ...m) => { const g = organs[id] ??= new THREE.Group(); m.forEach(x => g.add(x)); kid.add(g); return g; };
+const oblob = (r, sx, sy, sz, col = BLUE, a = 1, f = null) => { const geo = new THREE.IcosahedronGeometry(r, 40), p = geo.attributes.position, d = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { d.fromBufferAttribute(p, i); const k = f ? f(d.clone().normalize()) : 1; p.setXYZ(i, d.x * sx * k, d.y * sy * k, d.z * sz * k); }
+  geo.computeVertexNormals(); return new THREE.Mesh(geo, holo(col, a)); };
+const at = (m, x, y, z) => { m.position.set(x, y, z); return m; };
+// lungs: two lobed sacs, the left one (viewer's right) notched for the heart
+organ('lungs', at(oblob(1, .52, .95, .42, BLUE, .55, d => 1 - .05 * Math.max(0, -d.y)), -.66, 1.0, -.05),
+  at(oblob(1, .48, .9, .4, BLUE, .55, d => 1 - .28 * Math.exp(-(((d.y + .35) / .35) ** 2)) * Math.max(0, -d.x) ** 2), .66, .98, -.05));
+// airway tree: trachea, two main bronchi, then branches that widen or narrow
+const bronchi = [];
+function branch(a, dir, len, r, lvl) { const b = a.clone().addScaledVector(dir, len);
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(r * .82, r, len, 18, 1, true), holo('#7FD0FF', .9)); c.position.copy(a).add(b).multiplyScalar(.5); c.quaternion.setFromUnitVectors(Yax, dir); c.userData.base = 1;
+  organ('bronchi', c); if (lvl > 0) bronchi.push(c);
+  if (lvl < 3) for (const s of [-1, 1]) { const d2 = dir.clone().applyAxisAngle(new THREE.Vector3(0, 0, 1), s * (.42 + .1 * lvl)).applyAxisAngle(Yax, s * .3).normalize(); branch(b, d2, len * .68, r * .66, lvl + 1); } }
+branch(new THREE.Vector3(0, 2.25, 0), new THREE.Vector3(0, -1, 0), .7, .085, 0);
+// heart: tilted cone-ish muscle, apex down and to the left
+const heartM = oblob(1, .36, .44, .32, BLUE, 1, d => 1 + .25 * Math.max(0, -d.y) ** 2 - .12 * Math.max(0, d.y) ** 3); heartM.rotation.z = .5;
+const heart = organ('heart', heartM); heart.position.set(.18, .62, .32);
+// gut: a coiled small intestine framed by the colon
+const coilPts = []; for (let i = 0; i <= 140; i++) { const u = i / 140, row = u * 4.2, y = -.75 - .28 * row, x = .62 * Math.cos(Math.PI * row) * (1 - .08 * row), z = .25 + .1 * Math.sin(u * 30); coilPts.push(new THREE.Vector3(x, y, z)); }
+const gutC = new THREE.CatmullRomCurve3(coilPts), colonC = new THREE.CatmullRomCurve3([[-.95, -2.0, .1], [-1.0, -.7, .1], [-.5, -.52, .15], [.5, -.52, .15], [1.0, -.7, .1], [.95, -2.0, .1]].map(q => new THREE.Vector3(...q)));
+organ('gut', new THREE.Mesh(new THREE.TubeGeometry(gutC, 400, .085, 14, false), holo(BLUE, .9)), new THREE.Mesh(new THREE.TubeGeometry(colonC, 160, .13, 14, false), holo(BLUE, .6)));
+const wave = new THREE.Mesh(new THREE.TorusGeometry(.12, .035, 10, 28), holo('#FFFFFF', 1)); organ('gut', wave);
+// kidneys behind the gut, each capped by an adrenal gland
+for (const sd of [1, -1]) { const k = oblob(1, .24, .4, .2, BLUE, .5, d => 1 - .35 * Math.max(0, -sd * d.x) ** 3 * Math.exp(-((d.y / .4) ** 2))); organ('kidney', at(k, sd * .78, -.42, -.55));
+  const ad = oblob(1, .17, .13, .1, BLUE, 1, d => 1 + .35 * Math.max(0, d.y) ** 2); ad.rotation.z = -sd * .3; organ('adrenal', at(ad, sd * .74, -.04, -.55)); }
+// vagus nerve: from the brainstem down past the heart to the gut
+const vagC = new THREE.CatmullRomCurve3([[-.32, 2.9, -.2], [-.3, 1.6, -.15], [-.05, .6, .1], [-.2, -.3, .15], [-.1, -1.2, .3]].map(q => new THREE.Vector3(...q)));
+organ('vagus', new THREE.Mesh(new THREE.TubeGeometry(vagC, 120, .03, 10, false), holo('#BFE6FF', 1)));
+track(kid);
+const pPool = (n, col, size, op) => { const pos = new Float32Array(n * 3), geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const P = pts(geo, col, size, op); P.frustumCulled = false; kid.add(P); return { n, pos, geo, seed: Array.from({ length: n }, (_, i) => ({ d: rnd(0, 1), j: rnd(0, 6.28), s: i % 2 ? 1 : -1, r: rnd(.2, 1) })) }; };
+const adrP = pPool(180, '#FF3B4A', .065, 1), achP = pPool(70, '#FFFFFF', .06, 1), food = pPool(40, '#FFFFFF', .05, .8);
+let beatPh = 0, gutPh = 0, lastT = 0, bro = 1, hrNow = 70, gutNow = 1;
+function flowKid(t, s) {
+  const dt = Math.max(0, Math.min(.1, t - lastT)); lastT = t;
+  hrNow += ((s.hr || 70) - hrNow) * .06; gutNow += ((s.gutv ?? 1) - gutNow) * .06; bro += ((s.bro ?? 1) - bro) * .06;
+  beatPh += dt * hrNow / 60; const q = beatPh % 1, pulse = Math.exp(-(((q - .08) / .05) ** 2)) + .55 * Math.exp(-(((q - .26) / .06) ** 2));
+  heart.scale.setScalar(1 + .09 * pulse * Math.min(1.6, hrNow / 70));
+  bronchi.forEach(c => c.scale.set(bro, 1, bro));
+  gutPh += dt * .12 * gutNow; const wp2 = gutC.getPointAt(gutPh % 1); wave.position.copy(wp2); wave.lookAt(gutC.getPointAt(Math.min(1, gutPh % 1 + .01))); wave.scale.setScalar(.6 + .6 * Math.min(1.5, gutNow));
+  food.seed.forEach((f, i) => { const v = gutC.getPointAt((gutPh * .9 + f.d) % 1); food.pos.set([v.x, v.y, v.z], i * 3); });
+  // adrenaline: from the adrenals into the blood, up to the heart and lungs
+  const aOn = s.adr ? ease((t - s.adrT0) / .8) : 0;
+  adrP.seed.forEach((f, i) => { const p = ((t * .35 + f.d) % 1 + 1) % 1, x0 = f.s * .74, y = -.04 + p * 1.6, x = x0 * (1 - p) + (.18 + .5 * Math.sin(f.j) * f.r) * p, z = -.55 + p * (.55 + .3 * Math.cos(f.j));
+    adrP.pos.set(f.d < aOn ? [x + .04 * Math.sin(t * 3 + f.j), y, z] : [0, -50, 0], i * 3); });
+  // acetylcholine signals running down the vagus nerve
+  const cOn = s.ach ? ease((t - s.achT0) / .6) : 0;
+  achP.seed.forEach((f, i) => { const v = vagC.getPointAt(((t * .4 + f.d) % 1 + 1) % 1); achP.pos.set(f.d < cOn ? [v.x, v.y, v.z] : [0, -50, 0], i * 3); });
+  [adrP, achP, food].forEach(P => P.geo.attributes.position.needsUpdate = true);
+  const hot = new Set(s.hot); for (const [id, g] of Object.entries(organs)) g.traverse(o => { const u = o.material?.uniforms; if (u?.uHot) u.uHot.value += ((hot.has(id) ? .85 + .15 * Math.sin(t * 5) : 0) - u.uHot.value) * .15; });
+  kid.rotation.y = Math.sin(t * .2) * .35; kid.rotation.x = .06;
+}
+const organAt = id => { const b = new THREE.Box3().setFromObject(organs[id]); return b.getCenter(new THREE.Vector3()); };
+/* ---------- labels ---------- */
+const labs = {}, lineEls = {};
+function label(id, ar, la, anchor, dx, dy) {
+  const el = document.createElement('div'); el.className = 'lab'; el.innerHTML = `${ar}${la ? `<small>${la}</small>` : ''}`; $('labs').append(el);
+  const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line'); ln.setAttribute('stroke', '#9FD4FF'); ln.setAttribute('stroke-width', '1'); $('lines').append(ln);
+  labs[id] = { el, ln, anchor, dx, dy };
+}
+const v3 = new THREE.Vector3();
+function placeLabels(on, hot) {
+  for (const [id, L] of Object.entries(labs)) {
+    const a = on[id] || 0; L.el.style.opacity = a; L.ln.style.opacity = a * .7;
+    L.el.classList.toggle('hot', !!hot[id]); L.ln.setAttribute('stroke', hot[id] ? '#FF6B78' : '#9FD4FF');
+    if (!a) continue;
+    L.anchor.getWorldPosition(v3); v3.project(cam);
+    const x = (v3.x * .5 + .5) * 540, y = (-v3.y * .5 + .5) * 960, lx = x + L.dx, ly = y + L.dy;
+    const w = L.el.offsetWidth, h = L.el.offsetHeight, left = Math.max(14, Math.min(526 - w, lx - w / 2));
+    L.el.style.transform = `translate(${left}px, ${ly - h / 2}px)`;
+    L.ln.setAttribute('x1', x); L.ln.setAttribute('y1', y); L.ln.setAttribute('x2', lx); L.ln.setAttribute('y2', ly + (L.dy > 0 ? -h / 2 : h / 2));
+  }
+}
+const anchorAt = (parent, x, y, z) => { const o = new THREE.Object3D(); o.position.set(x, y, z); parent.add(o); return o; };
+label('amygdala', 'اللوزة الدماغية', 'AMYGDALA', anchorAt(brain, .4, -.32, .28), 70, 160);
+label('thalamus', 'المهاد', 'THALAMUS', anchorAt(brain, -.13, -.02, -.08), -80, -110);
+label('hippocampus', 'الحُصين', 'HIPPOCAMPUS', anchorAt(brain, -.42, -.25, -.1), -60, 105);
+label('forebrain', 'قاعدة الدماغ الأمامي', 'BASAL FOREBRAIN', anchorAt(brain, 0, -.28, .38), 0, 110);
+label('hypothalamus', 'تحت المهاد', 'HYPOTHALAMUS', anchorAt(brain, 0, -.25, .1), 80, 120);
+label('pituitary', 'الغدة النخامية', 'PITUITARY', anchorAt(brain, 0, -.45, .2), -60, 110);
+label('pineal', 'الغدة الصنوبرية', 'PINEAL GLAND', anchorAt(brain, 0, -.08, -.34), -60, 150);
+label('scn', 'الساعة البيولوجية', 'SUPRACHIASMATIC NUCLEUS', anchorAt(brain, 0, -.33, .24), 60, 120);
+label('optic', 'العين والعصب البصري', 'EYE · OPTIC NERVE', anchorAt(brain, .32, -.36, 1.2), -30, 165);
+label('cord', 'جذع الدماغ والحبل الشوكي', 'BRAINSTEM · SPINAL CORD', anchorAt(brain, 0, -1.2, -.6), 150, -20);
+label('cerebellum', 'المخيخ', 'CEREBELLUM', anchorAt(brain, 0, -.5, -.85), -60, 100);
+label('cortex', 'القشرة الدماغية', 'CORTEX', anchorAt(brain, .75, .45, .1), 30, -70);
+label('motor', 'القشرة الحركية', 'MOTOR CORTEX', anchorAt(brain, -.45, .55, .02), -30, -70);
+label('pre', 'الخلية المُرسِلة', 'PRESYNAPTIC', anchorAt(syn, .9, 1.2, 0), 40, -60);
+label('post', 'الخلية المستقبِلة', 'POSTSYNAPTIC', anchorAt(syn, -.9, -.32, 0), -40, 70);
+label('receptor', 'المستقبِلات', 'RECEPTORS', anchorAt(syn, .9, -.25, 0), 50, 60);
+label('ions', R.ion || '', R.ionLatin || '', anchorAt(syn, -.3, -.45, 0), -70, 110);
+label('nerve', 'العصب الحركي', 'MOTOR NEURON', anchorAt(mus, 0, .7, 0), 110, 70);
+label('muscle', 'الليف العضلي', 'MUSCLE FIBER', anchorAt(mus, 1.4, -.35, 0), -20, -90);
+label('adrenal', 'الغدة الكظرية', 'ADRENAL GLAND', anchorAt(kid, .74, 0, -.55), 70, 150);
+label('heart', 'القلب', 'HEART', anchorAt(kid, .25, .6, .35), 90, 150);
+label('bronchi', 'القصبات الهوائية', 'BRONCHI', anchorAt(kid, -.35, 1.25, 0), -80, 200);
+label('lungs', 'الرئتان', 'LUNGS', anchorAt(kid, .7, 1.3, -.05), 60, 220);
+label('gut', 'الأمعاء', 'INTESTINES', anchorAt(kid, .3, -1.3, .3), 60, 70);
+label('vagus', 'العصب المبهم', 'VAGUS NERVE', anchorAt(kid, -.05, .6, .1), -110, 190);
+label('enzyme', 'إنزيم التفكيك', 'ACETYLCHOLINESTERASE', anchorAt(mus, -.4, -.35, 0), -40, 120);
+
+/* ---------- captions ---------- */
+const chunks = [];
+R.lines.forEach(l => { const n = Math.ceil(l.words.length / 5), k = Math.ceil(l.words.length / n);
+  for (let i = 0; i < l.words.length; i += k) { const w = l.words.slice(i, i + k), next = l.words[i + k];
+    chunks.push({ a: w[0].t, b: next ? next.t : l.b + .2, words: w }); } });
+
+/* ---------- animated charts (numbers that rise or fall) ---------- */
+const NS = 'http://www.w3.org/2000/svg', svgEl = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); parent.append(e); return e; };
+const CH = {}; // per chart id: draw(p, since, t)
+const wordT = ([li, w]) => { const L = R.lines[li]; return (L.words.find(x => x.w.includes(w)) || L.words[0]).t; };
+const PX0 = 30, PX1 = 458, PY0 = 268, PY1 = 104; // plot box inside the panel
+for (const [id, c] of Object.entries(R.charts || {})) {
+  const g = svgEl('g', { opacity: 0 }, $('chsvg'));
+  for (let i = 0; i <= 3; i++) svgEl('line', { x1: PX0, x2: PX1, y1: PY0 - i * (PY0 - PY1) / 3, y2: PY0 - i * (PY0 - PY1) / 3, stroke: 'rgba(110,190,255,.14)' }, g);
+  if (c.type === 'curve') {
+    const X = x => PX0 + (PX1 - PX0) * x, Y = y => PY0 - (PY0 - PY1) * y;
+    if (c.night) svgEl('rect', { x: X(c.night[0]), y: PY1 - 6, width: X(c.night[1]) - X(c.night[0]), height: PY0 - PY1 + 6, fill: 'rgba(60,110,255,.10)', rx: 6 }, g);
+    (c.xl || []).forEach(([x, t]) => svgEl('text', { x: X(x), y: PY0 + 20, 'text-anchor': 'middle' }, g).textContent = t);
+    // smooth path through the points
+    const P = c.pts.map(([x, y]) => [X(x), Y(y)]); let d = `M${P[0][0]},${P[0][1]}`;
+    for (let i = 1; i < P.length; i++) { const [x0, y0] = P[i - 1], [x1, y1] = P[i], mx = (x0 + x1) / 2; d += ` C${mx},${y0} ${mx},${y1} ${x1},${y1}`; }
+    const grad = svgEl('linearGradient', { id: `gr-${id}`, x1: 0, y1: 0, x2: 0, y2: 1 }, svgEl('defs', {}, g));
+    svgEl('stop', { offset: 0, 'stop-color': '#FF3B4A', 'stop-opacity': .45 }, grad); svgEl('stop', { offset: 1, 'stop-color': '#FF3B4A', 'stop-opacity': 0 }, grad);
+    const clip = svgEl('rect', { x: PX0, y: 0, width: 0, height: 300 }, svgEl('clipPath', { id: `cl-${id}` }, g));
+    svgEl('path', { d: d + ` L${PX1},${PY0} L${PX0},${PY0} Z`, fill: `url(#gr-${id})`, 'clip-path': `url(#cl-${id})` }, g);
+    const line = svgEl('path', { d, fill: 'none', stroke: '#FF5A68', 'stroke-width': 4, 'stroke-linecap': 'round', filter: 'drop-shadow(0 0 6px rgba(255,59,74,.9))' }, g);
+    const head = svgEl('circle', { r: 7, fill: '#fff', filter: 'drop-shadow(0 0 8px #FF3B4A)' }, g);
+    const L = line.getTotalLength(); line.setAttribute('stroke-dasharray', L);
+    CH[id] = { g, draw(p) { line.setAttribute('stroke-dashoffset', L * (1 - p)); const pt = line.getPointAtLength(L * p); head.setAttribute('cx', pt.x); head.setAttribute('cy', pt.y); clip.setAttribute('width', pt.x - PX0);
+      const v = Math.max(0, ...c.pts.filter(([x]) => X(x) <= pt.x + 1).map(([, y]) => y)); return v; } };
+  } else if (c.type === 'bars') {
+    const n = c.bars.length, bw = 110, gap = (PX1 - PX0 - n * bw) / (n + 1), els = c.bars.map((b, i) => {
+      const x = PX0 + gap + i * (bw + gap);
+      svgEl('text', { x: x + bw / 2, y: PY0 + 20, 'text-anchor': 'middle' }, g).textContent = b.label;
+      return svgEl('rect', { x, width: bw, rx: 10, fill: b.hot ? 'rgba(255,90,104,.85)' : 'rgba(90,180,255,.85)', filter: `drop-shadow(0 0 10px ${b.hot ? '#FF3B4A' : '#4FB4FF'})` }, g); });
+    CH[id] = { g, draw(p, since) { c.bars.forEach((b, i) => { const grow = ease(since / .7), drop = b.to !== undefined ? ease((since - .9) / 1.1) : 0, v = b.v * grow + ((b.to ?? b.v) - b.v) * drop;
+      const h = (PY0 - PY1) * v; els[i].setAttribute('y', PY0 - h); els[i].setAttribute('height', Math.max(0, h)); }); return ease((since - .9) / 1.1); } };
+  } else if (c.type === 'table') {
+    // which way each organ goes: a column per messenger, cells pop in on cue
+    const CX = [400, 262, 112], RY = [128, 176, 222, 268];
+    c.cols.forEach((h, j) => { const e = svgEl('text', { x: CX[j + 1], y: RY[0], 'text-anchor': 'middle', style: `font-size:17px;font-weight:800;fill:${j ? '#9FD4FF' : '#FF8A94'}` }, g); e.textContent = h; });
+    svgEl('line', { x1: 30, x2: 458, y1: RY[0] + 14, y2: RY[0] + 14, stroke: 'rgba(110,190,255,.3)' }, g);
+    const cells = [];
+    c.rows.forEach((r, i) => { const e = svgEl('text', { x: CX[0] + 40, y: RY[i + 1], 'text-anchor': 'end', style: 'font-size:19px;font-weight:700;fill:#CFE9FF' }, g); e.textContent = r.label;
+      r.cells.forEach((cl, j) => { if (!cl) return; const up = cl.dir === 'up', el = svgEl('text', { x: CX[j + 1], y: RY[i + 1], 'text-anchor': 'middle', style: `font-size:20px;font-weight:800;fill:${up ? '#FF5A68' : '#7FD0FF'};filter:drop-shadow(0 0 6px ${up ? '#FF3B4A' : '#4FB4FF'})`, opacity: 0 }, g);
+        el.textContent = `${up ? '▲' : '▼'} ${cl.w}`; cells.push({ el, t: cl.t ?? 0, x: CX[j + 1], y: RY[i + 1] }); }); });
+    CH[id] = { g, draw(p, since) { cells.forEach(q => { const k = ease((since - q.t) / .3), sc = k < 1 ? .4 + .6 * k + .25 * Math.sin(Math.PI * k) : 1;
+      q.el.setAttribute('opacity', k); q.el.setAttribute('transform', `translate(${q.x} ${q.y}) scale(${sc}) translate(${-q.x} ${-q.y})`); }); return 1; } };
+  } else if (c.type === 'dual') {
+    // two lines that cross: one falls while the other rises
+    const X = x => PX0 + (PX1 - PX0) * x, Y = y => PY0 - (PY0 - PY1) * y;
+    if (c.mark) { svgEl('line', { x1: X(c.mark.x), x2: X(c.mark.x), y1: PY1 - 8, y2: PY0, stroke: 'rgba(255,255,255,.55)', 'stroke-dasharray': '5 6' }, g);
+      const mt = svgEl('text', { x: X(c.mark.x), y: PY0 + 20, 'text-anchor': 'middle', style: 'font-size:15px;font-weight:800;fill:#fff' }, g); mt.textContent = c.mark.label; }
+    const S = c.series.map(se => { const P = se.pts.map(([x, y]) => [X(x), Y(y)]); let d = `M${P[0][0]},${P[0][1]}`;
+      for (let i = 1; i < P.length; i++) { const [x0, y0] = P[i - 1], [x1, y1] = P[i], mx = (x0 + x1) / 2; d += ` C${mx},${y0} ${mx},${y1} ${x1},${y1}`; }
+      const line = svgEl('path', { d, fill: 'none', stroke: se.color, 'stroke-width': 5, 'stroke-linecap': 'round', filter: `drop-shadow(0 0 7px ${se.color})` }, g);
+      const head = svgEl('circle', { r: 7, fill: '#fff', filter: `drop-shadow(0 0 8px ${se.color})` }, g);
+      const lab = svgEl('text', { 'text-anchor': 'start', style: `font-size:19px;font-weight:800;fill:${se.color};filter:drop-shadow(0 0 6px ${se.color})`, opacity: 0 }, g); lab.textContent = se.label;
+      const L = line.getTotalLength(); line.setAttribute('stroke-dasharray', L); return { line, head, lab, L, se }; });
+    CH[id] = { g, draw(p) { S.forEach(({ line, head, lab, L, se }) => { line.setAttribute('stroke-dashoffset', L * (1 - p)); const pt = line.getPointAtLength(L * p);
+      head.setAttribute('cx', pt.x); head.setAttribute('cy', pt.y); lab.setAttribute('x', pt.x - 14); lab.setAttribute('y', pt.y + (se.dy || -14)); lab.setAttribute('opacity', ease((p - .55) / .3)); }); return p; } };
+  } else if (c.type === 'chain') {
+    // one feeling turns into the next: nodes light up on the spoken word, joined by arrows
+    const n = c.nodes.length, xs = c.nodes.map((_, i) => 420 - i * (352 / (n - 1))), cy = 196;
+    const items = c.nodes.map((nd, i) => { const x = xs[i];
+      const ar = i ? svgEl('path', { d: `M${xs[i - 1] - 46},${cy} L${x + 46},${cy}`, stroke: '#CFE9FF', 'stroke-width': 3, fill: 'none', 'marker-end': `url(#ah-${id})`, opacity: 0 }, g) : null;
+      const ci = svgEl('circle', { cx: x, cy, r: 42, fill: 'rgba(8,22,48,.9)', stroke: nd.color, 'stroke-width': 3.5, filter: `drop-shadow(0 0 10px ${nd.color})`, opacity: 0 }, g);
+      const tx = svgEl('text', { x, y: cy + 7, 'text-anchor': 'middle', style: `font-size:${nd.w.length > 5 ? 17 : 21}px;font-weight:800;fill:#fff`, opacity: 0 }, g); tx.textContent = nd.w;
+      return { ar, ci, tx, x, t: wordT(nd.at) }; });
+    const mk = svgEl('marker', { id: `ah-${id}`, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, svgEl('defs', {}, g)); svgEl('path', { d: 'M0,0 L10,5 L0,10 z', fill: '#CFE9FF' }, mk);
+    CH[id] = { g, draw(p, since, t) { items.forEach(q => { const k = ease((t - q.t + .15) / .3), sc = k < 1 ? .5 + .5 * k + .3 * Math.sin(Math.PI * k) : 1;
+      [q.ci, q.tx].forEach(e => { e.setAttribute('opacity', k); e.setAttribute('transform', `translate(${q.x} ${cy}) scale(${sc}) translate(${-q.x} ${-cy})`); });
+      if (q.ar) q.ar.setAttribute('opacity', ease((t - q.t + .3) / .25)); }); return 1; } };
+  } else if (c.type === 'options') {
+    // the possible answers, two get struck out and the right one lights up
+    const cards = c.cards.map((cd, i) => { const y = 92 + i * 62, gg = svgEl('g', { opacity: 0 }, g);
+      const r = svgEl('rect', { x: 60, y, width: 368, height: 48, rx: 14, fill: 'rgba(12,32,68,.9)', stroke: 'rgba(130,200,255,.6)', 'stroke-width': 2 }, gg);
+      const tx = svgEl('text', { x: 244, y: y + 32, 'text-anchor': 'middle', style: 'font-size:23px;font-weight:800;fill:#fff' }, gg); tx.textContent = cd.w;
+      const st = svgEl('line', { x1: 80, x2: 80, y1: y + 24, y2: y + 24, stroke: '#FF3B4A', 'stroke-width': 4, 'stroke-linecap': 'round', filter: 'drop-shadow(0 0 6px #FF3B4A)' }, gg);
+      const mark = svgEl('text', { x: 92, y: y + 33, 'text-anchor': 'middle', style: `font-size:26px;font-weight:800;fill:${cd.win ? '#7CFFB2' : '#FF5A68'}`, opacity: 0 }, gg); mark.textContent = cd.win ? '✓' : '✕';
+      return { gg, r, tx, st, mark, y, cd, tIn: wordT(cd.at), tX: cd.x ? wordT(cd.x) : null }; });
+    CH[id] = { g, draw(p, since, t) { cards.forEach(q => { const k = ease((t - q.tIn + .15) / .3); q.gg.setAttribute('opacity', k); q.gg.setAttribute('transform', `translate(${(1 - k) * 40} 0)`);
+      if (q.tX !== null) { const x = ease((t - q.tX) / .35); q.st.setAttribute('x2', 80 + 328 * x); q.st.setAttribute('opacity', x > .02 ? 1 : 0); q.mark.setAttribute('opacity', x); q.gg.setAttribute('opacity', k * (1 - .45 * x)); }
+      if (q.cd.win) { const w = ease((t - q.tIn) / .4); q.mark.setAttribute('opacity', w); q.r.setAttribute('stroke', w > .5 ? '#7CFFB2' : 'rgba(130,200,255,.6)'); q.r.setAttribute('filter', w > .5 ? 'drop-shadow(0 0 12px #3BFF8A)' : ''); } }); return 1; } };
+  } else if (c.type === 'grid100') {
+    // 100 people, the few who show it turn red one by one
+    const dots = []; for (let i = 0; i < 100; i++) { const col = i % 10, row = Math.floor(i / 10), x = 448 - col * 24, y = 104 + row * 17.5;
+      dots.push(svgEl('circle', { cx: x, cy: y, r: 6.5, fill: 'rgba(110,190,255,.35)' }, g)); }
+    const hot = c.hotIdx || [3, 17, 26, 41, 58, 64, 79, 92];
+    CH[id] = { g, draw(p, since) { dots.forEach((d, i) => { const k = hot.indexOf(i), on = k >= 0 ? ease((since - .5 - k * .16) / .2) : 0;
+      d.setAttribute('fill', on > .5 ? '#FF3B4A' : 'rgba(110,190,255,.35)'); d.setAttribute('r', 6.5 + 3 * on * (1 + .3 * Math.sin(Math.PI * Math.min(1, on)))); d.setAttribute('filter', on > .5 ? 'drop-shadow(0 0 6px #FF3B4A)' : ''); });
+      return ease((since - .5) / (hot.length * .16 + .2)); } };
+  } else if (c.type === 'count') {
+    // one big number that counts up inside a filling ring
+    const cx = 244, cy = 178, r = 78, C = 2 * Math.PI * r;
+    svgEl('circle', { cx, cy, r, fill: 'none', stroke: 'rgba(110,190,255,.16)', 'stroke-width': 10 }, g);
+    const arc = svgEl('circle', { cx, cy, r, fill: 'none', stroke: '#FF5A68', 'stroke-width': 10, 'stroke-linecap': 'round', 'stroke-dasharray': C, transform: `rotate(-90 ${cx} ${cy})`, filter: 'drop-shadow(0 0 8px #FF3B4A)' }, g);
+    const num = svgEl('text', { x: cx, y: cy + 14, 'text-anchor': 'middle', direction: 'ltr', style: 'font-size:46px;font-weight:800;fill:#fff;filter:drop-shadow(0 0 10px rgba(255,59,74,.9))' }, g);
+    const unit = svgEl('text', { x: cx, y: cy + 42, 'text-anchor': 'middle', style: 'font-size:15px;font-weight:700;fill:#FFB8BE' }, g); unit.textContent = c.unit || '';
+    if (c.note) { const nt = svgEl('text', { x: cx, y: 286, 'text-anchor': 'middle', style: 'font-size:14px;font-weight:500;fill:#9FD4FF' }, g); nt.textContent = c.note; }
+    CH[id] = { g, draw(p) { arc.setAttribute('stroke-dashoffset', C * (1 - p * (c.ring ?? 1))); const v = c.from + (c.to - c.from) * p;
+      num.textContent = (c.pre || '') + (c.comma ? Math.round(v).toLocaleString('en-US') : Math.round(v)) + (c.suf || ''); return p; } };
+  }
+}
+let chartOp = 0;
+function drawChart(s, t) {
+  const c = s.chart && R.charts?.[s.chart], since = c ? t - s.chartT0 : 0;
+  chartOp += ((c ? 1 : 0) - chartOp) * .2; $('chart').style.opacity = chartOp; $('chart').style.transform = `translateY(${(1 - chartOp) * -16}px) scale(${.96 + .04 * chartOp})`;
+  for (const [id, C] of Object.entries(CH)) C.g.setAttribute('opacity', id === s.chart ? 1 : 0);
+  if (!c) return;
+  const p = ease(since / (c.dur || 2.4)), v = CH[s.chart].draw(p, since, t), k = c.type === 'curve' ? v / Math.max(...c.pts.map(q => q[1])) : v;
+  $('chtitle').textContent = c.title; $('chsub').textContent = c.sub || '';
+  const n = c.big; if (!n) $('chbig').innerHTML = ''; if (n) { const val = n.from + (n.to - n.from) * k; $('chbig').innerHTML = `<bdi dir="ltr">${(n.pre || '') + (val < -.5 ? '−' + Math.round(-val) : n.comma ? Math.round(val).toLocaleString('en-US') : Math.round(val))}</bdi>${n.suf ? `<small style="font-size:24px"> ${n.suf}</small>` : ''}`; $('chbig').className = 'big' + (n.to < n.from ? ' down' : ''); }
+}
+
+/* ---------- bars, flash and the mid-reel name card ---------- */
+const BN = 7; for (let i = 0; i < BN; i++) { const e = document.createElement('i'); e.style.left = `${40 + i * 460 / (BN - 1)}px`; $('bars').append(e); }
+['b', 'b'].forEach((_, i) => { const e = document.createElement('b'); e.style.top = `${i ? 640 : 250}px`; $('bars').append(e); });
+// level of an on/off beat property at time t: rises in tIn seconds, falls in tOut
+const level = (key, t, tIn, tOut) => { let on = false, t0 = -99, base = 0;
+  const val = x => on ? base + (1 - base) * ease((x - t0) / tIn) : base * (1 - ease((x - t0) / tOut));
+  for (const b of beats) { if (b.t0 > t) break; if (b[key] === undefined || !!b[key] === on) continue; base = val(b.t0); on = !!b[key]; t0 = b.t0; }
+  return val(t); };
+
+/* ---------- timeline ---------- */
+const ease = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+const T = b => (b.at !== undefined ? R.lines[b.at].a : b.t) + (b.dt || 0) - .2;
+const beats = R.beats.map(b => ({ ...b, t0: T(b) }));
+const stateAt = t => { const s = { scene: 'brain', hot: [], labels: [], cortex: 0, proj: 0, fact: '', chart: null }; let since = 99, sceneSince = 99;
+  for (const b of beats) if (b.t0 <= t) { if (b.scene && b.scene !== s.scene) sceneSince = t - b.t0; Object.assign(s, b); since = t - b.t0; }
+  return { ...s, since, sceneSince }; };
+let lastScene = 'brain', fade = { brain: 1, syn: 0, mus: 0, kid: 0 };
+
+// close in on small parts, less on wide ones (cord, several parts at once)
+const k2dist = parts => parts.includes('cord') ? 6.2 : parts.includes('optic') ? 6.8 : parts.length > 1 ? 6.0 : ['amygdala', 'hypothalamus', 'pituitary', 'thalamus', 'hippocampus'].includes(parts[0]) ? (R.focusDist || 4.2) : ['pineal', 'scn'].includes(parts[0]) ? 6.0 : 5.3;
+const view = new THREE.Vector3(0, .2, 1).normalize(), camT = new THREE.Vector3(0, -.1, 0), wp = new THREE.Vector3();
+let camD = OUT ? 15 : 10;
+// hook: the opening question flies in word by word
+const HL = R.hookLines || 1, hookWords = OUT ? R.lines.slice(0, HL).flatMap(l => l.words) : [], hookEnd = OUT ? R.lines[HL].a - .1 : -1;
+if (OUT) $('hook').innerHTML = hookWords.map((w, i) => `<i class="${(R.hookRed || []).includes(i) ? 'red' : ''}">${w.w}${i === hookWords.length - 1 ? (R.hookPunct ?? '؟') : ''}</i>`).join(' ');
+const hookEls = [...$('hook').children];
+cam.setViewOffset(540, 960, 0, 110, 540, 960); // keep the subject above the captions
+window.reel = { duration: Math.max(R.duration + .6, OUT ? outStart + OUT : 0) + LEAD, lead: LEAD, coverAt: OUT ? LEAD + outStart + 1.3 : LEAD * .85, seek(tr) {
+  const t = tr - LEAD;
+  const s = stateAt(t);
+  if (t < 0 && !OUT) Object.assign(s, { hot: R.coverHot || [], labels: [], hotLabels: [], fact: '' });
+  const inOut = OUT && t >= outStart;
+  if (inOut) { if (s.scene !== 'brain') s.sceneSince = t - outStart; Object.assign(s, { scene: 'brain', hot: R.coverHot || [], labels: [], hotLabels: [], fact: '', proj: 0, chart: null }); }
+  // scene crossfade
+  const k = ease(s.sceneSince / .7);
+  for (const n of ['brain', 'syn', 'mus', 'kid']) fade[n] = n === s.scene ? k : Math.min(fade[n], 1 - k);
+  brain.visible = fade.brain > .01; syn.visible = fade.syn > .01; mus.visible = fade.mus > .01; kid.visible = fade.kid > .01;
+  // brain: slow turn, gentle push-in, regions in red
+  brain.rotation.y = 1.05 + .075 * tr; brain.rotation.x = .08; // slow turn so the volume reads
+  const hotSet = new Set(s.hot);
+  for (const [k2, r] of Object.entries(regions)) r.traverse(o => { if (o.material?.uniforms) { const u = o.material.uniforms; const target = hotSet.has(k2) ? 1 : 0; u.uA.value += (target * (.75 + .25 * Math.sin(t * 5)) - u.uA.value) * .25; u.uHot.value = 1; } });
+  hemis.forEach(h => { h.material.uniforms.uHot.value += ((hotSet.has('cortex') || hotSet.has('motor') && false ? .8 : 0) - h.material.uniforms.uHot.value) * .15; });
+  for (const [k2, sp] of Object.entries(glows)) sp.material.opacity += ((hotSet.has(k2) ? .55 + .15 * Math.sin(tr * 4) : 0) * fade.brain - sp.material.opacity) * .2;
+  proj.material.opacity += ((s.proj ? .55 : 0) - proj.material.opacity) * .15;
+  // synapse: release, cross, bind; ions flow when bound
+  const rel = s.release ? ease((t - s.releaseT0) / 1) : 0;
+  const ph = t * .45;
+  for (let i = 0; i < NT; i++) { const q = ntSeed[i], r = receptors[q.r].position, p = (ph + q.d) % 1, on = rel * (p < .85 ? 1 : 0);
+    const pp = s.reverse ? 1 - p : p; // retrograde messengers travel from the receiving cell back up
+    const y = .25 - pp * .55, x = q.x + (r.x - q.x) * ease(pp * 1.25) + .03 * Math.sin(t * 3 + q.j), z = q.z + (r.z - q.z) * ease(pp * 1.25);
+    ntPos.set(on ? [x, y, z] : [0, -50, 0], i * 3); }
+  ntGeo.attributes.position.needsUpdate = true;
+  const ionOn = s.ionflow ? ease((t - s.ionT0) / 1) : 0;
+  for (let i = 0; i < ION; i++) { const q = ionSeed[i], r = receptors[q.r].position, p = (t * .5 + q.d) % 1, dir = s.ionflow === 'out' ? -1 : 1;
+    ionPos.set(ionOn ? [r.x + .05 * Math.sin(q.j + t * 4), r.y + .35 - dir * 0 - p * .9, r.z + .05 * Math.cos(q.j + t * 4)] : [0, -50, 0], i * 3); }
+  ionGeo.attributes.position.needsUpdate = true;
+  receptors.forEach(r => { r.material.uniforms.uHot.value += ((rel > .5 ? 1 : 0) - r.material.uniforms.uHot.value) * .2; });
+  vesicles.children.forEach((v, i) => { v.position.y = v.userData.y0 + .03 * Math.sin(t * 2 + i); });
+  syn.rotation.y = Math.sin(t * .25) * .35; syn.rotation.x = .12;
+  // muscle: ACh crosses, fiber contracts, enzyme clears, fiber relaxes
+  const mT = s.scene === 'mus' ? s.sceneSince : 0, cyc = (mT % 4.5) / 4.5;
+  const cross = cyc < .45 ? cyc / .45 : 1, clear = cyc > .6 ? Math.min(1, (cyc - .6) / .25) : 0;
+  for (let i = 0; i < MA; i++) { const q = maSeed[i], p = (cross + q.d * .25) % 1; maPos.set(cyc < .85 && (1 - clear) > q.d ? [q.x, -.15 - Math.min(1, cross + q.d * .2) * .2, q.z] : [0, -50, 0], i * 3); }
+  maGeo.attributes.position.needsUpdate = true;
+  const contr = cyc > .35 && cyc < .7 ? ease((cyc - .35) / .1) * (1 - ease((cyc - .6) / .1)) : 0;
+  fiber.scale.y = 1 - .12 * contr; fiberMat.uniforms.uS.value = 1 - .12 * contr;
+  mus.rotation.y = -.35 + Math.sin(t * .2) * .15;
+  // fades
+  const setA = (g, a) => g.traverse(o => { if (o.material) { if (o.material.uniforms?.uA && g !== brain) o.material.uniforms.uA.value = (o.userData.a0 ??= o.material.uniforms.uA.value) * a; else if (o.material.uniforms?.uA) {} else { o.material.opacity = (o.userData.o0 ??= o.material.opacity) * a; } } });
+  setA(syn, fade.syn); setA(mus, fade.mus); setA(kid, fade.kid);
+  if (kid.visible) flowKid(t, s);
+  const ghost = Math.max(0, Math.min(1, (5.6 - camD) / 1.2)); hemis.forEach(m => m.material.uniforms.uA.value = .9 * fade.brain * (1 - .6 * ghost)); cereb.material.uniforms.uA.value = .8 * fade.brain * (1 - .75 * ghost); hemis.forEach(h => h.children[0] && (h.children[0].material.opacity = .22 * fade.brain * (1 - .7 * ghost))); callosum.material.uniforms.uA.value = .55 * fade.brain; stem.children.forEach(m => m.material.uniforms.uA.value = .8 * fade.brain * (1 - .75 * ghost));
+  // camera
+  // camera: wide on the cover, then into the brain toward the part in red
+  let tgt = new THREE.Vector3(0, -.15, 0), dist = 8.4;
+  if (s.scene === 'syn') { tgt.set(0, .35, 0); dist = 8.6; }
+  else if (s.scene === 'mus') { tgt.set(0, -.4, 0); dist = 8.8; }
+  else if (s.scene === 'kid') { if (s.focus) tgt.copy(kid.localToWorld(wp.set(...s.focus))); else tgt.set(0, .35, 0); dist = s.kdist || 10.5; }
+  else if (t >= 0) { const parts = s.hot.filter(k => regions[k]?.userData.center);
+    if (parts.length) { tgt.set(0, 0, 0); parts.forEach(k => tgt.add(brain.localToWorld(wp.copy(regions[k].userData.center)))); tgt.divideScalar(parts.length); dist = k2dist(parts); }
+    else if (s.hot.includes('cortex')) dist = 6.4; else dist = 6.9; }
+  else dist = 6.2; // cover
+  if (inOut) { tgt.set(0, -.15, 0); dist = 6.2; }
+  camT.lerp(tgt, tr < .02 ? 1 : .05); camD += (dist - camD) * (tr < .02 ? 0 : .045);
+  cam.position.copy(camT).addScaledVector(view, camD); cam.lookAt(camT);
+  mats.forEach(m => m.uniforms.uT && (m.uniforms.uT.value = tr));
+  fiberMat.uniforms.uT.value = t;
+  ren.render(scene, cam);
+  // prison bars drop in with a small bounce and lift away later
+  const bl = level('bars', t, .45, .6), bounce = bl < 1 ? Math.sin(Math.PI * bl) * .06 : 0;
+  $('bars').style.opacity = Math.min(1, bl * 1.5) * .85; $('bars').style.transform = `translateY(${(-1 + bl + bounce) * 960}px)`;
+  $('flash').style.opacity = beats.filter(b => b.flash && b.t0 <= t).reduce((m, b) => Math.max(m, Math.exp(-(t - b.t0) / .25) * .9), 0);
+  const ti = level('title', t, .35, .4);
+  if (OUT) { const k = Math.max(ease((t - outStart) / .55), ti); $('cover').style.opacity = k;
+    const h = $('cv-name'); const tt = t < outStart ? ti : ease((t - outStart - .1) / .5); h.style.transform = `scale(${1.35 - .35 * tt})`; h.style.filter = `blur(${8 * (1 - tt)}px)`; }
+  else $('cover').style.opacity = 1 - ease((tr - LEAD + .35) / .5);
+  // hook motion
+  if (OUT) { const out = ease((t - hookEnd + .3) / .3);
+    hookEls.forEach((el, i) => { const p = ease((t - hookWords[i].t + .1) / .28);
+      el.style.opacity = p * (1 - out); el.style.filter = `blur(${10 * (1 - p) + 6 * out}px)`;
+      el.style.transform = `translateY(${-28 * (1 - p) - 40 * out}px) scale(${(1.8 - .8 * p) * (1 - .15 * out)})`; });
+    const ring = (el, t0) => { const q = (t - t0) / .9; el.style.opacity = q > 0 && q < 1 ? .9 * (1 - q) : 0; el.style.transform = `scale(${.3 + 2.2 * ease(q)})`; };
+    ring($('ring1'), hookWords[0].t - .05); ring($('ring2'), hookWords[hookWords.length - 1].t + .1); }
+  // labels
+  const on = {}, hot = {}; const la = ease(s.since / .4);
+  (s.labels || []).forEach(id => { on[id] = la * Math.max(fade[s.scene], 0); });
+  (s.hot || []).forEach(id => hot[id] = 1); (s.hotLabels || []).forEach(id => hot[id] = 1);
+  placeLabels(on, hot);
+  // fact line
+  drawChart(s, t);
+  $('fact').innerHTML = s.fact || ''; $('fact').style.opacity = s.fact && !s.chart ? ease(s.since / .4) : 0;
+  // on-screen comment prompt: types itself in when the voice asks, stays to the last frame
+  if (R.ask) { const a0 = R.lines[R.ask.at].a - .1, k = ease((t - a0) / .4), n = Math.max(0, Math.min(R.ask.text.length, Math.floor((t - a0) * 28)));
+    $('ask').style.opacity = k; $('ask').style.transform = `translateY(${(1 - k) * -20}px) scale(${1 + .03 * Math.sin(Math.max(0, t - a0) * 5) * (t > a0 + 1 ? 1 : 0)})`;
+    $('asktx').textContent = R.ask.text.slice(0, n) + (n < R.ask.text.length && t > a0 ? '|' : ''); if (k > 0) $('fact').style.opacity = 0; }
+  // captions
+  const c = (OUT && t < hookEnd) || inOut || ti > .3 ? null : chunks.find(c => t >= c.a - .05 && t < c.b);
+  $('cap').innerHTML = c ? c.words.map(w => `<i class="${t >= w.t - .04 ? (w === c.words.findLast(x => t >= x.t - .04) ? 'now' : 'on') : ''}">${w.w}</i>`).join(' ') : '';
+} };
+// release/ion start times from beats
+for (const b of beats) { if (b.release) b.releaseT0 = b.t0; if (b.ionflow) b.ionT0 = b.t0; if (b.chart) b.chartT0 = b.t0; if (b.adr) b.adrT0 = b.t0; if (b.ach) b.achT0 = b.t0; }
+for (let i = 1; i < beats.length; i++) if (beats[i].chart && beats[i].chart === beats[i - 1].chart) beats[i].chartT0 = beats[i - 1].chartT0;
+for (let i = 1; i < beats.length; i++) { const p = beats[i - 1], b = beats[i];
+  if (b.release && p.release && b.scene === undefined) b.releaseT0 = p.releaseT0; if (b.ionflow && p.ionflow) b.ionT0 = p.ionT0; if (b.adr && p.adr) b.adrT0 = p.adrT0; if (b.ach && p.ach) b.achT0 = p.achT0; }
+window.reel.seek(0);
+await document.fonts.ready;
+document.body.dataset.ready = 1;
+</script>
+</body>
+</html>
