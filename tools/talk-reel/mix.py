@@ -48,8 +48,13 @@ def crack(at,g=.4):
 fx=np.zeros(N)
 # hook
 sub(L[0]['s'],52,1.6,.55); piano(L[0]['s'],220,.2,4)
-whoosh(wt(6),.4,.25)                 # the dip
-whoosh(L[1]['s'],.5,.3); piano(wt(9),329.6,.2); piano(wt(9)+.18,440,.16)  # success rises
+wd=lambda i:W[i]['t']+W[i]['d']
+def sweep(a,b,f0,f1,g):
+    n=int((b-a)*sr);tt=np.arange(n)/sr;f=np.geomspace(f0,f1,n);s=np.sin(2*np.pi*np.cumsum(f)/sr)
+    e=np.minimum(1,tt/.03)*np.minimum(1,(tt[-1]-tt)/.08);add(fx,s*e,a,g)
+sweep(wt(6)-.05,wd(6)+.1,520,180,.16)          # the line falls with "يفشل"
+sweep(wt(9),wd(14),200,700,.10)                # the line climbs from "ينجح" to the peak
+chime(wd(14)-.05,.12)                          # peak
 click(wt(15)+.35,.4,900); click(wt(15)+.42,.25,1300)                       # the die lands
 whoosh(L[2]['s'],.55,.3); boom(wt(20),.85)
 whoosh(L[3]['s'],.5,.3); click(wt(26),.2,700); click(wt(27),.25,500); sub(wt(29),70,.8,.35)
