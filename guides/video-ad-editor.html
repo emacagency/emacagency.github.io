@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>محرّر إعلانات الفيديو | إيماك EMAC</title>
+<meta name="description" content="شرح أداة محرّر إعلانات الفيديو (Majed video) لـClaude Code: ما هي، وأوضاعها، وطريقة تثبيتها، وملاءمتها لإنتاج الريلز العلمية في إيماك.">
+<link rel="canonical" href="https://emacagency.github.io/guides/video-ad-editor.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="محرّر إعلانات الفيديو | إيماك EMAC">
+<meta property="og:description" content="شرح الأداة وأوضاعها وطريقة تثبيتها وملاءمتها للريلز العلمية.">
+<meta property="og:image" content="https://emacagency.github.io/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+:root { --bg:#0C0C14; --surface:#14141F; --line:#26263A; --fg:#F5F4F8; --muted:#A9A7B8; --moss:#7FAE8E; --warn:#D9A46A; color-scheme:dark; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg:#F5F4F8; --surface:#FFFFFF; --line:#DEDBE8; --fg:#0C0C14; --muted:#5A5866; --moss:#4A7559; --warn:#9A6326; color-scheme:light; } }
+:root[data-theme="light"] { --bg:#F5F4F8; --surface:#FFFFFF; --line:#DEDBE8; --fg:#0C0C14; --muted:#5A5866; --moss:#4A7559; --warn:#9A6326; color-scheme:light; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif; font-size:17px; line-height:1.9; }
+main { max-width:760px; margin:0 auto; padding:40px 16px 72px; }
+a { color:inherit; }
+.top { font-size:14px; color:var(--muted); text-decoration:none; }
+h1 { font-size:clamp(28px,6vw,40px); font-weight:600; line-height:1.3; margin:18px 0 10px; }
+.lead { color:var(--muted); margin:0 0 28px; }
+h2 { font-size:21px; font-weight:600; margin:36px 0 12px; }
+section { background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:20px 22px; margin-top:16px; }
+ul, ol { margin:0; padding-inline-start:22px; }
+li { margin:6px 0; }
+.ok h2 { color:var(--moss); } .no h2 { color:var(--warn); }
+section h2 { margin-top:0; }
+code { font-family:"IBM Plex Mono",ui-monospace,monospace; direction:ltr; unicode-bidi:isolate; background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-size:15px; overflow-wrap:anywhere; }
+.meta { font-size:14px; color:var(--muted); margin-top:40px; border-top:1px solid var(--line); padding-top:16px; }
+</style>
+</head>
+<body>
+<main>
+<a class="top" href="../">← إيماك EMAC</a>
+<h1>محرّر إعلانات الفيديو</h1>
+<p class="lead">إضافة لبرنامج <bdi>Claude Code</bdi> تُحوِّل الفيديو إلى ريل عمودي جاهز للنشر بالكود فقط، دون برنامج مونتاج. هنا نشرح ما هي، وكيف تعمل، وما الذي يفيدنا منها في إيماك.</p>
+
+<section>
+<h2>ما هي الأداة؟</h2>
+<p>اسمها <b>Majed video</b> (الإصدار 6.3، برخصة MIT مفتوحة). تقصّ الفيديو بأداة ffmpeg، وتُفرِّغ الكلام بأداة Whisper بتوقيت كل كلمة، ثم يركّب محرّك رسم الكابشن العربي والموشن غرافيك فوق الصورة. والناتج ملف MP4 واحد بمقاس 9:16. تعمل من الجوال أو الكمبيوتر أو السحابة.</p>
+</section>
+
+<h2>أوضاعها</h2>
+<ul>
+<li><b>ريل من فيديو كلام:</b> تحذف السكتات، وتضيف كابشن عربيًّا متزامنًا مع حركة الفم.</li>
+<li><b>فيلم موشن من نصّ:</b> فيلم ثلاثي الأبعاد بستين إطارًا في الثانية، دون ظهور شخص.</li>
+<li><b>«اشرح لي كيف يعمل…»:</b> يُرسَم الجهاز بالحبر خطًّا خطًّا ثم يعمل أمام المشاهد، مع خطوات مرقّمة، بعد التحقّق من مصادر موثوقة.</li>
+<li><b>البودكاست والمونتاج:</b> تقطيع حلقة طويلة إلى ريلز، ومونتاج متزامن مع الإيقاع.</li>
+<li><b>الأغلفة وCapCut:</b> توليد الأغلفة والصور المصغّرة، أو تصدير مشروع CapCut قابل للتعديل.</li>
+</ul>
+
+<h2>طريقة التثبيت</h2>
+<ol>
+<li>افتح claude.ai، ثم Settings، ثم Customize، ثم Plugins.</li>
+<li>اضغط Add ثم Add marketplace، والصق: <code>majedphotos/majed-plugins</code></li>
+<li>أضف Majed video، ثم فعّل Sync automatically من Manage marketplaces لتصلك التحديثات.</li>
+<li>افتح محادثة جديدة، وأرفق الفيديو، واكتب مثلًا: «حوّل الفيديو لريل».</li>
+</ol>
+
+<section class="ok">
+<h2>ما يفيد إيماك</h2>
+<ul>
+<li>محرّك الموشن من النصّ، ومؤثّرات الكلمات المتحرّكة، وتوليد الأغلفة.</li>
+<li>وضع «الآلة» يصلح لشرح الأعضاء وآلية عمل النواقل العصبية خطوةً خطوة.</li>
+</ul>
+</section>
+
+<section class="no">
+<h2>ما لا يناسبنا كما هو</h2>
+<ul>
+<li>نصوصه وتعليماته بالعامية الخليجية، وقواعدنا تشترط العربية الفصحى المضبوطة بالشكل.</li>
+<li>صوته المولّد من edge-tts، وليس صوت فهد المعتمد عندنا.</li>
+<li>لا يتضمّن مشاهد الهولوغرام التشريحي: الجهاز الأزرق والعضو الأحمر المضيء.</li>
+</ul>
+</section>
+
+<h2>التوصية</h2>
+<p>نُبقي مسارنا الحالي للصوت والهولوغرام، ونأخذ من الأداة محرّك الموشن والكابشن، بعد تجربتها على ريل ناقل واحد للحكم على جودتها الفعلية.</p>
+
+<p class="meta">المصدر: <a href="https://github.com/majedphotos/video-ad-editor" rel="noopener">github.com/majedphotos/video-ad-editor</a> · إعداد إيماك، نوفمبر 2026</p>
+</main>
+</body>
+</html>
