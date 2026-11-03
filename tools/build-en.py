@@ -58,6 +58,7 @@ T = [
  ('داخل الخلية الحية', 'Inside the living cell'), ('جولة ثلاثية الأبعاد لشرح آلية علاج جديد لجمهور غير متخصص.', 'A 3D tour explaining how a new treatment works, for a general audience.'),
  ('الثقب الأسود في 60 ثانية', 'A black hole in 60 seconds'), ('تجسيد نظرية النسبية العامة وأفق الحدث في مقطع قصير للمنصات.', 'General relativity and the event horizon in one short video.'),
  ('كيف نعيش على المريخ؟', 'How do we live on Mars?'), ('سلسلة مرئية تشرح تحديات الاستيطان على الكوكب الأحمر بالأرقام.', 'A visual series on the challenges of settling the red planet, in numbers.'),
+ ('>محرّر إعلانات الفيديو<', '>Video ad editor<'), ('دليل أداة تُحوِّل الفيديو إلى ريل عمودي بالكابشن العربي والموشن غرافيك، وكيف نستفيد منها.', 'A guide to a tool that turns video into a vertical reel with Arabic captions and motion graphics (Arabic).'),
  ('نماذج توضيحية لطريقة العرض، وليست أعمالًا منشورة لعملاء.', 'Illustrative concepts of our approach, not published client work.'),
  ('لديك بحث يستحق أن يُرى؟', 'Have research that deserves to be seen?'),
  ('أرسل لنا نبذة عن البحث وهدفك منه، ونرد عليك خلال 48 ساعة باقتراح أولي للحملة.', 'Tell us about the research and your goal, and we will reply within 48 hours with a first campaign idea.'),

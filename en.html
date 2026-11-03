@@ -151,7 +151,9 @@ section.block { padding-block: 96px; border-bottom: 1px solid var(--line); }
 @media (max-width: 520px) { .aud { grid-template-columns: 1fr; } .aud div { border-inline-start: 0; padding-inline-start: 0; } }
 
 /* showcase */
-.cases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.cases { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.case h3 a { text-decoration: none; } .case h3 a::after { content: ""; position: absolute; inset: 0; } .case { position: relative; } .case:has(a):hover { border-color: var(--muted); }
+@media (max-width: 1100px) { .cases { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .case { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
 .case .vis { aspect-ratio: 16 / 10; max-width: 100%; position: relative; background: #0C0C14; }
 .case .vis svg { width: 100%; height: 100%; display: block; }
@@ -348,6 +350,10 @@ footer .in { display: flex; justify-content: space-between; align-items: center;
         <article class="case">
           <div class="vis"><svg viewBox="0 0 320 200" aria-hidden="true"><rect width="320" height="200" fill="#0C0C14"/><circle cx="210" cy="118" r="62" fill="#B5583A"/><circle cx="210" cy="118" r="62" fill="url(#shade)"/><defs><radialGradient id="shade" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient></defs><circle cx="70" cy="60" r="10" fill="#C3C9CF"/><path d="M80 64 Q150 40 160 100" stroke="#C3C9CF" stroke-dasharray="3 5" fill="none"/></svg></div>
           <div class="body"><h3>How do we live on Mars?</h3><p>A visual series on the challenges of settling the red planet, in numbers.</p><span class="data mono">−63 °C · 0.38 g · 225M km</span></div>
+        </article>
+        <article class="case">
+          <div class="vis"><svg viewBox="0 0 320 200" aria-hidden="true"><rect width="320" height="200" fill="#0C0C14"/><rect x="124" y="28" width="72" height="144" rx="10" fill="none" stroke="#C3C9CF" stroke-opacity=".7"/><path d="M150 82v36l30-18z" fill="#7FAE8E"/><g stroke="#7FAE8E" stroke-width="3" stroke-linecap="round" opacity=".7"><path d="M40 100v0M56 88v24M72 76v48M88 92v16"/><path d="M232 92v16M248 80v40M264 70v60M280 90v20"/></g><rect x="134" y="146" width="52" height="6" rx="3" fill="#C3C9CF" opacity=".5"/></svg></div>
+          <div class="body"><h3><a href="guides/video-ad-editor.html">Video ad editor</a></h3><p>A guide to a tool that turns video into a vertical reel with Arabic captions and motion graphics (Arabic).</p><span class="data mono">9:16 · 60 fps · MP4</span></div>
         </article>
       </div>
       <p class="note">Illustrative concepts of our approach, not published client work.</p>
