@@ -80,6 +80,16 @@ T = [
  ("'الاسم: ' + v('f-name'), 'الجهة: ' + v('f-org'), 'البريد: ' + v('f-mail'), 'نوع البحث: '", "'Name: ' + v('f-name'), 'Organization: ' + v('f-org'), 'Email: ' + v('f-mail'), 'Research type: '"),
  ("'تعذّر الإرسال من الموقع الآن. <a href=\"' + href + '\">اضغط هنا لإرسال رسالتك من بريدك</a>، وقد جهّزناها لك.'",
   "'We could not send from the site right now. <a href=\"' + href + '\">Send it from your email instead</a>; it is already written for you.'"),
+ ('aria-label="تبديل الوضع الليلي والنهاري" title="الوضع الليلي / النهاري"', 'aria-label="Toggle dark and light mode" title="Dark / light mode"'),
+ ('>تعرّف على أشقاء إيماك<', '>Meet EMAC\'s siblings<'),
+ ('<h2 id="sib-h">إخوة إيماك</h2>', '<h2 id="sib-h">EMAC\'s Siblings</h2>'),
+ ('أربعة أشقاء من عائلة إيماك، لكلٍّ منهم علمٌ يتقنه ويشرحه للناس بوضوح. مرّر المؤشر على أحدهم ليتقدّم ويرحّب بك.', 'Four siblings from the EMAC family, each a master of one science who explains it clearly. Hover over one and they step forward to greet you.'),
+ ('aria-label="إغلاق" data-close', 'aria-label="Close" data-close'),
+ ('<b>سُها <span class="lat">SUHA</span></b><span class="f">الفضاء وعلوم الفلك</span><q>أهلًا بك. أقيس لك الكون بخطوة إنسان.</q>', '<b>Suha <span class="lat">SUHA</span></b><span class="f">Space and astronomy</span><q>Welcome. I measure the universe in human steps.</q>'),
+ ('<b>نَبض <span class="lat">NABD</span></b><span class="f">الطب وعلوم الجسم</span><q>مرحبًا. أشرح لك الجسد من الداخل بلا رهبة.</q>', '<b>Nabd <span class="lat">NABD</span></b><span class="f">Medicine and the human body</span><q>Hello. I show you the body from the inside, without fear.</q>'),
+ ('<b>خوارزمي <span class="lat">KHWARIZMI</span></b><span class="f">البرمجيات والهندسة المعلوماتية</span><q>أهلًا. أرى البنية قبل السطر، وأشرحها خطوةً خطوة.</q>', '<b>Khwarizmi <span class="lat">KHWARIZMI</span></b><span class="f">Software and computing</span><q>Hi. I see the structure before the code, and explain it step by step.</q>'),
+ ('<b>غَد <span class="lat">GHAD</span></b><span class="f">النظريات والخيال العلمي</span><q>مرحبًا بك في الغد. أجسّد ما لم يُبنَ بعد.</q>', '<b>Ghad <span class="lat">GHAD</span></b><span class="f">Theories and science fiction</span><q>Welcome to tomorrow. I build what has not been built yet.</q>'),
+ ('<h3><a href="projects/lumina-mall/">لومينا مول</a></h3><p>صفحة مستثمرين تفاعلية لمول افتراضي: جولة ثلاثية الأبعاد داخل المبنى، وحاسبة عائد، ووحدات متاحة.</p>', '<h3><a href="projects/lumina-mall/">Lumina Mall</a></h3><p>An interactive investor page for a fictional mall: a 3D walk-through, a return calculator and available units.</p>'),
 ]
 for a, b in T:
     n = s.count(a)
