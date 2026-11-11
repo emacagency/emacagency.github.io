@@ -213,6 +213,7 @@ html.theming, html.theming * { transition: background-color .35s ease, border-co
 .sib-orb i:nth-child(3) { border-color: #D24BFF; animation-delay: 2s; }
 .sib-view { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; isolation: isolate;
   background: radial-gradient(60% 70% at 18% 62%, rgba(255,42,77,.55), transparent 70%), radial-gradient(60% 70% at 82% 62%, rgba(155,92,255,.6), transparent 70%), #07060C;
+  background: url(img/siblings-orb.jpg) center / cover no-repeat, #07060C;
   box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 0 34px rgba(255,42,77,.32), 0 0 54px rgba(155,92,255,.28); transition: transform .35s cubic-bezier(.3,1.4,.5,1), box-shadow .35s; }
 .sib-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .8s ease; }
 .sib-view.live canvas { opacity: 1; }
@@ -236,7 +237,7 @@ html.theming, html.theming * { transition: background-color .35s ease, border-co
 .sib-top p.sub { color: #B9B4C9; font-size: 16px; margin-top: 6px; max-width: 56ch; }
 .sib-x { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.04); color: #F5F4F8; font-size: 22px; line-height: 1; cursor: pointer; }
 .sib-x:hover { border-color: #9B5CFF; }
-#sib-big { position: relative; aspect-ratio: 16 / 7.5; margin: 14px 18px 0; border-radius: 16px; overflow: hidden; background: radial-gradient(40% 80% at 15% 60%, rgba(255,42,77,.4), transparent 70%), radial-gradient(40% 80% at 85% 60%, rgba(155,92,255,.45), transparent 70%), #07060C; }
+#sib-big { position: relative; aspect-ratio: 16 / 7.5; margin: 14px 18px 0; border-radius: 16px; overflow: hidden; background: url(img/siblings-stage.jpg) center / cover no-repeat, radial-gradient(40% 80% at 15% 60%, rgba(255,42,77,.4), transparent 70%), radial-gradient(40% 80% at 85% 60%, rgba(155,92,255,.45), transparent 70%), #07060C; }
 #sib-big canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .sib-cards { list-style: none; margin: 0; padding: 16px 18px 22px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .sib-cards li { display: grid; gap: 4px; align-content: start; padding: 14px 16px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.03); cursor: default; transition: border-color .25s, background .25s, transform .25s; outline: none; }
@@ -248,7 +249,7 @@ html.theming, html.theming * { transition: background-color .35s ease, border-co
 .sib-cards li:nth-child(odd) .f { color: #FF7A90; }
 .sib-cards q { font-size: 14.5px; color: #B9B4C9; line-height: 1.75; quotes: "«" "»"; }
 :lang(en) .sib-cards q { quotes: "\201C" "\201D"; }
-@media (max-width: 860px) { .sib-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } #sib-big { aspect-ratio: 4 / 3; } }
+@media (max-width: 860px) { .sib-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } #sib-big { aspect-ratio: 4 / 3; background-size: contain, auto, auto; } }
 @media (max-width: 520px) { #sib-dlg { width: 100%; max-width: 100%; max-height: 100%; height: 100%; border-radius: 0; border: 0; } .sib-top { padding: 18px 16px 4px; } #sib-big { margin: 10px 12px 0; aspect-ratio: 1 / 1; } .sib-cards { padding: 12px 12px 18px; gap: 10px; } .sib-cards li { padding: 12px; } .sib-cards b { font-size: 18px; } }
 
 /* sent overlay */
@@ -640,8 +641,7 @@ html.theming, html.theming * { transition: background-color .35s ease, border-co
   const net = navigator.connection || {};
   if (net.saveData || /(^|-)2g|3g/.test(net.effectiveType || '')) h.remove();
   else {
-    const sib = () => import('./siblings.js').catch(() => {});
-    const go = () => import('./hero3d.js').then(() => h.closest('.hero').classList.add('has3d')).catch(() => h.remove()).finally(sib);
+    const go = () => { import('./siblings.js').catch(() => {}); import('./hero3d.js').then(() => h.closest('.hero').classList.add('has3d')).catch(() => h.remove()); };
     const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 300));
     document.readyState === 'complete' ? idle() : addEventListener('load', idle, { once: true });
   }

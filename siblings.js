@@ -108,7 +108,7 @@ vec4 sibK(vec3 p) {
   float wA = smoothstep(thr, thr + .025, sx) * (1. - smoothstep(1.27, 1.41, p.y));
   float wF = wA * (1. - smoothstep(1.03, 1.11, p.y));
   float wave = sin(uT * 6.2 + uPh);
-  return vec4(wA, wF, uUp * (1.72 + .07 * wave) * uSide * wA, uUp * (1.05 + .42 * wave) * uSide * wF);
+  return vec4(wA, wF, uUp * (2.55 + .06 * wave) * uSide * wA, uUp * (.3 + .38 * wave) * uSide * wF);
 }`;
 const EL = 'vec2(.25 * uSide, 1.07)', SH = 'vec2(.21 * uSide, 1.37)';
 function waver(mat, side, ph) {
@@ -179,12 +179,12 @@ const SIBS = [
 const XS = [-.93, -.31, .31, .93];
 const figs = SIBS.map((S, i) => {
   const g = new THREE.Group();
-  const side = i % 2 ? -1 : 1;
+  // card i sits first in reading order; in Arabic that is the right-hand side
+  const x = RTL ? -XS[i] : XS[i];
+  const side = Math.sign(x); // wave with the outer hand so arms never cross a neighbour
   const mats = S.mats().map(m => waver(m, side, i * 1.3));
   mats.forEach((m, j) => { const mesh = new THREE.Mesh(BODY, m); if (j) mesh.renderOrder = 2; g.add(mesh); });
   const tick = S.extra(g, mats);
-  // card i sits first in reading order; in Arabic that is the right-hand side
-  const x = RTL ? -XS[i] : XS[i];
   g.position.set(x, 0, -Math.abs(x) * .28);
   g.rotation.y = -x * .22;
   scene.add(g);
@@ -199,7 +199,7 @@ let host = null, W = 1, H = 1;
 function frame() {
   const a = W / H, tan = Math.tan(THREE.MathUtils.degToRad(15));
   const roundish = host === mini;
-  const needW = roundish ? 2.45 : 3.05, needH = roundish ? 2.2 : 2.15;
+  const needW = roundish ? 2.75 : 3.05, needH = roundish ? 2.2 : 2.15;
   const d = Math.max(needH / 2 / tan, needW / 2 / (tan * a));
   camera.aspect = a; camera.position.set(0, roundish ? 1.05 : 1.1, d); camera.lookAt(0, roundish ? .9 : .98, 0); camera.updateProjectionMatrix();
 }
@@ -233,7 +233,7 @@ function render() {
   U.uT.value = still ? .4 : t;
   figs.forEach((f, i) => {
     const want = active < 0 ? greet(t, i) : (i === active ? 1 : .0);
-    f.up += (want - f.up) * Math.min(1, dt * (active < 0 ? 60 : 6));
+    f.up = still ? want : f.up + (want - f.up) * Math.min(1, dt * (active < 0 ? 60 : 6));
     f.mats.forEach(m => { m.userData.u.uUp.value = f.up; });
     f.focus += ((i === active ? 1 : 0) - f.focus) * Math.min(1, dt * 6);
     f.g.position.y = still ? 0 : Math.sin(t * 1.7 + i * 1.3) * .012 + f.focus * .04;
