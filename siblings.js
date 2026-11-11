@@ -232,7 +232,7 @@ function render() {
   if (!still) t += dt;
   U.uT.value = still ? .4 : t;
   figs.forEach((f, i) => {
-    const want = active < 0 ? greet(t, i) : (i === active ? 1 : .0);
+    const want = 0; // arms rest at the sides (anas asked to lower them)
     f.up = still ? want : f.up + (want - f.up) * Math.min(1, dt * (active < 0 ? 60 : 6));
     f.mats.forEach(m => { m.userData.u.uUp.value = f.up; });
     f.focus += ((i === active ? 1 : 0) - f.focus) * Math.min(1, dt * 6);
